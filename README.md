@@ -1,4 +1,4 @@
-# [AWS Resources Example](https://developer-lee.github.com/aws-resources-example)
+# [AWS Resources Example](https://marcus16-kang.github.com/aws-resources-example)
 
 [![Build Badge](https://img.shields.io/github/workflow/status/marcus16-kang/aws-resources-example/ci)](https://github.com/marcus16-kang/aws-resources-example/actions)
 [![License Badge](https://img.shields.io/github/license/marcus16-kang/aws-resources-example)](LICENSE)

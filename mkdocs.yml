@@ -34,7 +34,12 @@ markdown_extensions:
   - pymdownx.details
   - pymdownx.superfences
   - pymdownx.tabbed:
-      alternate_style: true 
+      alternate_style: true
+
+extra:
+  analytics:
+    provider: google
+    property: G-P81H18F6GS
 
 repo_url: https://github.com/marcus16-kang/aws-resources-example
 repo_name: marcus16-kang/aws-resources-example
