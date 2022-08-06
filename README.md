@@ -1,10 +1,13 @@
 # [AWS Resources Example](https://developer-lee.github.com/aws-resources-example)
 
+[![Build Badge](https://img.shields.io/github/workflow/status/marcus16-kang/aws-resources-example/ci)](https://github.com/marcus16-kang/aws-resources-example/actions)
+[![License Badge](https://img.shields.io/github/license/marcus16-kang/aws-resources-example)](LICENSE)
+
 ## [License](LICENSE)
 
 MIT License
 
-Copyright (c) 2022-2022 deveploer-lee
+Copyright (c) 2022-2022 marcus16-kang
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

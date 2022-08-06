@@ -36,5 +36,5 @@ markdown_extensions:
   - pymdownx.tabbed:
       alternate_style: true 
 
-repo_url: https://github.com/dev-sjlee/aws-resources-example
-repo_name: dev-sjlee/aws-resources-example
+repo_url: https://github.com/marcus16-kang/aws-resources-example
+repo_name: marcus16-kang/aws-resources-example
