@@ -39,7 +39,7 @@ markdown_extensions:
 extra:
   analytics:
     provider: google
-    property: G-P81H18F6GS
+    property: G-XBBMFDWMLT
 
 repo_url: https://github.com/marcus16-kang/aws-resources-example
 repo_name: marcus16-kang/aws-resources-example
