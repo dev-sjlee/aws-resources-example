@@ -1,4 +1,5 @@
-site_name: AWS Resource Example
+site_name: AWS Resources Example
+site_url: https://marcus16-kang.github.io/aws-resources-example/
 
 theme:
   name: material

@@ -69,7 +69,7 @@ aws iam add-role-to-instance-profile \
 <summary>Using IPv6 in VPC CNI</summary>
 <div markdown="1">
 
-```shell
+``` shell
 cat << EOF >> vpc-cni-ipv6-policy.json
 {
     "Version": "2012-10-17",
@@ -97,9 +97,11 @@ cat << EOF >> vpc-cni-ipv6-policy.json
     ]
 }
 EOF
+
 aws iam create-policy \
     --policy-name AmazonEKS_CNI_IPv6_Policy \
     --policy-document file://vpc-cni-ipv6-policy.json
+
 aws iam attach-role-policy \
   --policy-arn arn:aws:iam::111122223333:policy/AmazonEKS_CNI_IPv6_Policy \
   --role-name <role name>
@@ -108,4 +110,4 @@ aws iam attach-role-policy \
 </div>
 </details>
 
-https://docs.aws.amazon.com/eks/latest/userguide/create-node-role.html
+[AWS Documentation](https://docs.aws.amazon.com/eks/latest/userguide/create-node-role.html)
