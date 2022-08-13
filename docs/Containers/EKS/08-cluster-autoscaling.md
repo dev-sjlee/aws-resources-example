@@ -4,60 +4,96 @@
 
 ### Create the service account
 
-``` shell
-cat << EOF >> cluster-autoscaler-policy.json
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "VisualEditor0",
-            "Effect": "Allow",
-            "Action": [
-                "autoscaling:SetDesiredCapacity",
-                "autoscaling:TerminateInstanceInAutoScalingGroup"
-            ],
-            "Resource": "*",
-            "Condition": {
-                "StringEquals": {
-                    "aws:ResourceTag/k8s.io/cluster-autoscaler/<cluster name>": "owned"
+=== "JSON file"
+    ``` json hl_lines="14"
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Sid": "VisualEditor0",
+                "Effect": "Allow",
+                "Action": [
+                    "autoscaling:SetDesiredCapacity",
+                    "autoscaling:TerminateInstanceInAutoScalingGroup"
+                ],
+                "Resource": "*",
+                "Condition": {
+                    "StringEquals": {
+                        "aws:ResourceTag/k8s.io/cluster-autoscaler/<cluster name>": "owned"
+                    }
                 }
+            },
+            {
+                "Sid": "VisualEditor1",
+                "Effect": "Allow",
+                "Action": [
+                    "autoscaling:DescribeAutoScalingInstances",
+                    "autoscaling:DescribeAutoScalingGroups",
+                    "ec2:DescribeLaunchTemplateVersions",
+                    "autoscaling:DescribeTags",
+                    "autoscaling:DescribeLaunchConfigurations"
+                ],
+                "Resource": "*"
             }
-        },
-        {
-            "Sid": "VisualEditor1",
-            "Effect": "Allow",
-            "Action": [
-                "autoscaling:DescribeAutoScalingInstances",
-                "autoscaling:DescribeAutoScalingGroups",
-                "ec2:DescribeLaunchTemplateVersions",
-                "autoscaling:DescribeTags",
-                "autoscaling:DescribeLaunchConfigurations"
-            ],
-            "Resource": "*"
-        }
-    ]
-}
-EOF
+        ]
+    }
+    ```
 
-aws iam create-policy \
-    --policy-name <policy name> \
-    --policy-document file://cluster-autoscaler-policy.json
+=== "Using command" 
+    ``` shell hl_lines="15 36 40 43 44"
+    cat << EOF >> cluster-autoscaler-policy.json
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Sid": "VisualEditor0",
+                "Effect": "Allow",
+                "Action": [
+                    "autoscaling:SetDesiredCapacity",
+                    "autoscaling:TerminateInstanceInAutoScalingGroup"
+                ],
+                "Resource": "*",
+                "Condition": {
+                    "StringEquals": {
+                        "aws:ResourceTag/k8s.io/cluster-autoscaler/<cluster name>": "owned"
+                    }
+                }
+            },
+            {
+                "Sid": "VisualEditor1",
+                "Effect": "Allow",
+                "Action": [
+                    "autoscaling:DescribeAutoScalingInstances",
+                    "autoscaling:DescribeAutoScalingGroups",
+                    "ec2:DescribeLaunchTemplateVersions",
+                    "autoscaling:DescribeTags",
+                    "autoscaling:DescribeLaunchConfigurations"
+                ],
+                "Resource": "*"
+            }
+        ]
+    }
+    EOF
 
-eksctl create iamserviceaccount \
-    --cluster=<cluster name> \
-    --namespace=kube-system \
-    --name=cluster-autoscaler \
-    --role-name=<role name> \
-    --attach-policy-arn=arn:aws:iam::<account id>:policy/<policy name> \
-    --override-existing-serviceaccounts \
-    --approve
-```
+    aws iam create-policy \
+        --policy-name <policy name> \
+        --policy-document file://cluster-autoscaler-policy.json
 
-https://docs.aws.amazon.com/ko_kr/eks/latest/userguide/autoscaling.html#ca-create-policy
+    eksctl create iamserviceaccount \
+        --cluster=<cluster name> \
+        --namespace=kube-system \
+        --name=cluster-autoscaler \
+        --role-name=<role name> \
+        --attach-policy-arn=arn:aws:iam::<account id>:policy/<policy name> \
+        --override-existing-serviceaccounts \
+        --approve
+    ```
+
+[AWS Documentation](https://docs.aws.amazon.com/ko_kr/eks/latest/userguide/autoscaling.html#ca-create-policy)
 
 ### Deploy the Cluster Autoscaler
 
-```shell
+``` shell
 curl -o cluster-autoscaler-autodiscover.yaml https://raw.githubusercontent.com/kubernetes/autoscaler/master/cluster-autoscaler/cloudprovider/aws/examples/cluster-autoscaler-autodiscover.yaml
 
 kubectl apply -f cluster-autoscaler-autodiscover.yaml
@@ -71,7 +107,7 @@ kubectl -n kube-system edit deployment.apps/cluster-autoscaler
 
 > Please add `--balance-similar-node-groups` and `--skip-nodes-with-system-pods=false` at `spec.template.spec.containers.command`, and change to your cluster name like this:
 
-```yaml
+``` yaml
     spec:
       containers:
       - command
@@ -278,7 +314,7 @@ spec:
 </div>
 </details>
 
-https://docs.aws.amazon.com/ko_kr/eks/latest/userguide/autoscaling.html#ca-deploy
+[AWS Documentation](https://docs.aws.amazon.com/ko_kr/eks/latest/userguide/autoscaling.html#ca-deploy)
 
 ## Using Karpenter
 
