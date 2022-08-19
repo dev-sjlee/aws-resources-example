@@ -57,13 +57,14 @@ metadata:
 spec:
   rules:
     - http:
-        path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: <service name>
-            port:
-              number: <port number> # like 80
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: <service name>
+                port:
+                  number: <port number> # like 80
 ```
 
 [AWS Documentation](https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html)
