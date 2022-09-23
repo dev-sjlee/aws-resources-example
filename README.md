@@ -1,6 +1,7 @@
 # [AWS Resources Example](https://marcus16-kang.github.io/aws-resources-example/)
 
 [![Build Badge](https://img.shields.io/github/workflow/status/marcus16-kang/aws-resources-example/ci)](https://github.com/marcus16-kang/aws-resources-example/actions)
+[![Website](https://img.shields.io/website?down_color=red&down_message=offline&up_color=green&up_message=online&url=https%3A%2F%2Fmarcus16-kang.github.io%2Faws-resources-example%2F)](https://marcus16-kang.github.io/aws-resources-example/)
 [![License Badge](https://img.shields.io/github/license/marcus16-kang/aws-resources-example)](LICENSE)
 
 ## [License](LICENSE)
