@@ -1,7 +1,7 @@
 # Install Python 3.10
 
-https://www.openssl.org/
-https://www.python.org/
+[OpenSSL](https://www.openssl.org/)
+[Python](https://www.python.org/)
 
 === "Amazon Linux 2/CentOS 7"
     ``` shell
@@ -31,6 +31,25 @@ https://www.python.org/
     sudo make install
 
     ln -s /usr/local/bin/python3 /usr/bin/python3
+    python3 --version
+    pip3 --version
+    ```
+
+=== "Ubuntu"
+    ``` shell
+    sudo apt-get update -y
+    sudo apt-get upgrade -y
+    sudo apt-get install -y zlib1g zlib1g-dev libffi8 libffi-devel gcc make
+    sudo yum install -y zlib zlib-devel libffi libffi-devel bzip2 bzip2-devel gcc make
+
+    wget https://www.python.org/ftp/python/3.10.7/Python-3.10.7.tgz
+    tar -xvzf Python-3.10.7.tgz
+    cd Python-3.10.7
+
+    ./configure
+    sudo make
+    sudo make install
+
     python3 --version
     pip3 --version
     ```

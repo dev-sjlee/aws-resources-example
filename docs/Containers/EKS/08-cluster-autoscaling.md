@@ -394,7 +394,7 @@ eksctl create iamserviceaccount \
 ```
 https://karpenter.sh/v0.13.2/getting-started/getting-started-with-eksctl/#create-the-karpentercontroller-iam-role
 
-### Install KArpenter using `helm`
+### Install Karpenter using `helm`
 
 > Please check version in [here](https://karpenter.sh/v0.13.2/getting-started/getting-started-with-eksctl/#environment-variables).
 
@@ -438,3 +438,39 @@ kubectl apply -f karpenter-provisioner.yaml
 ```
 
 https://karpenter.sh/v0.13.2/getting-started/getting-started-with-eksctl/#install-karpenter-helm-chart
+
+## Deploy Overprovisioning Pod
+
+``` yaml title="overprovisioning.yaml"
+---
+apiVersion: scheduling.k8s.io/v1beta1
+kind: PriorityClass
+metadata:
+  name: overprovisioning
+value: -1
+globalDefault: false
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: overprovisioning
+  namespace: kube-system
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      run: overprovisioning
+  template:
+    metadata:
+      labels:
+        run: overprovisioning
+    spec:
+      priorityClassName: overprovisioning
+      containers:
+      - name: reserve-resources
+        image: k8s.gcr.io/pause
+        resources:
+          requests:
+            cpu: 820m
+            memory: 2000Mi
+```
