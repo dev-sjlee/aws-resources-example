@@ -39,17 +39,13 @@
     ``` shell
     sudo apt-get update -y
     sudo apt-get upgrade -y
-    sudo apt-get install -y zlib1g zlib1g-dev libffi8 libffi-devel gcc make
-    sudo yum install -y zlib zlib-devel libffi libffi-devel bzip2 bzip2-devel gcc make
+    sudo apt-get install -y build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget libbz2-dev
 
-    wget https://www.python.org/ftp/python/3.10.7/Python-3.10.7.tgz
-    tar -xvzf Python-3.10.7.tgz
+    wget https://www.python.org/ftp/python/3.10.7/Python-3.10.7.tar.xz
+    tar -xf Python-3.10.7.tar.xz
     cd Python-3.10.7
 
-    ./configure
+    sudo ./configure --enable-optimizations
     sudo make
-    sudo make install
-
-    python3 --version
-    pip3 --version
+    sudo make altinstall
     ```
