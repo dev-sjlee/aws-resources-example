@@ -1,5 +1,7 @@
 # Start EKS cluster 
 
+[Using `eksctl`](https://eksctl.io/usage/creating-and-managing-clusters/)
+
 ## Create EKS cluster IAM role
 
 ### Create cluster trust policy file

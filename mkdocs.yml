@@ -34,17 +34,25 @@ theme:
 
 markdown_extensions:
   - admonition
+  - attr_list
   - pymdownx.details
   - pymdownx.superfences
   - pymdownx.tabbed:
       alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
 
 extra:
   analytics:
     provider: google
     property: G-XBBMFDWMLT
+  social:
+    - icon: material/rss-box
+      link: /aws-resources-example/feed_rss_updated.xml
 
 plugins:
   - social:
       cards: true
       cards_font: Noto Sans KR
+  - rss
