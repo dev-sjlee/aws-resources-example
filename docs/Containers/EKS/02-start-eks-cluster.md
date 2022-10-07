@@ -110,7 +110,7 @@ You should open file and change to IAM role arn(not instance profile).
 kubectl apply -f aws-auth-cm.yaml
 ```
 
-## [Using `kubectl` with IAM role](#contents)
+## Using `kubectl` with IAM role
 
 ``` shell
 cat << EOF >> cluster-role-binding.yaml
@@ -132,3 +132,7 @@ EOF
 rm -rf ~/.aws
 aws sts get-caller-identity
 ```
+
+[AWS Documentation](https://docs.aws.amazon.com/eks/latest/userguide/add-user-role.html)
+
+[Blogs](https://support.bespinglobal.com/ko/support/solutions/articles/73000544787--aws-%EB%8B%A4%EB%A5%B8-%EA%B3%84%EC%A0%95%EC%9D%98-role%EC%9D%84-%EC%82%AC%EC%9A%A9%ED%95%98%EC%97%AC-kubectl%EC%97%90-%EC%A0%91%EC%86%8D%ED%95%98%EA%B8%B0)

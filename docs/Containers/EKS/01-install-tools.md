@@ -19,7 +19,7 @@
 
 === "x86"
     ``` shell
-    curl -o kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.22.6/2022-03-09/bin/linux/amd64/kubectl
+    curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.23.6/bin/linux/amd64/kubectl
     chmod +x ./kubectl
     mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
     echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
@@ -28,7 +28,7 @@
 
 === "ARM"
     ``` shell
-    curl -o kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.22.6/2022-03-09/bin/linux/arm64/kubectl
+    curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.23.6/bin/linux/arm64/kubectl
     chmod +x ./kubectl
     mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
     echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
@@ -58,10 +58,7 @@
 ## Install `helm`
 
 ``` shell
-curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 > get_helm.sh
-chmod 700 get_helm.sh
-./get_helm.sh
-helm help
+curl -L https://git.io/get_helm.sh | bash -s -- --version v3.8.2
 ```
 
 [AWS Documentation](https://docs.aws.amazon.com/eks/latest/userguide/helm.html)
