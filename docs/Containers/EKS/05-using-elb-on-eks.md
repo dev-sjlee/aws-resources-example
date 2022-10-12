@@ -6,7 +6,7 @@
 curl -o aws-load-balancer-controller-iam-policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.4.2/docs/install/iam_policy.json
 
 aws iam create-policy \
-    --policy-name <role name> \
+    --policy-name <policy name> \
     --policy-document file://aws-load-balancer-controller-iam-policy.json
 
 eksctl create iamserviceaccount \
@@ -36,7 +36,8 @@ helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
     --set vpcId=<vpc id>
 
 kubectl get deployment aws-load-balancer-controller \
-    -n kube-system
+    -n kube-system \
+    -w
 ```
 
 [AWS Documentation](https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html)
