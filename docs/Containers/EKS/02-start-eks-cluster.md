@@ -4,6 +4,33 @@
 
 ## Create EKS cluster IAM role
 
+### Using CloudFormation
+
+``` shell hl_lines="19"
+cat << EOF > cluster-role-cfn.yaml
+AWSTemplateFormatVersion: "2010-09-09"
+Resources:
+  EKSClusterRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - eks.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Path: /
+      ManagedPolicyArns: 
+        - arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
+      RoleName: <role name>
+EOF
+
+aws cloudformation create-stack --stack-name eks-cluster-role-stack --template-body file://cluster-role-cfn.yaml --capabilities CAPABILITY_NAMED_IAM
+```
+
 ### Create cluster trust policy file
 
 === "JSON file"
@@ -66,11 +93,11 @@ aws iam attach-role-policy \
 
 [AWS Documentation](https://docs.aws.amazon.com/eks/latest/userguide/service_IAM_role.html)
 
-## [Create EKS cluster](#contents)
+## Create EKS cluster
 
 > Please use AWS Management Console to create EKS cluster.
 
-## [Create IAM OIDC provider](#contents)
+## Create IAM OIDC provider
 
 ``` shell hl_lines="2 3"
 eksctl utils associate-iam-oidc-provider \
@@ -81,7 +108,7 @@ eksctl utils associate-iam-oidc-provider \
 
 [AWS Documentation](https://docs.aws.amazon.com/eks/latest/userguide/enable-iam-roles-for-service-accounts.html)
 
-## [Create `kubeconfig` for EKS cluster](#contents)
+## Create `kubeconfig` for EKS cluster
 
 ``` shell
 aws eks update-kubeconfig \

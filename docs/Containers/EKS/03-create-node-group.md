@@ -2,6 +2,42 @@
 
 ## Create the EKS managed node IAM role
 
+### Using CloudFormation
+
+``` shell hl_lines="21"
+cat << EOF > node-group-role-cfn.yaml
+AWSTemplateFormatVersion: "2010-09-09"
+Resources:
+  EKSNodeGroupRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Path: /
+      ManagedPolicyArns: 
+        - arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
+        - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
+        - arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
+      RoleName: <role name>
+  EKSNodeGroupRoleInstanceProfile:
+    Type: "AWS::IAM::InstanceProfile"
+    Properties: 
+      Path: "/"
+      InstanceProfileName: !Join [ "-", [ !GetAtt EKSNodeGroupRole.RoleId, instance-profile ] ]
+      Roles: 
+        - !Ref EKSNodeGroupRole
+EOF
+
+aws cloudformation create-stack --stack-name eks-node-group-role-stack --template-body file://node-group-role-cfn.yaml --capabilities CAPABILITY_NAMED_IAM
+```
+
 ### Create the node trust policy file
 
 === "JSON file"

@@ -2,6 +2,36 @@
 
 ## Create the Pod execution IAM role
 
+### Using CloudFormation
+
+``` shell hl_lines="13 22"
+cat << EOF > fargate-profile-role-cfn.yaml
+AWSTemplateFormatVersion: "2010-09-09"
+Resources:
+  EKSNodeGroupRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Condition:
+              ArnLike:
+                aws:SourceArn: arn:aws:eks:<region code>:<account id>:fargateprofile/<cluster name>/*
+            Principal:
+              Service:
+                - eks-fargate-pods.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Path: /
+      ManagedPolicyArns: 
+        - arn:aws:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy
+      RoleName: <role name>
+EOF
+
+aws cloudformation create-stack --stack-name eks-fargate-profile-role-stack --template-body file://fargate-profile-role-cfn.yaml --capabilities CAPABILITY_NAMED_IAM
+```
+
 ### Create the trust policy file
 
 === "JSON file"
@@ -114,7 +144,7 @@ aws iam attach-role-policy \
 
 [AWS Documentation](https://docs.aws.amazon.com/eks/latest/userguide/fargate-profile.html)
 
-## [Patch CoreDNS](#contents)
+## Patch CoreDNS
 
 !!! note
 
