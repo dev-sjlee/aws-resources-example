@@ -54,12 +54,13 @@ iam:
 
 iamIdentityMappings:
   - arn: <custom iam resources arn>
-
-identityProviders:
-  - type: oidc
+    groups:
+      - system:masters
+    username: <identity mapping user name>
 
 vpc:
   id: "<vpc id>"  # ex. vpc-0dd338ecf29863c55
+  securityGroup: "<security group id>"  # ex. sg-074e7b913be56b86d
   subnets:
     private:
       <az code>:  # ex. eu-north-1a
@@ -69,6 +70,9 @@ vpc:
       <az code>:  # ex. eu-north-1c
         id: "<subnet id>" # ex. subnet-00f71956cdec8f1dc
 
+privateCluster:
+  enabled: true
+
 nodeGroups:
   - name: <node group name> # ex. ng-1
     instanceType: m5.large
@@ -77,4 +81,7 @@ nodeGroups:
 cloudWatch:
     clusterLogging:
         enableTypes: ["api", "audit", "authenticator", "controllerManager", "scheduler"]
+
+secretsEncryption:
+  keyARN: "<kms key arn>" # ex. arn:aws:kms:us-east-1:123456789012:key/12345678-abcd-efgh-ijkl-123456789012
 ```

@@ -6,9 +6,16 @@
 
 ### Using CloudFormation
 
-``` shell hl_lines="19"
+``` shell hl_lines="1 2"
+EKS_CLUSTER_ROLE_STACK_NAME=<stack name>
+EKS_CLUSTER_ROLE_NAME=<role name>
+
 cat << EOF > cluster-role-cfn.yaml
 AWSTemplateFormatVersion: "2010-09-09"
+Parameters:
+  RoleName:
+    Type: String
+    Description: Enter the cluste role name.
 Resources:
   EKSClusterRole:
     Type: 'AWS::IAM::Role'
@@ -25,10 +32,20 @@ Resources:
       Path: /
       ManagedPolicyArns: 
         - arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
-      RoleName: <role name>
+      RoleName: !Ref RoleName
+Outputs:
+  RoleArn:
+    Description: Arn of cluster IAM role.
+    Value: !GetAtt EKSClusterRole.Arn
 EOF
 
-aws cloudformation create-stack --stack-name eks-cluster-role-stack --template-body file://cluster-role-cfn.yaml --capabilities CAPABILITY_NAMED_IAM
+aws cloudformation create-stack \
+    --stack-name $EKS_CLUSTER_ROLE_STACK_NAME \
+    --template-body file://cluster-role-cfn.yaml \
+    --capabilities CAPABILITY_NAMED_IAM \
+    --parameters ParameterKey=RoleName,ParameterValue=$EKS_CLUSTER_ROLE_NAME
+aws cloudformation wait stack-create-complete --stack-name $EKS_CLUSTER_ROLE_STACK_NAME
+aws cloudformation describe-stacks --stack-name $EKS_CLUSTER_ROLE_STACK_NAME --query "Stacks[0].Outputs[0].OutputValue" --output text
 ```
 
 ### Create cluster trust policy file
@@ -97,6 +114,19 @@ aws iam attach-role-policy \
 
 > Please use AWS Management Console to create EKS cluster.
 
+<details>
+<summary>Using eksctl</summary>
+<div markdown="1">
+
+You can see <code>cluster.yaml</code> in <a href="/aws-resources-example/Containers/Kubernetes/10-cluster/" target="_blank">here</a>.
+
+``` shell
+eksctl create cluster -f cluster.yaml
+```
+
+</div>
+</details>
+
 ## Create IAM OIDC provider
 
 ``` shell hl_lines="2 3"
@@ -124,7 +154,7 @@ aws eks update-kubeconfig \
     --role-name <role name>
     ```
 
-## [Install AWS Authenticator Config Map](#contents)
+## Install AWS Authenticator Config Map
 
 ``` shell
 curl -o aws-auth-cm.yaml https://s3.us-west-2.amazonaws.com/amazon-eks/cloudformation/2020-10-29/aws-auth-cm.yaml
@@ -163,3 +193,59 @@ aws sts get-caller-identity
 [AWS Documentation](https://docs.aws.amazon.com/eks/latest/userguide/add-user-role.html)
 
 [Blogs](https://support.bespinglobal.com/ko/support/solutions/articles/73000544787--aws-%EB%8B%A4%EB%A5%B8-%EA%B3%84%EC%A0%95%EC%9D%98-role%EC%9D%84-%EC%82%AC%EC%9A%A9%ED%95%98%EC%97%AC-kubectl%EC%97%90-%EC%A0%91%EC%86%8D%ED%95%98%EA%B8%B0)
+
+## Encrypt secrets using KMS
+
+### Create CMK
+
+=== "Using CloudFormation"
+    ``` shell
+    aws cloudformation create-stack \
+        --stack-name eks-kms-stack \
+        --template-body file://eks-kms.yaml
+    ```
+
+    ``` yaml title="eks-kms.yaml" linenums="1" hl_lines="7"
+    Parameters:
+      ClusterRole:
+        Description: 'The arn of cluster's IAM role.'
+        Type: String
+
+      Alias:
+        Description: 'The name of KMS key.'
+        Type: String
+    
+    Resources:
+      Key:
+        Type: 'AWS::KMS::Key'
+        Properties:
+          Description: CMK for EKS secrets
+          KeyPolicy:
+            Version: 2012-10-17
+            Id: key-default-1
+            Statement:
+              - Sid: Enable IAM User Permissions.
+                Effect: Allow
+                Principal:
+                  AWS: !Sub
+                    - arn:aws:iam::${AccountId}:root
+                    - { AccountId: !Ref 'AWS::AccountId' }
+                Action: 'kms:*'
+                Resource: '*'
+              - Sid: Enable IAM Role at EKS Cluster.
+                Effect: Allow
+                Principal:
+                  AWS: !Ref ClusterRole
+                Action: 'kms:*'
+                Resource: '*'
+      Alias:
+        Type: 'AWS::KMS::Alias'
+        Properties:
+          AliasName: alias/exampleAlias
+          TargetKeyId: !Ref Key
+    ```
+
+=== "Using AWS CLI"
+    ``` shell
+    
+    ```

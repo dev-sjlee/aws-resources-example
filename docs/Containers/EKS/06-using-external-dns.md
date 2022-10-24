@@ -5,7 +5,7 @@
 === "YAML file"
     ``` yaml title="external-dns-namespace.yaml"
     apiVersion: v1
-    kind: namespace
+    kind: Namespace
     metadata:
       name: external-dns
     ```
@@ -14,7 +14,7 @@
     ```shell
     cat << EOF >> external-dns-namespace.yaml
     apiVersion: v1
-    kind: namespace
+    kind: Namespace
     metadata:
       name: external-dns
     EOF
@@ -112,7 +112,7 @@ eksctl create iamserviceaccount \
 
 ## Deploy External DNS
 
-``` yaml title="external-dns-deployment.yaml"
+``` yaml title="external-dns-deployment.yaml" linenums="1" hl_lines="54 56 57"
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
