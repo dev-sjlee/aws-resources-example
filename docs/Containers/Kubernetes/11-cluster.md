@@ -11,12 +11,16 @@ kind: ClusterConfig
 metadata:
   name: <cluster name>
   region: <region code>
+  version: "1.22" # default is "1.22"
+
+kubernetesNetworkConfig:
+  ipFamily: IPv4  # IPv6
 
 iam:
   serviceRoleARN: <eks cluster role arn>
   withOIDC: true
   serviceAccounts:
-    - metadata: # cluster autoscaler
+    - metadata: # aws load balancer controller
         name: aws-load-balancer-controller
         namespace: kube-system
       wellKnownPolicies:
@@ -25,7 +29,7 @@ iam:
       tags:
         Name: <eks elb controller role name>
 
-    - metadata: # aws load balancer controller
+    - metadata: # cluster autoscaler
         name: cluster-autoscaler
         namespace: kube-system
       wellKnownPolicies:
@@ -69,6 +73,11 @@ vpc:
         id: "<subnet id>" # ex. subnet-08cb9a2ed60394ce3
       <az code>:  # ex. eu-north-1c
         id: "<subnet id>" # ex. subnet-00f71956cdec8f1dc
+
+addons:
+  - name: vpc-cni
+  - name: coredns
+  - name: kube-proxy
 
 privateCluster:
   enabled: true

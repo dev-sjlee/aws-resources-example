@@ -1,5 +1,9 @@
 # Install Amazon Managed Prometheus
 
+!!! note
+
+    Maybe you need EBS CSI Driver to use AMP. [Using EBS](../15-using-ebs/)
+
 ## Create prometheus workspace
 
 ``` shell hl_lines="2"
@@ -122,7 +126,7 @@ chmod +x createIRSA-AMPIngest.sh
 
 ## Install prometheus with `helm`
 
-``` shell hl_lines="5 24 25"
+``` shell hl_lines="5 12 15 17 24 25"
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo add kube-state-metrics https://kubernetes.github.io/kube-state-metrics
 helm repo update

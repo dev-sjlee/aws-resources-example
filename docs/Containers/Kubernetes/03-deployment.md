@@ -23,6 +23,9 @@ spec:
           image: nginx:1.14.2
           ports:
             - containerPort: 80
+          env:
+            - name: TEST
+              value: "Hello, World!"
           resources:
             requests:
               cpu: "250m"
