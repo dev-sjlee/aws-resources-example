@@ -31,6 +31,9 @@ theme:
   features:
     - navigation.tabs
     - content.tabs.link
+    - search.suggest
+    - search.highlight
+    - search.share
 
 markdown_extensions:
   - admonition
@@ -56,3 +59,6 @@ plugins:
       cards: true
       cards_font: Noto Sans KR
   - rss
+  - search:
+      lang: en
+      separator: '[\s\-,:!=\[\]()"/]+|(?!\b)(?=[A-Z][a-z])|\.(?!\d)|&[lg]t;'
