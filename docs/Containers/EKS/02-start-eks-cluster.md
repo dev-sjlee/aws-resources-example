@@ -15,7 +15,7 @@ AWSTemplateFormatVersion: "2010-09-09"
 Parameters:
   RoleName:
     Type: String
-    Description: Enter the cluste role name.
+    Description: Enter the cluster role name.
 Resources:
   EKSClusterRole:
     Type: 'AWS::IAM::Role'

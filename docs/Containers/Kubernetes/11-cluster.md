@@ -81,11 +81,21 @@ addons:
 
 privateCluster:
   enabled: true
+  skipEndpointCreation: true
 
-nodeGroups:
+managedNodeGroups:
   - name: <node group name> # ex. ng-1
+    amiFamily: AmazonLinux2
     instanceType: m5.large
-    desiredCapacity: 2
+    subnets:
+      - "<subnet id>"
+      - "<subnet id>"
+      - "<subnet id>"
+    desiredCapacity: 3
+    minSize: 3
+    maxSize: 6
+    iam:
+      instanceRoleARN: "<node group role arn>"
 
 cloudWatch:
     clusterLogging:
