@@ -6,9 +6,10 @@
 
 ### Using CloudFormation
 
-``` shell hl_lines="1 2"
+``` shell hl_lines="1 2 3"
 EKS_CLUSTER_ROLE_STACK_NAME=<stack name>
 EKS_CLUSTER_ROLE_NAME=<role name>
+REGION=<region code>
 
 cat << EOF > cluster-role-cfn.yaml
 AWSTemplateFormatVersion: "2010-09-09"
@@ -39,16 +40,25 @@ Outputs:
     Value: !GetAtt EKSClusterRole.Arn
 EOF
 
-aws cloudformation create-stack \
+# Deploy stack
+aws cloudformation deploy \
+    --template-file ./cluster-role-cfn.yaml \
     --stack-name $EKS_CLUSTER_ROLE_STACK_NAME \
-    --template-body file://cluster-role-cfn.yaml \
     --capabilities CAPABILITY_NAMED_IAM \
-    --parameters ParameterKey=RoleName,ParameterValue=$EKS_CLUSTER_ROLE_NAME
-aws cloudformation wait stack-create-complete --stack-name $EKS_CLUSTER_ROLE_STACK_NAME
-aws cloudformation describe-stacks --stack-name $EKS_CLUSTER_ROLE_STACK_NAME --query "Stacks[0].Outputs[0].OutputValue" --output text
+    --parameter-overrides RoleName=$EKS_CLUSTER_ROLE_NAME \
+    --region $REGION
+
+# Get IAM role arn
+aws cloudformation describe-stacks \
+    --stack-name $EKS_CLUSTER_ROLE_STACK_NAME \
+    --query "Stacks[0].Outputs[0].OutputValue" \
+    --output text \
+    --region $REGION
 ```
 
-### Create cluster trust policy file
+### Using AWS CLI
+
+**Create cluster trust policy file**
 
 === "JSON file"
     ``` json title="cluster-trust-policy.json" linenums="1"
@@ -84,7 +94,7 @@ aws cloudformation describe-stacks --stack-name $EKS_CLUSTER_ROLE_STACK_NAME --q
     EOF
     ```
 
-### Create the cluster role
+**Create the cluster role**
 
 ``` shell hl_lines="2"
 aws iam create-role \
@@ -100,7 +110,7 @@ aws iam create-role \
     --tags Key=project,Value=project-name Key=hello,Value=world
     ```
 
-### Attach the required IAM policy to the role
+**Attach the required IAM policy to the role**
 
 ``` shell hl_lines="3"
 aws iam attach-role-policy \
@@ -118,7 +128,7 @@ aws iam attach-role-policy \
 <summary>Using eksctl</summary>
 <div markdown="1">
 
-You can see <code>cluster.yaml</code> in <a href="/aws-resources-example/Containers/Kubernetes/10-cluster/" target="_blank">here</a>.
+You can see <code>cluster.yaml</code> in <a href="/aws-resources-example/Containers/Kubernetes/11-cluster/" target="_blank">here</a>.
 
 ``` shell
 eksctl create cluster -f cluster.yaml
@@ -132,7 +142,7 @@ eksctl create cluster -f cluster.yaml
 ``` shell hl_lines="2 3"
 eksctl utils associate-iam-oidc-provider \
     --cluster <cluster name> \
-    --region <region> \
+    --region <region code> \
     --approve
 ```
 
@@ -140,10 +150,10 @@ eksctl utils associate-iam-oidc-provider \
 
 ## Create `kubeconfig` for EKS cluster
 
-``` shell
+``` shell hl_lines="2 3"
 aws eks update-kubeconfig \
     --name <cluster name> \
-    --region <region>
+    --region <region code>
 ```
 
 !!! note
@@ -199,20 +209,19 @@ aws sts get-caller-identity
 ### Create CMK
 
 === "Using CloudFormation"
-    ``` shell
-    aws cloudformation create-stack \
-        --stack-name eks-kms-stack \
-        --template-body file://eks-kms.yaml
-    ```
+    ``` shell hl_lines="1 2 3"
+    CLUSTER_ROLE=<cluster role arn>
+    KMS_ALIAS=<KMS key alias(name)>
+    REGION=<region code>
 
-    ``` yaml title="eks-kms.yaml" linenums="1" hl_lines="7"
+    cat << EOF > eks-kms.yaml
     Parameters:
       ClusterRole:
-        Description: 'The arn of cluster's IAM role.'
+        Description: "The arn of cluster's IAM role."
         Type: String
 
-      Alias:
-        Description: 'The name of KMS key.'
+      AliasName:
+        Description: "The name of KMS key."
         Type: String
     
     Resources:
@@ -227,9 +236,7 @@ aws sts get-caller-identity
               - Sid: Enable IAM User Permissions.
                 Effect: Allow
                 Principal:
-                  AWS: !Sub
-                    - arn:aws:iam::${AccountId}:root
-                    - { AccountId: !Ref 'AWS::AccountId' }
+                  AWS: !Sub arn:aws:iam::\${AWS::AccountId}:root
                 Action: 'kms:*'
                 Resource: '*'
               - Sid: Enable IAM Role at EKS Cluster.
@@ -241,8 +248,15 @@ aws sts get-caller-identity
       Alias:
         Type: 'AWS::KMS::Alias'
         Properties:
-          AliasName: alias/exampleAlias
+          AliasName: !Sub 'alias/\${AliasName}'
           TargetKeyId: !Ref Key
+    EOF
+
+    aws cloudformation deploy \
+        --stack-name eks-kms-stack \
+        --template-file ./eks-kms.yaml \
+        --parameter-overrides ClusterRole=$CLUSTER_ROLE AliasName=$KMS_ALIAS \
+        --region $REGION
     ```
 
 === "Using AWS CLI"

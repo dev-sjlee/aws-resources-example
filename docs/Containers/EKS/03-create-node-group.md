@@ -4,9 +4,15 @@
 
 ### Using CloudFormation
 
-``` shell hl_lines="21"
+``` shell hl_lines="1 2"
+NODE_GROUP_ROLE_NAME=<role name>
+REGION=<region code>
+
 cat << EOF > node-group-role-cfn.yaml
 AWSTemplateFormatVersion: "2010-09-09"
+Parameters:
+  RoleName:
+    Type: String
 Resources:
   EKSNodeGroupRole:
     Type: 'AWS::IAM::Role'
@@ -25,7 +31,7 @@ Resources:
         - arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
         - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
         - arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
-      RoleName: <role name>
+      RoleName: !Ref RoleName
   EKSNodeGroupRoleInstanceProfile:
     Type: "AWS::IAM::InstanceProfile"
     Properties: 
@@ -35,10 +41,16 @@ Resources:
         - !Ref EKSNodeGroupRole
 EOF
 
-aws cloudformation create-stack --stack-name eks-node-group-role-stack --template-body file://node-group-role-cfn.yaml --capabilities CAPABILITY_NAMED_IAM
+aws cloudformation deploy \
+    --stack-name eks-node-group-role-stack \
+    --template-file ./node-group-role-cfn.yaml \
+    --capabilities CAPABILITY_NAMED_IAM \
+    --region $REGION
 ```
 
-### Create the node trust policy file
+### Using AWS CLI
+
+**Create the node trust policy file**
 
 === "JSON file"
     ``` json title="node-role-trust-relationship.json"
@@ -74,31 +86,33 @@ aws cloudformation create-stack --stack-name eks-node-group-role-stack --templat
     EOF
     ```
 
-### Create the node role
+**Create the node role**
 
-``` shell hl_lines="2 7 11 15 18 21 22"
+``` shell hl_lines="1"
+NODE_GROUP_ROLE_NAME=<role name>
+
 aws iam create-role \
-  --role-name <role name> \
+  --role-name $NODE_GROUP_ROLE_NAME \
   --assume-role-policy-document file://node-role-trust-relationship.json
 
 aws iam attach-role-policy \
   --policy-arn arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy \
-  --role-name <role name>
+  --role-name $NODE_GROUP_ROLE_NAME
 
 aws iam attach-role-policy \
   --policy-arn arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly \
-  --role-name <role name>
+  --role-name $NODE_GROUP_ROLE_NAME
   
 aws iam attach-role-policy \
   --policy-arn arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy \
-  --role-name <role name>
+  --role-name $NODE_GROUP_ROLE_NAME
 
 aws iam create-instance-profile \
-    --instance-profile-name <instance profile name>
+    --instance-profile-name $NODE_GROUP_ROLE_NAME
 
 aws iam add-role-to-instance-profile \
-    --instance-profile-name <instance profile name> \
-    --role-name <role name>
+    --instance-profile-name $NODE_GROUP_ROLE_NAME \
+    --role-name $NODE_GROUP_ROLE_NAME
 ```
 
 <details>
@@ -134,13 +148,14 @@ cat << EOF >> vpc-cni-ipv6-policy.json
 }
 EOF
 
-aws iam create-policy \
+IPV6_POLICY_ARN=$(aws iam create-policy \
     --policy-name AmazonEKS_CNI_IPv6_Policy \
-    --policy-document file://vpc-cni-ipv6-policy.json
+    --policy-document file://vpc-cni-ipv6-policy.json | \
+jq -r '.Policy.Arn')
 
 aws iam attach-role-policy \
-  --policy-arn arn:aws:iam::111122223333:policy/AmazonEKS_CNI_IPv6_Policy \
-  --role-name <role name>
+  --policy-arn $IPV6_POLICY_ARN \
+  --role-name $NODE_GROUP_ROLE_NAME
 ```
 
 </div>

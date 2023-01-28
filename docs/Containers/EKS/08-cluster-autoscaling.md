@@ -7,35 +7,33 @@
 === "JSON file"
     ``` json hl_lines="14"
     {
-        "Version": "2012-10-17",
-        "Statement": [
-            {
-                "Sid": "VisualEditor0",
-                "Effect": "Allow",
-                "Action": [
-                    "autoscaling:SetDesiredCapacity",
-                    "autoscaling:TerminateInstanceInAutoScalingGroup"
-                ],
-                "Resource": "*",
-                "Condition": {
-                    "StringEquals": {
-                        "aws:ResourceTag/k8s.io/cluster-autoscaler/<cluster name>": "owned"
-                    }
-                }
-            },
-            {
-                "Sid": "VisualEditor1",
-                "Effect": "Allow",
-                "Action": [
-                    "autoscaling:DescribeAutoScalingInstances",
-                    "autoscaling:DescribeAutoScalingGroups",
-                    "ec2:DescribeLaunchTemplateVersions",
-                    "autoscaling:DescribeTags",
-                    "autoscaling:DescribeLaunchConfigurations"
-                ],
-                "Resource": "*"
-            }
-        ]
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Effect": "Allow",
+          "Action": [
+            "autoscaling:DescribeAutoScalingGroups",
+            "autoscaling:DescribeAutoScalingInstances",
+            "autoscaling:DescribeLaunchConfigurations",
+            "autoscaling:DescribeScalingActivities",
+            "autoscaling:DescribeTags",
+            "ec2:DescribeInstanceTypes",
+            "ec2:DescribeLaunchTemplateVersions"
+          ],
+          "Resource": ["*"]
+        },
+        {
+          "Effect": "Allow",
+          "Action": [
+            "autoscaling:SetDesiredCapacity",
+            "autoscaling:TerminateInstanceInAutoScalingGroup",
+            "ec2:DescribeImages",
+            "ec2:GetInstanceTypesFromInstanceRequirements",
+            "eks:DescribeNodegroup"
+          ],
+          "Resource": ["*"]
+        }
+      ]
     }
     ```
 
@@ -43,35 +41,33 @@
     ``` shell hl_lines="15 36 40 43 44"
     cat << EOF >> cluster-autoscaler-policy.json
     {
-        "Version": "2012-10-17",
-        "Statement": [
-            {
-                "Sid": "VisualEditor0",
-                "Effect": "Allow",
-                "Action": [
-                    "autoscaling:SetDesiredCapacity",
-                    "autoscaling:TerminateInstanceInAutoScalingGroup"
-                ],
-                "Resource": "*",
-                "Condition": {
-                    "StringEquals": {
-                        "aws:ResourceTag/k8s.io/cluster-autoscaler/<cluster name>": "owned"
-                    }
-                }
-            },
-            {
-                "Sid": "VisualEditor1",
-                "Effect": "Allow",
-                "Action": [
-                    "autoscaling:DescribeAutoScalingInstances",
-                    "autoscaling:DescribeAutoScalingGroups",
-                    "ec2:DescribeLaunchTemplateVersions",
-                    "autoscaling:DescribeTags",
-                    "autoscaling:DescribeLaunchConfigurations"
-                ],
-                "Resource": "*"
-            }
-        ]
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Effect": "Allow",
+          "Action": [
+            "autoscaling:DescribeAutoScalingGroups",
+            "autoscaling:DescribeAutoScalingInstances",
+            "autoscaling:DescribeLaunchConfigurations",
+            "autoscaling:DescribeScalingActivities",
+            "autoscaling:DescribeTags",
+            "ec2:DescribeInstanceTypes",
+            "ec2:DescribeLaunchTemplateVersions"
+          ],
+          "Resource": ["*"]
+        },
+        {
+          "Effect": "Allow",
+          "Action": [
+            "autoscaling:SetDesiredCapacity",
+            "autoscaling:TerminateInstanceInAutoScalingGroup",
+            "ec2:DescribeImages",
+            "ec2:GetInstanceTypesFromInstanceRequirements",
+            "eks:DescribeNodegroup"
+          ],
+          "Resource": ["*"]
+        }
+      ]
     }
     EOF
 
@@ -90,6 +86,7 @@
     ```
 
 [AWS Documentation](https://docs.aws.amazon.com/ko_kr/eks/latest/userguide/autoscaling.html#ca-create-policy)
+[Autoscaler Documentation](https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/cloudprovider/aws/README.md#iam-policy)
 
 ### Deploy the Cluster Autoscaler
 

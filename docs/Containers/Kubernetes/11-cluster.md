@@ -11,7 +11,10 @@ kind: ClusterConfig
 metadata:
   name: <cluster name>
   region: <region code>
-  version: "1.22" # default is "1.22"
+  version: "1.24" # default is "1.24"
+  # tags:
+  #   <key1>: <value1>
+  #   <key2>: <value2>
 
 kubernetesNetworkConfig:
   ipFamily: IPv4  # IPv6

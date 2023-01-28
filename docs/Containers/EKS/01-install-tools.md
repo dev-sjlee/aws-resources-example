@@ -19,20 +19,22 @@
 
 === "x86"
     ``` shell
-    curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.23.6/bin/linux/amd64/kubectl
-    chmod +x ./kubectl
-    mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
-    echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
+    curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.23.7/2022-06-29/bin/linux/amd64/kubectl
+    sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+    sudo install -o root -g root -m 0755 kubectl /usr/bin/kubectl
     kubectl version --short --client
+    sudo kubectl version --short --client
+    rm kubectl
     ```
 
 === "ARM"
     ``` shell
-    curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.23.6/bin/linux/arm64/kubectl
-    chmod +x ./kubectl
-    mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
-    echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
+    curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.23.7/2022-06-29/bin/linux/arm64/kubectl
+    sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+    sudo install -o root -g root -m 0755 kubectl /usr/bin/kubectl
     kubectl version --short --client
+    sudo kubectl version --short --client
+    rm kubectl
     ```
 
 [AWS Documentation](https://docs.aws.amazon.com/eks/latest/userguide/install-kubectl.html)
@@ -42,15 +44,19 @@
 === "x86"
     ``` shell
     curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_Linux_amd64.tar.gz" | tar xz -C /tmp
-    sudo mv /tmp/eksctl /usr/local/bin
+    sudo cp /tmp/eksctl /usr/local/bin
+    sudo cp /tmp/eksctl /usr/bin
     eksctl version
+    sudo eksctl version
     ```
 
 === "ARM"
     ``` shell
     curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_Linux_arm64.tar.gz" | tar xz -C /tmp
-    sudo mv /tmp/eksctl /usr/local/bin
+    sudo cp /tmp/eksctl /usr/local/bin
+    sudo cp /tmp/eksctl /usr/bin
     eksctl version
+    sudo eksctl version
     ```
 
 [AWS Documentation](https://docs.aws.amazon.com/eks/latest/userguide/eksctl.html)
