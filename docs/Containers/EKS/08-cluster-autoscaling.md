@@ -440,7 +440,7 @@ https://karpenter.sh/v0.13.2/getting-started/getting-started-with-eksctl/#instal
 
 ``` yaml title="overprovisioning.yaml"
 ---
-apiVersion: scheduling.k8s.io/v1beta1
+apiVersion: scheduling.k8s.io/v1
 kind: PriorityClass
 metadata:
   name: overprovisioning
