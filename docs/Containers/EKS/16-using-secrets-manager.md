@@ -13,7 +13,7 @@ kubectl apply -f https://raw.githubusercontent.com/aws/secrets-store-csi-driver-
 
 ## Create IAM policy for accessing Secrets Manager
 
-``` shell hl_lines=""
+``` shell hl_lines="1 2 3"
 REGION=<region code>
 POLICY_NAME=<iam policy name>
 STACK_NAME=<stack name>
@@ -69,7 +69,7 @@ eksctl create iamserviceaccount \
 
 ## Create SecretProviderClass
 
-``` yaml hl_lines=""
+``` yaml hl_lines="4 5 10"
 apiVersion: secrets-store.csi.x-k8s.io/v1
 kind: SecretProviderClass
 metadata:
