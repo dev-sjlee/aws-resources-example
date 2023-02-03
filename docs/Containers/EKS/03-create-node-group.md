@@ -4,7 +4,8 @@
 
 ### Using CloudFormation
 
-``` shell hl_lines="1 2"
+``` shell hl_lines="1 2 3"
+NODE_GROUP_ROLE_STACK_NAME=<stack name>
 NODE_GROUP_ROLE_NAME=<role name>
 REGION=<region code>
 
@@ -42,8 +43,9 @@ Resources:
 EOF
 
 aws cloudformation deploy \
-    --stack-name eks-node-group-role-stack \
+    --stack-name $NODE_GROUP_ROLE_STACK_NAME \
     --template-file ./node-group-role-cfn.yaml \
+    --parameter-overrides RoleName=$NODE_GROUP_ROLE_NAME \
     --capabilities CAPABILITY_NAMED_IAM \
     --region $REGION
 ```
