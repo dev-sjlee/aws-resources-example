@@ -6,55 +6,124 @@
 
 ### Using CloudFormation
 
-``` shell hl_lines="1 2 3"
-EKS_CLUSTER_ROLE_STACK_NAME=<stack name>
-EKS_CLUSTER_ROLE_NAME=<role name>
-REGION=<region code>
+=== ":simple-linux: Linux"
+    ``` shell hl_lines="1 2 3 4"
+    EKS_CLUSTER_ROLE_STACK_NAME=<stack name>
+    EKS_CLUSTER_ROLE_NAME=<role name>
+    PROJECT_NAME=<project name>
+    REGION=<region code>
 
-cat << EOF > cluster-role-cfn.yaml
-AWSTemplateFormatVersion: "2010-09-09"
-Parameters:
-  RoleName:
-    Type: String
-    Description: Enter the cluster role name.
-Resources:
-  EKSClusterRole:
-    Type: 'AWS::IAM::Role'
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service:
-                - eks.amazonaws.com
-            Action:
-              - 'sts:AssumeRole'
-      Path: /
-      ManagedPolicyArns: 
-        - arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
-      RoleName: !Ref RoleName
-Outputs:
-  RoleArn:
-    Description: Arn of cluster IAM role.
-    Value: !GetAtt EKSClusterRole.Arn
-EOF
+    cat << EOF > cluster-role-cfn.yaml
+    AWSTemplateFormatVersion: "2010-09-09"
+    Parameters:
+      RoleName:
+        Type: String
+        Description: Enter the cluster role name.
+      ProjectName:
+        Type: String
+        Description: Enter this project name.
+    Resources:
+      EKSClusterRole:
+        Type: 'AWS::IAM::Role'
+        Properties:
+          AssumeRolePolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Principal:
+                  Service:
+                    - eks.amazonaws.com
+                Action:
+                  - 'sts:AssumeRole'
+          Path: /
+          ManagedPolicyArns: 
+            - arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
+          RoleName: !Ref RoleName
+          Tags:
+            - Key: project
+              Value: !Ref ProjectName
+    Outputs:
+      RoleArn:
+        Description: Arn of cluster IAM role.
+        Value: !GetAtt EKSClusterRole.Arn
+    EOF
 
-# Deploy stack
-aws cloudformation deploy \
-    --template-file ./cluster-role-cfn.yaml \
-    --stack-name $EKS_CLUSTER_ROLE_STACK_NAME \
-    --capabilities CAPABILITY_NAMED_IAM \
-    --parameter-overrides RoleName=$EKS_CLUSTER_ROLE_NAME \
-    --region $REGION
+    # Deploy stack
+    aws cloudformation deploy \
+        --template-file ./cluster-role-cfn.yaml \
+        --stack-name $EKS_CLUSTER_ROLE_STACK_NAME \
+        --capabilities CAPABILITY_NAMED_IAM \
+        --parameter-overrides RoleName=$EKS_CLUSTER_ROLE_NAME ProjectName=$PROJECT_NAME \
+        --tags project=$PROJECT_NAME \
+        --region $REGION
 
-# Get IAM role arn
-aws cloudformation describe-stacks \
-    --stack-name $EKS_CLUSTER_ROLE_STACK_NAME \
-    --query "Stacks[0].Outputs[0].OutputValue" \
-    --output text \
-    --region $REGION
-```
+    # Get IAM role arn
+    aws cloudformation describe-stacks \
+        --stack-name $EKS_CLUSTER_ROLE_STACK_NAME \
+        --query "Stacks[0].Outputs[0].OutputValue" \
+        --output text \
+        --region $REGION
+    ```
+
+=== ":simple-windows: Windows"
+    ``` shell hl_lines="1 2 3 4"
+    $EKS_CLUSTER_ROLE_STACK_NAME="<stack name>"
+    $EKS_CLUSTER_ROLE_NAME="<role name>"
+    $PROJECT_NAME="<project name>"
+    $REGION=<region code>
+
+    @"
+    AWSTemplateFormatVersion: "2010-09-09"
+    Parameters:
+      RoleName:
+        Type: String
+        Description: Enter the cluster role name.
+      ProjectName:
+        Type: String
+        Description: Enter this project name.
+    Resources:
+      EKSClusterRole:
+        Type: 'AWS::IAM::Role'
+        Properties:
+          AssumeRolePolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Principal:
+                  Service:
+                    - eks.amazonaws.com
+                Action:
+                  - 'sts:AssumeRole'
+          Path: /
+          ManagedPolicyArns: 
+            - arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
+          RoleName: !Ref RoleName
+          Tags:
+            - Key: project
+              Value: !Ref ProjectName
+    Outputs:
+      RoleArn:
+        Description: Arn of cluster IAM role.
+        Value: !GetAtt EKSClusterRole.Arn
+    "@ | Tee-Object -Variable template
+    Out-File -InputObject template cluster-role-cfn.yaml -Encoding utf8
+
+    # Deploy stack
+    aws cloudformation deploy `
+        --template-file ./cluster-role-cfn.yaml `
+        --stack-name $EKS_CLUSTER_ROLE_STACK_NAME `
+        --capabilities CAPABILITY_NAMED_IAM `
+        --parameter-overrides RoleName=$EKS_CLUSTER_ROLE_NAME ProjectName=$PROJECT_NAME `
+        --tags project=$PROJECT_NAME `
+        --region $REGION
+
+    # Get IAM role arn
+    aws cloudformation describe-stacks `
+        --stack-name $EKS_CLUSTER_ROLE_STACK_NAME `
+        --query "Stacks[0].Outputs[0].OutputValue" `
+        --output text `
+        --region $REGION
+    ```
 
 ### Using AWS CLI
 

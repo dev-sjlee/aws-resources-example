@@ -70,6 +70,39 @@ helm version --short
 
 [AWS Documentation](https://docs.aws.amazon.com/eks/latest/userguide/helm.html)
 
+## Install `docker buildx`
+
+=== "x86"
+    ``` shell
+    export DOCKER_BUILDKIT=1
+    wget https://github.com/docker/buildx/releases/download/v0.10.2/buildx-v0.10.2.linux-amd64
+    mkdir -p ~/.docker/cli-plugins
+    mv buildx-v0.10.2.linux-amd64 ~/.docker/cli-plugins/docker-buildx
+    chmod a+x ~/.docker/cli-plugins/docker-buildx
+    docker run --privileged --rm tonistiigi/binfmt --install all
+    ```
+
+=== "ARM"
+    ``` shell
+    export DOCKER_BUILDKIT=1
+    wget https://github.com/docker/buildx/releases/download/v0.10.2/buildx-v0.10.2.linux-arm64
+    mkdir -p ~/.docker/cli-plugins
+    mv buildx-v0.10.2.linux-arm64 ~/.docker/cli-plugins/docker-buildx
+    chmod a+x ~/.docker/cli-plugins/docker-buildx
+    docker run --privileged --rm tonistiigi/binfmt --install all
+    ```
+
+
+??? note
+
+    You can build and push using this command:
+
+    ``` shell
+    docker buildx build --platform linux/amd64,linux/arm64 --tag <IMAGE_TAG> --push .
+    ```
+
+[Buildx Repository](https://github.com/docker/buildx)
+
 ## Install `aws-iam-authenticator`(Optional)
 
 === "x86"
