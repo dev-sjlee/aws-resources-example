@@ -7,80 +7,93 @@
 === "JSON file"
     ``` json hl_lines="14"
     {
-      "Version": "2012-10-17",
-      "Statement": [
-        {
-          "Effect": "Allow",
-          "Action": [
-            "autoscaling:DescribeAutoScalingGroups",
-            "autoscaling:DescribeAutoScalingInstances",
-            "autoscaling:DescribeLaunchConfigurations",
-            "autoscaling:DescribeScalingActivities",
-            "autoscaling:DescribeTags",
-            "ec2:DescribeInstanceTypes",
-            "ec2:DescribeLaunchTemplateVersions"
-          ],
-          "Resource": ["*"]
-        },
-        {
-          "Effect": "Allow",
-          "Action": [
-            "autoscaling:SetDesiredCapacity",
-            "autoscaling:TerminateInstanceInAutoScalingGroup",
-            "ec2:DescribeImages",
-            "ec2:GetInstanceTypesFromInstanceRequirements",
-            "eks:DescribeNodegroup"
-          ],
-          "Resource": ["*"]
-        }
-      ]
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Sid": "VisualEditor0",
+                "Effect": "Allow",
+                "Action": [
+                    "autoscaling:SetDesiredCapacity",
+                    "autoscaling:TerminateInstanceInAutoScalingGroup"
+                ],
+                "Resource": "*",
+                "Condition": {
+                    "StringEquals": {
+                        "aws:ResourceTag/k8s.io/cluster-autoscaler/<cluster name>": "owned"
+                    }
+                }
+            },
+            {
+                "Sid": "VisualEditor1",
+                "Effect": "Allow",
+                "Action": [
+                    "autoscaling:DescribeAutoScalingInstances",
+                    "autoscaling:DescribeAutoScalingGroups",
+                    "ec2:DescribeLaunchTemplateVersions",
+                    "autoscaling:DescribeTags",
+                    "autoscaling:DescribeLaunchConfigurations",
+                    "ec2:DescribeInstanceTypes"
+                ],
+                "Resource": "*"
+            }
+        ]
     }
     ```
 
 === "Using command" 
-    ``` shell hl_lines="15 36 40 43 44"
+    ``` shell hl_lines="1 2 3 4"
+    POLICY_NAME="<policy name>"
+    ROLE_NAME="<role name>"
+    CLUSTER_NAME="<cluster name>"
+    PROJECT_NAME="<project name>"
+
     cat << EOF >> cluster-autoscaler-policy.json
     {
-      "Version": "2012-10-17",
-      "Statement": [
-        {
-          "Effect": "Allow",
-          "Action": [
-            "autoscaling:DescribeAutoScalingGroups",
-            "autoscaling:DescribeAutoScalingInstances",
-            "autoscaling:DescribeLaunchConfigurations",
-            "autoscaling:DescribeScalingActivities",
-            "autoscaling:DescribeTags",
-            "ec2:DescribeInstanceTypes",
-            "ec2:DescribeLaunchTemplateVersions"
-          ],
-          "Resource": ["*"]
-        },
-        {
-          "Effect": "Allow",
-          "Action": [
-            "autoscaling:SetDesiredCapacity",
-            "autoscaling:TerminateInstanceInAutoScalingGroup",
-            "ec2:DescribeImages",
-            "ec2:GetInstanceTypesFromInstanceRequirements",
-            "eks:DescribeNodegroup"
-          ],
-          "Resource": ["*"]
-        }
-      ]
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Sid": "VisualEditor0",
+                "Effect": "Allow",
+                "Action": [
+                    "autoscaling:SetDesiredCapacity",
+                    "autoscaling:TerminateInstanceInAutoScalingGroup"
+                ],
+                "Resource": "*",
+                "Condition": {
+                    "StringEquals": {
+                        "aws:ResourceTag/k8s.io/cluster-autoscaler/${CLUSTER_NAME}": "owned"
+                    }
+                }
+            },
+            {
+                "Sid": "VisualEditor1",
+                "Effect": "Allow",
+                "Action": [
+                    "autoscaling:DescribeAutoScalingInstances",
+                    "autoscaling:DescribeAutoScalingGroups",
+                    "ec2:DescribeLaunchTemplateVersions",
+                    "autoscaling:DescribeTags",
+                    "autoscaling:DescribeLaunchConfigurations",
+                    "ec2:DescribeInstanceTypes"
+                ],
+                "Resource": "*"
+            }
+        ]
     }
     EOF
 
-    aws iam create-policy \
-        --policy-name <policy name> \
-        --policy-document file://cluster-autoscaler-policy.json
+    POLICY_ARN=$(aws iam create-policy \
+        --policy-name $POLICY_NAME \
+        --policy-document file://cluster-autoscaler-policy.json \
+        --tags Key=project,Value=$PROJECT_NAME \
+    | jq -r '.Policy.Arn')
 
     eksctl create iamserviceaccount \
-        --cluster=<cluster name> \
+        --cluster=$CLUSTER_NAME \
         --namespace=kube-system \
         --name=cluster-autoscaler \
-        --role-name=<role name> \
-        --attach-policy-arn=arn:aws:iam::<account id>:policy/<policy name> \
+        --role-name=$ROLE_NAME \
+        --attach-policy-arn=$POLICY_ARN \
         --override-existing-serviceaccounts \
         --approve
     ```
@@ -104,7 +117,7 @@ kubectl -n kube-system edit deployment.apps/cluster-autoscaler
 
 > Please add `--balance-similar-node-groups` and `--skip-nodes-with-system-pods=false` at `spec.template.spec.containers.command`, and change to your cluster name like this:
 
-``` yaml
+``` yaml hl_lines="10"
     spec:
       containers:
       - command

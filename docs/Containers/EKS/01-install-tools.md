@@ -103,6 +103,30 @@ helm version --short
 
 [Buildx Repository](https://github.com/docker/buildx)
 
+## Install `k9s`
+
+**YOU SHOULD INSTALL `awscliv2` IN [HERE](../../General/01-install-awscli-v2.md)**
+
+=== "x86"
+    ``` shell
+    curl --silent --location "https://github.com/derailed/k9s/releases/download/v0.27.2/k9s_Linux_amd64.tar.gz" | tar xz -C /tmp
+    sudo cp /tmp/k9s /usr/local/bin
+    sudo cp /tmp/k9s /usr/bin
+    k9s version
+    sudo k9s version
+    ```
+
+=== "ARM"
+    ``` shell
+    curl --silent --location "https://github.com/derailed/k9s/releases/download/v0.27.2/k9s_Linux_arm64.tar.gz" | tar xz -C /tmp
+    sudo cp /tmp/k9s /usr/local/bin
+    sudo cp /tmp/k9s /usr/bin
+    k9s version
+    sudo k9s version
+    ```
+
+[K9s Documentation](https://github.com/derailed/k9s)
+
 ## Install `aws-iam-authenticator`(Optional)
 
 === "x86"
