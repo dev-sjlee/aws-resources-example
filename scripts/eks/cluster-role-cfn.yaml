@@ -1,0 +1,36 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Parameters:
+  RoleName:
+    Type: String
+    Description: Enter the cluster role name.
+
+  ProjectName:
+    Type: String
+    Description: Enter this project name.
+
+Resources:
+  EKSClusterRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - eks.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Path: /
+      ManagedPolicyArns: 
+        - arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
+      RoleName: !Ref RoleName
+      Tags:
+        - Key: project
+          Value: !Ref ProjectName
+
+Outputs:
+  RoleArn:
+    Description: Arn of cluster IAM role.
+    Value: !GetAtt EKSClusterRole.Arn

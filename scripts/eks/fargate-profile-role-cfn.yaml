@@ -1,0 +1,42 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Parameters:
+  ClusterName:
+    Type: String
+    Description: Enter the EKS cluster name.
+
+  RoleName:
+    Type: String
+    Description: Enter the cluster role name.
+
+  ProjectName:
+    Type: String
+    Description: Enter this project name.
+
+Resources:
+  EKSFargateProfileRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Condition:
+              ArnLike:
+                aws:SourceArn: !Sub arn:aws:eks:${AWS::Region}:${AWS::AccountId}:fargateprofile/${ClusterName}/*
+            Principal:
+              Service:
+                - eks-fargate-pods.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Path: /
+      ManagedPolicyArns: 
+        - arn:aws:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy
+      RoleName: !Ref RoleName
+      Tags:
+        - Key: project
+          Value: !Ref ProjectName
+
+Outputs:
+  FargateProfileRole:
+    Value: !GetAtt EKSFargateProfileRole.Arn
