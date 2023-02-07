@@ -47,7 +47,7 @@
     CLUSTER_NAME="<cluster name>"
     PROJECT_NAME="<project name>"
 
-    cat << EOF >> cluster-autoscaler-policy.json
+    cat << EOF > cluster-autoscaler-policy.json
     {
         "Version": "2012-10-17",
         "Statement": [
@@ -117,7 +117,7 @@ kubectl -n kube-system edit deployment.apps/cluster-autoscaler
 
 > Please add `--balance-similar-node-groups` and `--skip-nodes-with-system-pods=false` at `spec.template.spec.containers.command`, and change to your cluster name like this:
 
-``` yaml hl_lines="10"
+``` yaml hl_lines="10 11 12"
     spec:
       containers:
       - command

@@ -14,6 +14,10 @@ AWSTemplateFormatVersion: "2010-09-09"
 Parameters:
   RoleName:
     Type: String
+    Description: Enter the node group role name.
+  ProjectName:
+    Type: String
+    Description: Enter this project name.
 Resources:
   EKSNodeGroupRole:
     Type: 'AWS::IAM::Role'
@@ -33,11 +37,14 @@ Resources:
         - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
         - arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
       RoleName: !Ref RoleName
+      Tags:
+        - Key: project
+          Value: !Ref ProjectName
   EKSNodeGroupRoleInstanceProfile:
     Type: "AWS::IAM::InstanceProfile"
     Properties: 
       Path: "/"
-      InstanceProfileName: !Join [ "-", [ !GetAtt EKSNodeGroupRole.RoleId, instance-profile ] ]
+      InstanceProfileName: !Ref EKSNodeGroupRole
       Roles: 
         - !Ref EKSNodeGroupRole
 EOF
@@ -45,8 +52,9 @@ EOF
 aws cloudformation deploy \
     --stack-name $NODE_GROUP_ROLE_STACK_NAME \
     --template-file ./node-group-role-cfn.yaml \
-    --parameter-overrides RoleName=$NODE_GROUP_ROLE_NAME \
+    --parameter-overrides RoleName=$NODE_GROUP_ROLE_NAME ProjectName=$PROJECT_NAME \
     --capabilities CAPABILITY_NAMED_IAM \
+    --tags project=$PROJECT_NAME \
     --region $REGION
 ```
 
@@ -117,50 +125,46 @@ aws iam add-role-to-instance-profile \
     --role-name $NODE_GROUP_ROLE_NAME
 ```
 
-<details>
-<summary>Using IPv6 in VPC CNI</summary>
-<div markdown="1">
 
-``` shell
-cat << EOF >> vpc-cni-ipv6-policy.json
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "ec2:AssignIpv6Addresses",
-                "ec2:DescribeInstances",
-                "ec2:DescribeTags",
-                "ec2:DescribeNetworkInterfaces",
-                "ec2:DescribeInstanceTypes"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "ec2:CreateTags"
-            ],
-            "Resource": [
-                "arn:aws:ec2:*:*:network-interface/*"
-            ]
-        }
-    ]
-}
-EOF
+??? note "Using IPv6 in VPC CNI"
 
-IPV6_POLICY_ARN=$(aws iam create-policy \
-    --policy-name AmazonEKS_CNI_IPv6_Policy \
-    --policy-document file://vpc-cni-ipv6-policy.json | \
-jq -r '.Policy.Arn')
+    ``` shell
+    cat << EOF >> vpc-cni-ipv6-policy.json
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Effect": "Allow",
+                "Action": [
+                    "ec2:AssignIpv6Addresses",
+                    "ec2:DescribeInstances",
+                    "ec2:DescribeTags",
+                    "ec2:DescribeNetworkInterfaces",
+                    "ec2:DescribeInstanceTypes"
+                ],
+                "Resource": "*"
+            },
+            {
+                "Effect": "Allow",
+                "Action": [
+                    "ec2:CreateTags"
+                ],
+                "Resource": [
+                    "arn:aws:ec2:*:*:network-interface/*"
+                ]
+            }
+        ]
+    }
+    EOF
 
-aws iam attach-role-policy \
-  --policy-arn $IPV6_POLICY_ARN \
-  --role-name $NODE_GROUP_ROLE_NAME
-```
+    IPV6_POLICY_ARN=$(aws iam create-policy \
+        --policy-name AmazonEKS_CNI_IPv6_Policy \
+        --policy-document file://vpc-cni-ipv6-policy.json | \
+    jq -r '.Policy.Arn')
 
-</div>
-</details>
+    aws iam attach-role-policy \
+      --policy-arn $IPV6_POLICY_ARN \
+      --role-name $NODE_GROUP_ROLE_NAME
+    ```
 
 [AWS Documentation](https://docs.aws.amazon.com/eks/latest/userguide/create-node-role.html)

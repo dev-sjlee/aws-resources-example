@@ -14,6 +14,12 @@ spec:
       image: nginx:1.14.2
       ports:
         - containerPort: 80
+      command:  # override Dockerfile `ENTRYPOINT`
+        - ""
+        - ""
+      args:     # override Dockerfile `CMD`
+        - ""
+        - ""
 ```
 
 [Kubernetes Documentation](https://kubernetes.io/ko/docs/concepts/workloads/pods/)

@@ -2,9 +2,15 @@
 
 ## Deploy application to EKS with CodeDeploy
 
-### Create `buildspec.yml`
+### Create `deployspec.yml`
 
-``` yaml title="buildspec.yml" hl_lines="21"
+??? note
+
+    You should define below environment variables in CodeBuild project.
+
+
+
+``` yaml title="deployspec.yml"
 version: 0.2
 
 run-as: root
@@ -16,24 +22,28 @@ phases:
       python: 3.9
     commands:
       - echo Install started on `date`
-      - VERSION=${CODEBUILD_RESOLVED_SOURCE_VERSION:0:8}
-      - python3 -m pip install --upgrade pip
-      - pip3 install -r test_requirements.txt
-      - REPOSITORY_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$AWS_REPOSITORY_NAME
-      - curl -o kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.22.6/2022-03-09/bin/linux/amd64/kubectl
+      - echo Remove AWS CLI v1
+      - aws --version
+      - pip3 uninstall -y awscli
+      - echo Install AWS CLI v2
+      - curl "https://awscli.amazonaws.com/awscli-exe-linux-$(uname -p).zip" -o "awscliv2.zip"
+      - unzip awscliv2.zip
+      - ./aws/install -i /usr/aws-cli -b /usr/bin
+      - echo Install kubectl
+      - curl -o kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.23.7/2022-06-29/bin/linux/amd64/kubectl
       - chmod +x ./kubectl
       - mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
       - echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
       - kubectl version --short --client
-      - aws eks update-kubeconfig --name <cluster name> --region us-east-1
   pre_build:
     on-failure: ABORT
     commands:
       - echo Pre build started on `date`
+      - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region $AWS_REGION
   build:
     on-failure: ABORT
     commands:
-      - echo build started on `date`
+      - echo Build started on `date`
       - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
       - docker build -t $REPOSITORY_URI:latest .
       - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$VERSION

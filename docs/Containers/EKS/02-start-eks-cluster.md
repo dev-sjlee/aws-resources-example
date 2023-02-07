@@ -208,10 +208,13 @@ eksctl create cluster -f cluster.yaml
 
 ## Create IAM OIDC provider
 
-``` shell hl_lines="2 3"
+``` shell hl_lines="1 2"
+CLUSTER_NAME="cluster name"
+REGION="region"
+
 eksctl utils associate-iam-oidc-provider \
-    --cluster <cluster name> \
-    --region <region code> \
+    --cluster $CLUSTER_NAME \
+    --region $REGION \
     --approve
 ```
 
@@ -219,10 +222,13 @@ eksctl utils associate-iam-oidc-provider \
 
 ## Create `kubeconfig` for EKS cluster
 
-``` shell hl_lines="2 3"
+``` shell hl_lines="1 2"
+CLUSTER_NAME="cluster name"
+REGION="region"
+
 aws eks update-kubeconfig \
-    --name <cluster name> \
-    --region <region code>
+    --name $CLUSTER_NAME \
+    --region $REGION
 ```
 
 !!! note

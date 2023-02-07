@@ -33,3 +33,26 @@ spec:
   egress:
   - action: Allow
 ```
+
+``` yaml title="networkpolicy.yaml"
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: <network policy name>
+  namespace: <namespace>
+spec:
+  podSelector:
+    matchLabels:
+      app: app1 # app-label
+  ingress:
+    - from:
+        - ipBlock:
+            cidr: 10.0.1.0/24 # allow from elb
+        - ipBlock:
+            cidr: 10.0.2.0/24 # allow from elb
+        - podSelector:
+            matchLabels:
+              app: order      # allow from pod
+      ports:
+        - port: 8080 # the port which should be Internet-accessible
+```

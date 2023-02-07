@@ -2,11 +2,12 @@
 
 ## Create AWS Load Balancer Controller IAM role
 
-``` shell hl_lines="1 2 3 4"
+``` shell hl_lines="1 2 3 4 5"
+CLUSTER_NAME="<cluster name>"
 POLICY_NAME="<policy name>"
 ROLE_NAME="<role name>"
-CLUSTER_NAME="<cluster name>"
 PROJECT_NAME="<project name>"
+REGION="<region>"
 
 curl -o aws-load-balancer-controller-iam-policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.4.2/docs/install/iam_policy.json
 
@@ -22,6 +23,8 @@ eksctl create iamserviceaccount \
     --name=aws-load-balancer-controller \
     --role-name "$ROLE_NAME" \
     --attach-policy-arn=$POLICY_ARN \
+    --tags project=$PROJECT_NAME \
+    --region $REGION \
     --override-existing-serviceaccounts \
     --approve
 ```
@@ -55,7 +58,7 @@ kubectl get deployment aws-load-balancer-controller \
 
 ## Create ALB using Ingress
 
-``` yaml title="ingress.yaml" hl_lines="4 5 18 20" linenums="1"
+``` yaml title="ingress.yaml" hl_lines="4 5 20 24 26" linenums="1"
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:

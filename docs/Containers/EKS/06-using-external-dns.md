@@ -12,7 +12,7 @@
 
 === "Using command"
     ```shell
-    cat << EOF >> external-dns-namespace.yaml
+    cat << EOF > external-dns-namespace.yaml
     apiVersion: v1
     kind: Namespace
     metadata:
@@ -60,7 +60,13 @@
     ```
 
 === "Using command"
-    ``` shell hl_lines="29"
+    ``` shell hl_lines="1 2 3 4 5"
+    CLUSTER_NAME="<cluster name>"
+    POLICY_NAME="<policy name>"
+    ROLE_NAME="<role name>"
+    PROJECT_NAME="<project name>"
+    REGION="<region>"
+
     cat << EOF > external-dns-iam-policy.json
     {
       "Version": "2012-10-17",
@@ -88,22 +94,23 @@
     }
     EOF
 
-    aws iam create-policy \
-    --policy-name <policy name> \
-    --policy-document file://external-dns-iam-policy.json
+    POLICY_ARN=$(aws iam create-policy \
+        --policy-name $POLICY_NAME \
+        --policy-document file://external-dns-iam-policy.json \
+        --tags Key=project,Value=$PROJECT_NAME \
+    | jq -r '.Policy.Arn')
+    
+    eksctl create iamserviceaccount \
+        --name external-dns \
+        --namespace external-dns \
+        --cluster $CLUSTER_NAME \
+        --attach-policy-arn $POLICY_ARN \
+        --role-name $ROLE_NAME \
+        --tags project=$PROJECT_NAME \
+        --region $REGION \
+        --override-existing-serviceaccounts \
+        --approve
     ```
-
-### Create the service account using `eksctl`
-
-``` shell hl_lines="4 5"
-eksctl create iamserviceaccount \
-    --name external-dns \
-    --namespace external-dns \
-    --cluster <cluster name> \
-    --attach-policy-arn <external dns IAM policy arn> \
-    --override-existing-serviceaccounts \
-    --approve
-```
 
 [AWS Documentation](https://aws.amazon.com/ko/premiumsupport/knowledge-center/eks-set-up-externaldns/)
 

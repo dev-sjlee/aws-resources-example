@@ -12,7 +12,7 @@ kubectl get deployment metrics-server -n kube-system
 
 ## Using HPA
 
-``` yaml title="hpa.yaml" hl_lines="4 5 7 9 10 14 17 18 19" linenums="1"
+``` yaml title="hpa.yaml" hl_lines="4 5 7 9 10 14 17 18 19 20 21" linenums="1"
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:

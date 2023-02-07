@@ -18,6 +18,7 @@ spec:
       labels:
         app: nginx
     spec:
+      serviceAccountName: nginx-sa
       containers:
         - name: nginx
           image: nginx:1.14.2
@@ -31,7 +32,18 @@ spec:
               cpu: "250m"
             limits:
               cpu: "500m"
+          # command:  # override Dockerfile `ENTRYPOINT`
+          #   - ""
+          #   - ""
+          # args:     # override Dockerfile `CMD`
+          #   - ""
+          #   - ""
           readinessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 15
+          livenessProbe:
             httpGet:
               path: /health
               port: 80
@@ -41,6 +53,13 @@ spec:
               exec:
                 command: ["/bin/sh", "-c", "sleep 60"]
           terminationGracePeriodSeconds: 120
+        # tolerations:
+        #   - key: "key1"         # taint key
+        #     value: "value1"     # taint value
+        #     operator: "Equal"
+        #     effect: "NoSchedule"
+        # nodeSelector:
+        #   key: value            # node label key and value
 ```
 
 [Kubernetes Documentation](https://kubernetes.io/ko/docs/concepts/workloads/controllers/deployment/)

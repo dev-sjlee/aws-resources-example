@@ -941,13 +941,18 @@ spec:
 
 ### Update service account to put logs using IAM role
 
-```shell hl_lines="2 6"
+```shell hl_lines="1 2 3"
+CLUSTER_NAME="<cluster name>"
+ROLE_NAME="<role name>"
+PROJECT_NAME="<project name>"
+
 eksctl create iamserviceaccount \
-    --cluster <cluster name> \
+    --cluster $CLUSTER_NAME \
     --name aws-otel-sa \
     --namespace aws-otel-eks \
     --attach-policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy \
-    --role-name <ADOT role name> \
+    --role-name $ROLE_NAME \
+    --tags project=$PROJECT_NAME \
     --override-existing-serviceaccounts \
     --approve
 
