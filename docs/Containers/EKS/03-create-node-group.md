@@ -4,59 +4,41 @@
 
 ### Using CloudFormation
 
-``` shell hl_lines="1 2 3"
-NODE_GROUP_ROLE_STACK_NAME=<stack name>
-NODE_GROUP_ROLE_NAME=<role name>
-REGION=<region code>
+=== ":simple-linux: Linux"
+    ``` shell hl_lines="1 2 3 4"
+    NODE_GROUP_ROLE_STACK_NAME="<stack name>"
+    NODE_GROUP_ROLE_NAME="<role name>"
+    PROJECT_NAME="<project name>"
+    REGION="<region code>"
 
-cat << EOF > node-group-role-cfn.yaml
-AWSTemplateFormatVersion: "2010-09-09"
-Parameters:
-  RoleName:
-    Type: String
-    Description: Enter the node group role name.
-  ProjectName:
-    Type: String
-    Description: Enter this project name.
-Resources:
-  EKSNodeGroupRole:
-    Type: 'AWS::IAM::Role'
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service:
-                - ec2.amazonaws.com
-            Action:
-              - 'sts:AssumeRole'
-      Path: /
-      ManagedPolicyArns: 
-        - arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
-        - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
-        - arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
-      RoleName: !Ref RoleName
-      Tags:
-        - Key: project
-          Value: !Ref ProjectName
-  EKSNodeGroupRoleInstanceProfile:
-    Type: "AWS::IAM::InstanceProfile"
-    Properties: 
-      Path: "/"
-      InstanceProfileName: !Ref EKSNodeGroupRole
-      Roles: 
-        - !Ref EKSNodeGroupRole
-EOF
+    curl -O https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/nodegroup-role-cfn.yaml
 
-aws cloudformation deploy \
-    --stack-name $NODE_GROUP_ROLE_STACK_NAME \
-    --template-file ./node-group-role-cfn.yaml \
-    --parameter-overrides RoleName=$NODE_GROUP_ROLE_NAME ProjectName=$PROJECT_NAME \
-    --capabilities CAPABILITY_NAMED_IAM \
-    --tags project=$PROJECT_NAME \
-    --region $REGION
-```
+    aws cloudformation deploy \
+        --stack-name $NODE_GROUP_ROLE_STACK_NAME \
+        --template-file ./node-group-role-cfn.yaml \
+        --parameter-overrides RoleName=$NODE_GROUP_ROLE_NAME ProjectName=$PROJECT_NAME \
+        --capabilities CAPABILITY_NAMED_IAM \
+        --tags project=$PROJECT_NAME \
+        --region $REGION
+    ```
+
+=== ":simple-windows: Windows"
+    ``` shell hl_lines="1 2 3 4"
+    $NODE_GROUP_ROLE_STACK_NAME="<stack name>"
+    $NODE_GROUP_ROLE_NAME="<role name>"
+    $PROJECT_NAME="<project name>"
+    $REGION="<region code>"
+
+    Invoke-WebRequest https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/nodegroup-role-cfn.yaml -Outfile nodegroup-role-cfn.yaml
+
+    aws cloudformation deploy `
+        --stack-name $NODE_GROUP_ROLE_STACK_NAME `
+        --template-file ./nodegroup-role-cfn.yaml `
+        --parameter-overrides RoleName=$NODE_GROUP_ROLE_NAME ProjectName=$PROJECT_NAME `
+        --capabilities CAPABILITY_NAMED_IAM `
+        --tags project=$PROJECT_NAME `
+        --region $REGION
+    ```
 
 ### Using AWS CLI
 

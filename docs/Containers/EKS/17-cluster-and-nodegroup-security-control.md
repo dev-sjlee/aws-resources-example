@@ -101,15 +101,9 @@ subtitle: How to control cluster and nodegorup's securiy group?
 <tbody>
   <tr>
     <td>TCP</td>
-    <td>10250</td>
+    <td>1024 - 65535</td>
     <td style="background-color: rgb(153, 0, 51);">Nodegroup General Security Group</td>
-    <td>Nodegroup General Security Group - kubelet</td>
-  </tr>
-  <tr style="background-color: rgb(128, 128, 128);">
-    <td>TCP</td>
-    <td>9443</td>
-    <td style="background-color: rgb(204, 0, 0);">Nodegroup Add-on Security Group</td>
-    <td>Nodegroup Add-on Security Group - AWS Load Balancer Controller</td>
+    <td>Nodegroup General Security Group - Controllers</td>
   </tr>
 </tbody>
 </table>
@@ -138,9 +132,9 @@ subtitle: How to control cluster and nodegorup's securiy group?
   </tr>
   <tr>
     <td>TCP</td>
-    <td>10250</td>
+    <td>1024 - 65535</td>
     <td style="background-color: rgb(0, 102, 153);">Additional Cluster Security Group</td>
-    <td>Additional Cluster Security Group - kubelet</td>
+    <td>Additional Cluster Security Group - Controllers</td>
   </tr>
 </tbody>
 </table>
@@ -167,7 +161,13 @@ subtitle: How to control cluster and nodegorup's securiy group?
     <td>TCP</td>
     <td>443</td>
     <td style="">0.0.0.0/0</td>
-    <td>Images & AWS APIs</td>
+    <td>Images & AWS APIs - HTTPS</td>
+  </tr>
+  <tr style="background-color: rgb(128, 128, 128);">
+    <td>TCP</td>
+    <td>80</td>
+    <td style="">0.0.0.0/0</td>
+    <td>Images & AWS APIs - HTTP</td>
   </tr>
 </tbody>
 </table>
@@ -188,12 +188,6 @@ subtitle: How to control cluster and nodegorup's securiy group?
   </tr>
 </thead>
 <tbody>
-  <tr style="background-color: rgb(128, 128, 128);">
-    <td>TCP</td>
-    <td>9443</td>
-    <td style="background-color: rgb(0, 102, 153);">Additional Cluster Security Group</td>
-    <td>Additional Cluster Security Group - AWS Load Balancer Controller</td>
-  </tr>
 </tbody>
 </table>
 

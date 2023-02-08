@@ -97,8 +97,10 @@
     POLICY_ARN=$(aws iam create-policy \
         --policy-name $POLICY_NAME \
         --policy-document file://external-dns-iam-policy.json \
-        --tags Key=project,Value=$PROJECT_NAME \
-    | jq -r '.Policy.Arn')
+        --query 'Policy.Arn' \
+        --output text \
+        #  --tags Key=project,Value=$PROJECT_NAME \ # AWS CLI v2
+    )
     
     eksctl create iamserviceaccount \
         --name external-dns \

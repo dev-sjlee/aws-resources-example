@@ -4,59 +4,43 @@
 
 ### Using CloudFormation
 
-``` shell hl_lines="1 2 3 4"
-CLUSTER_NAME="<cluster name>"
-ROLE_NAME="<role name>"
-PROJECT_NAME="<project name>"
-REGION="<region>"
+=== ":simple-linux: Linux"
+    ``` shell hl_lines="1 2 3 4"
+    CLUSTER_NAME="<cluster name>"
+    ROLE_NAME="<role name>"
+    PROJECT_NAME="<project name>"
+    REGION="<region>"
 
-ACCOUNT_ID=$(aws sts get-caller-identity | jq -r '.Account')
+    ACCOUNT_ID=$(aws sts get-caller-identity --query 'Account' --output text)
 
-cat << EOF > fargate-profile-role-cfn.yaml
-AWSTemplateFormatVersion: "2010-09-09"
-Parameters:
-  RoleName:
-    Type: String
-    Description: Enter the cluster role name.
-  ProjectName:
-    Type: String
-    Description: Enter this project name.
-Resources:
-  EKSFargateProfileRole:
-    Type: 'AWS::IAM::Role'
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: Allow
-            Condition:
-              ArnLike:
-                aws:SourceArn: arn:aws:eks:${REGION}:${ACCOUNT_ID}:fargateprofile/${CLUSTER_NAME}/*
-            Principal:
-              Service:
-                - eks-fargate-pods.amazonaws.com
-            Action:
-              - 'sts:AssumeRole'
-      Path: /
-      ManagedPolicyArns: 
-        - arn:aws:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy
-      RoleName: !Ref RoleName
-      Tags:
-        - Key: project
-          Value: !Ref ProjectName
-Outputs:
-  FargateProfileRole:
-    Value: !GetAtt EKSFargateProfileRole.Arn
-EOF
+    curl -O https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/fargate-profile-role-cfn.yaml
 
-aws cloudformation deploy \
-    --template-file ./fargate-profile-role-cfn.yaml \
-    --stack-name eks-fargate-profile-role-stack \
-    --capabilities CAPABILITY_NAMED_IAM \
-    --parameter-overrides RoleName=$ROLE_NAME ProjectName=$PROJECT_NAME \
-    --tags project=$PROJECT_NAME \
-    --region $REGION
-```
+    aws cloudformation deploy \
+        --template-file ./fargate-profile-role-cfn.yaml \
+        --stack-name eks-fargate-profile-role-stack \
+        --capabilities CAPABILITY_NAMED_IAM \
+        --parameter-overrides RoleName=$ROLE_NAME ProjectName=$PROJECT_NAME \
+        --tags project=$PROJECT_NAME \
+        --region $REGION
+    ```
+
+=== ":simple-windows: Windows"
+    ``` shell hl_lines="1 2 3 4"
+    $CLUSTER_NAME="<cluster name>"
+    $ROLE_NAME="<role name>"
+    $PROJECT_NAME="<project name>"
+    $REGION="<region>"
+
+    Invoke-WebRequest https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/fargate-profile-role-cfn.yaml -Outfile fargate-profile-role-cfn.yaml
+
+    aws cloudformation deploy `
+        --template-file ./fargate-profile-role-cfn.yaml `
+        --stack-name eks-fargate-profile-role-stack `
+        --capabilities CAPABILITY_NAMED_IAM `
+        --parameter-overrides ClusterName=$CLUSTER_NAME RoleName=$ROLE_NAME ProjectName=$PROJECT_NAME `
+        --tags project=$PROJECT_NAME `
+        --region $REGION
+    ```
 
 ### Create the trust policy file
 

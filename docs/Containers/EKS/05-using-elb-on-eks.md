@@ -9,13 +9,15 @@ ROLE_NAME="<role name>"
 PROJECT_NAME="<project name>"
 REGION="<region>"
 
-curl -o aws-load-balancer-controller-iam-policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.4.2/docs/install/iam_policy.json
+curl -o aws-load-balancer-controller-iam-policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.4.6/docs/install/iam_policy.json
 
 POLICY_ARN=$(aws iam create-policy \
     --policy-name $POLICY_NAME \
     --policy-document file://aws-load-balancer-controller-iam-policy.json \
-    --tags Key=project,Value=$PROJECT_NAME \
-| jq -r '.Policy.Arn')
+    --query 'Policy.Arn' \
+    --output text \
+    # --tags Key=project,Value=$PROJECT_NAME \  # AWS CLI v2
+)
 
 eksctl create iamserviceaccount \
     --cluster=$CLUSTER_NAME \
