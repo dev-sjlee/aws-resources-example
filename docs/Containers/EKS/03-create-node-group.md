@@ -15,7 +15,7 @@
 
     aws cloudformation deploy \
         --stack-name $NODE_GROUP_ROLE_STACK_NAME \
-        --template-file ./node-group-role-cfn.yaml \
+        --template-file ./nodegroup-role-cfn.yaml \
         --parameter-overrides RoleName=$NODE_GROUP_ROLE_NAME ProjectName=$PROJECT_NAME \
         --capabilities CAPABILITY_NAMED_IAM \
         --tags project=$PROJECT_NAME \
