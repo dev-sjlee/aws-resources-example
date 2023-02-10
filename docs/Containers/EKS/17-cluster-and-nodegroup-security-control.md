@@ -277,14 +277,8 @@ subtitle: How to control cluster and nodegorup's securiy group?
   <tr>
     <td>TCP</td>
     <td>443</td>
-    <td style="background-color: rgb(204, 0, 0);">Nodegroup Add-on Security Group</td>
-    <td>Nodegroup Add-on Security Group - AWS APIs</td>
-  </tr>
-  <tr style="background-color: rgb(128, 128, 128);">
-    <td>TCP</td>
-    <td>443</td>
-    <td style="background-color: rgb(255, 80, 80);">Nodegroup App Security Group</td>
-    <td>Nodegroup App Security Group - AWS APIs (If Application Needs AWS APIs)</td>
+    <td style="background-color: rgb(153, 0, 51);">Nodegroup General Security Group</td>
+    <td>Nodegroup General Security Group - AWS APIs</td>
   </tr>
   <tr style="background-color: rgb(128, 128, 128);">
     <td>TCP</td>
