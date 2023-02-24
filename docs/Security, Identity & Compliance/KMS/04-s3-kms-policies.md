@@ -26,7 +26,7 @@ description: Enable encrypt and decrypt using CMK to S3 buckets.
 
 ## Requiring server-side encryption
 
-``` json
+``` json linenums="1"
 {
    "Version":"2012-10-17",
    "Id":"PutObjectPolicy",
@@ -53,3 +53,39 @@ aws s3 cp ./2022-11-03_14:11:49 s3://samsung-kms-test --sse aws:kms
 ```
 
 [AWS Documentation](https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingKMSEncryption.html)
+
+## S3 Replication Policies
+
+### KMS Policies
+
+``` json linenums="1"
+{
+   "Sid": "AllowS3ReplicationSourceRoleToUseTheKey",
+   "Effect": "Allow",
+   "Principal": {
+         "AWS": "arn:aws:iam::<account id>:role/service-role/<s3 replication role name>"
+   },
+   "Action": [
+         "kms:GenerateDataKey",
+         "kms:Encrypt",
+         "kms:Decrypt"
+   ],
+   "Resource": "*"
+},
+{
+   "Sid": "AllowS3ReplicationDestinationRoleToUseTheKey",
+   "Effect": "Allow",
+   "Principal": {
+         "AWS": "arn:aws:iam::<account id>:role/service-role/<s3 replication role name>"
+   },
+   "Action": [
+         "kms:GenerateDataKey",
+         "kms:Encrypt",
+         "kms:Decrypt"
+   ],
+   "Resource": "*"
+}
+```
+
+!!! note
+    You should update policies both key(source and destination).

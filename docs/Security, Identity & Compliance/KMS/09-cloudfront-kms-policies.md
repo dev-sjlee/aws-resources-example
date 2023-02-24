@@ -6,7 +6,7 @@ description: Enable encrypt and decrypt using CMK to CloudFront distributions.
 
 ## Granting encrypt and decrypt permissions to CloudFront.
 
-``` json linenums="1" hl_lines="14 17"
+``` json linenums="1" hl_lines="17"
 {
     "Sid": "Allow users or roles to use KMS to CloudFront.",
     "Effect": "Allow",
@@ -20,7 +20,7 @@ description: Enable encrypt and decrypt using CMK to CloudFront distributions.
         "kms:Encrypt",
         "kms:GenerateDataKey*"
     ],
-    "Resource": "arn:aws:kms:<region code>:<account id>:key/<kms key id>",
+    "Resource": "*",
     "Condition":{
         "StringEquals":{
             "aws:SourceArn": "arn:aws:cloudfront::<account id>:distribution/<cloudfront distribution id>"
