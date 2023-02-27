@@ -23,7 +23,7 @@ They show some sensitive information like KMS key id and S3 object version id. Y
         --response-headers-policy-config "Name=remove-s3-metadata,RemoveHeadersConfig={Quantity=5,Items=[{Header=x-amz-replication-status},{Header=x-amz-server-side-encryption},{Header=x-amz-server-side-encryption-aws-kms-key-id},{Header=x-amz-server-side-encryption-bucket-key-enabled},{Header=x-amz-version-id}]}"
     ```
 
-=== "Using CloudFormaiton
+=== "Using CloudFormaiton"
     ``` yaml
     CloudFrontResponseHeadersPolicy:
       Type: AWS::CloudFront::ResponseHeadersPolicy
