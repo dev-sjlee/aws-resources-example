@@ -69,6 +69,36 @@ description: Example SQL queries for MySQL, PostgreSQL.
     DROP SCHEMA "DB_NAME";
     ```
 
+## About User
+
+### Create User
+
+=== "MySQL"
+    ``` sql hl_lines="1"
+    CREATE USER `USER_NAME`@`%` IDENTIFIED BY `USER_PASSWORD`;
+    ```
+
+=== "PostgreSQL"
+    ``` sql hl_lines="1"
+    CREATE USER "USER_NAME" WITH ENCRYPTED PASSWORD "USER_PASSWORD";
+    ```
+
+## About Grant
+
+### Grant to User
+
+=== "MySQL"
+    ``` sql hl_lines="1"
+    GRANT ALL PRIVILEGES ON `DB_NAME`.* TO `USER_NAME`@`%`;
+
+    FLUSH PRIVILEGES;
+    ```
+
+=== "PostgreSQL"
+    ``` sql hl_lines="1"
+    GRANT ALL PRIVILEGES ON DATABASE "DB_NAME" TO "USER_NAME";
+    ```
+
 ## About Table
 
 ### Create Table
