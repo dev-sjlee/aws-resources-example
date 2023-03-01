@@ -9,7 +9,7 @@ Description: Base Dockerfile templates.
 
 === "General"
     ``` Dockerfile linenums="1" hl_lines="3 4 6 7 9 27"
-    FROM alpine:3.17.1
+    FROM public.ecr.aws/docker/library/alpine:3.17.2
 
     ENV USER_NAME <USER NAME>
     ENV USER_UID <UID NUMBER>
@@ -110,7 +110,7 @@ Description: Base Dockerfile templates.
 
 === "General"
     ``` Dockerfile linenums="1" hl_lines="5 6 8 9 11 31"
-    FROM amazonlinux:2.0.20230119.1
+    FROM public.ecr.aws/docker/library/amazonlinux:2.0.20230207.0
 
     ENV TINI_VERSION v0.19.0
 
@@ -223,7 +223,7 @@ Description: Base Dockerfile templates.
 
 === "General"
     ``` Dockerfile linenums="1" hl_lines="5 6 8 9 11 30"
-    FROM centos:centos7.9.2009
+    FROM public.ecr.aws/docker/library/centos:7.9.2009
 
     ENV TINI_VERSION v0.19.0
 
@@ -333,7 +333,7 @@ Description: Base Dockerfile templates.
 
 === "General"
     ``` Dockerfile linenums="1" hl_lines="3 4 6 7 9 29"
-    FROM debian:11.6-slim
+    FROM public.ecr.aws/docker/library/debian:11.6-slim
 
     ENV USER_NAME <USER NAME>
     ENV USER_UID <UID NUMBER>
@@ -440,7 +440,7 @@ Description: Base Dockerfile templates.
 
 === "General"
     ``` Dockerfile linenums="1" hl_lines="3 4 6 7 9 29"
-    FROM ubuntu:22.04
+    FROM public.ecr.aws/docker/library/ubuntu:22.04
 
     ENV USER_NAME <USER NAME>
     ENV USER_UID <UID NUMBER>
