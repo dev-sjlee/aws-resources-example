@@ -1,63 +1,6 @@
 # Using External DNS
 
-## Create the namespace for External DNS
-
-=== "YAML file"
-    ``` yaml title="external-dns-namespace.yaml"
-    apiVersion: v1
-    kind: Namespace
-    metadata:
-      name: external-dns
-    ```
-
-=== "Using command"
-    ```shell
-    cat << EOF > external-dns-namespace.yaml
-    apiVersion: v1
-    kind: Namespace
-    metadata:
-      name: external-dns
-    EOF
-
-    kubectl apply -f external-dns-namespace.yaml
-    ```
-
-[AWS Documentation](https://aws.amazon.com/ko/premiumsupport/knowledge-center/eks-set-up-externaldns/)
-
-[Blog 1](https://velog.io/@ironkey/AWS-EKS%EC%97%90%EC%84%9C-%EB%8F%99%EC%9E%91%EC%A4%91%EC%9D%B8-%EC%BB%A8%ED%85%8C%EC%9D%B4%EB%84%88%EC%97%90-External-DNS%EB%A1%9C-%EB%8F%84%EB%A9%94%EC%9D%B8-%EC%97%B0%EA%B2%B0%ED%95%98%EA%B8%B0#external-dns-1)
-[Blog 2](https://nyyang.tistory.com/111)
-
 ## Create the service account for External DNS
-
-### Create the IAM policy
-
-=== "JSON file"
-    ``` json title="external-dns-iam-policy.json" linenums="1"
-    {
-      "Version": "2012-10-17",
-      "Statement": [
-        {
-          "Effect": "Allow",
-          "Action": [
-            "route53:ChangeResourceRecordSets"
-          ],
-          "Resource": [
-            "arn:aws:route53:::hostedzone/*"
-          ]
-        },
-        {
-          "Effect": "Allow",
-          "Action": [
-            "route53:ListHostedZones",
-            "route53:ListResourceRecordSets"
-          ],
-          "Resource": [
-            "*"
-          ]
-        }
-      ]
-    }
-    ```
 
 === "Using command"
     ``` shell hl_lines="1 2 3 4 5"
@@ -114,12 +57,92 @@
         --approve
     ```
 
+=== "JSON file"
+    ``` json title="external-dns-iam-policy.json" linenums="1"
+    {
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Effect": "Allow",
+          "Action": [
+            "route53:ChangeResourceRecordSets"
+          ],
+          "Resource": [
+            "arn:aws:route53:::hostedzone/*"
+          ]
+        },
+        {
+          "Effect": "Allow",
+          "Action": [
+            "route53:ListHostedZones",
+            "route53:ListResourceRecordSets"
+          ],
+          "Resource": [
+            "*"
+          ]
+        }
+      ]
+    }
+    ```
+
 [AWS Documentation](https://aws.amazon.com/ko/premiumsupport/knowledge-center/eks-set-up-externaldns/)
 
 [Blog 1](https://velog.io/@ironkey/AWS-EKS%EC%97%90%EC%84%9C-%EB%8F%99%EC%9E%91%EC%A4%91%EC%9D%B8-%EC%BB%A8%ED%85%8C%EC%9D%B4%EB%84%88%EC%97%90-External-DNS%EB%A1%9C-%EB%8F%84%EB%A9%94%EC%9D%B8-%EC%97%B0%EA%B2%B0%ED%95%98%EA%B8%B0#external-dns-1)
 [Blog 2](https://nyyang.tistory.com/111)
 
-## Deploy External DNS
+## Install External DNS using `helm`
+
+``` shell hl_lines="1 2"
+DOMAIN_NAME="<domain name (ex. my-org.com)>"
+ZONE_TYPE="<zone type (public or private)>"
+
+helm repo add external-dns https://kubernetes-sigs.github.io/external-dns/
+
+helm upgrade --install external-dns external-dns/external-dns \
+    --namespace external-dns \
+    --set serviceAccount.create=false \
+    --set serviceAccount.name=external-dns \
+    --set policy=sync \
+    --set registry=txt \
+    --set txtOwnerId=my-hostedzone-identifier \
+    --set domainFilters[0]=$DOMAIN_NAME \
+    --set provider=aws \
+    --set extraArgs[0]="--aws-zone-type=$ZONE_TYPE"
+
+```
+
+[External DNS Helm Chart Documentation](https://github.com/kubernetes-sigs/external-dns/tree/master/charts/external-dns)
+
+## Install External DNS using YAML files
+
+### Create the namespace for External DNS
+
+=== "YAML file"
+    ``` yaml title="external-dns-namespace.yaml"
+    apiVersion: v1
+    kind: Namespace
+    metadata:
+      name: external-dns
+    ```
+
+=== "Using command"
+    ```shell
+    cat << EOF > external-dns-namespace.yaml
+    apiVersion: v1
+    kind: Namespace
+    metadata:
+      name: external-dns
+    EOF
+
+    kubectl apply -f external-dns-namespace.yaml
+    ```
+
+[AWS Documentation](https://aws.amazon.com/ko/premiumsupport/knowledge-center/eks-set-up-externaldns/)
+
+[Blog 1](https://velog.io/@ironkey/AWS-EKS%EC%97%90%EC%84%9C-%EB%8F%99%EC%9E%91%EC%A4%91%EC%9D%B8-%EC%BB%A8%ED%85%8C%EC%9D%B4%EB%84%88%EC%97%90-External-DNS%EB%A1%9C-%EB%8F%84%EB%A9%94%EC%9D%B8-%EC%97%B0%EA%B2%B0%ED%95%98%EA%B8%B0#external-dns-1)
+[Blog 2](https://nyyang.tistory.com/111)
+
+### Deploy External DNS
 
 ``` yaml title="external-dns-deployment.yaml" linenums="1" hl_lines="54 56 57"
 apiVersion: rbac.authorization.k8s.io/v1
@@ -275,3 +298,27 @@ spec:
 ```
 
 [External DNS Documentation](https://kubernetes-sigs.github.io/external-dns/v0.12.2/tutorials/aws/)
+
+## Using External DNS with NodePort Service
+
+``` yaml title="service.yaml"
+apiVersion: v1
+kind: Service
+metadata:
+  name: <name>
+  namespace: <namespace>
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: <hostname (ex. echoserver.example.org)>
+spec:
+  selector:
+    app: <app label>
+  type: NodePort
+  ports:
+    - port: <port number> # like 80
+      targetPort: <port number> # like 80
+      protocol: <protocol> # like TCP
+```
+
+!!! warning
+
+    If you use `ClusterIP`, you **CANNOT** use External DNS.

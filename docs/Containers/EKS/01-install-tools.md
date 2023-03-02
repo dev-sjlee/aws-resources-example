@@ -127,6 +127,30 @@ helm version --short
 
 [K9s Documentation](https://github.com/derailed/k9s)
 
+## Install `kubectx`
+
+``` shell
+wget https://github.com/ahmetb/kubectx/releases/download/v0.9.4/kubectx
+sudo install -o root -g root -m 0755 kubectx /usr/local/bin/kubectx
+sudo install -o root -g root -m 0755 kubectx /usr/bin/kubectx
+kubectx -h
+rm ./kubectx
+```
+
+[kubectx Documentations](https://github.com/ahmetb/kubectx)
+
+## Install `kubens`
+
+``` shell
+wget https://github.com/ahmetb/kubectx/releases/download/v0.9.4/kubens
+sudo install -o root -g root -m 0755 kubens /usr/local/bin/kubens
+sudo install -o root -g root -m 0755 kubens /usr/bin/kubens
+kubens -h
+rm ./kubens
+```
+
+[kubens Documentations](https://github.com/ahmetb/kubectx)
+
 ## Install `aws-iam-authenticator`(Optional)
 
 === "x86"

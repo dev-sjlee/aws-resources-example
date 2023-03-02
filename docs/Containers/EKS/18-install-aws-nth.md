@@ -141,7 +141,7 @@ eksctl create iamserviceaccount \
     --name aws-node-termination-handler \
     --namespace kube-system \
     --attach-policy-arn $POLICY_ARN \
-    --role-name ROLE_NAME \
+    --role-name $ROLE_NAME \
     --tags project=$PROJECT_NAME \
     --region $REGION \
     --override-existing-serviceaccounts \

@@ -2,79 +2,15 @@
 
 ## Using Cluster Autoscaler(CA)
 
-### Deploy the Cluster Autoscaler using `helm`
-
-``` shell hl_lines="1 2 3"
-CLUSTER_NAME="<cluster name>"
-IMAGE_TAG="<image tag (ex. 1.24.0)>"
-REGION="<region>"
-
-helm repo add autoscaler https://kubernetes.github.io/autoscaler
-
-helm install cluster-autoscaler autoscaler/cluster-autoscaler \
-    --namespace kube-system \
-    --set autoDiscovery.clusterName=$CLUSTER_NAME \
-    --set awsRegion=$REGION \
-    --set cloudProvider=aws \
-    --set extraArgs.logtostderr=true \
-    --set extraArgs.stderrthreshold=info \
-    --set extraArgs.v=4 \
-    --set extraArgs.skip-nodes-with-local-storage=false \
-    --set extraArgs.expander=least-waste \
-    --set extraArgs.balance-similar-node-groups=true \
-    --set extraArgs.skip-nodes-with-system-pods=false \
-    --set image.tag=v$IMAGE_TAG \
-    --set rbac.serviceAccount.create=true \
-    --set rbac.serviceAccount.name=cluster-autoscaler
-```
-> Go to [here](https://github.com/kubernetes/autoscaler/releases) and please check the new version of your kubernetes version.
-
-[AWS Documentation](https://docs.aws.amazon.com/ko_kr/eks/latest/userguide/autoscaling.html#ca-deploy)
-
 ### Create the service account
 
-=== "JSON file"
-    ``` json hl_lines="14"
-    {
-        "Version": "2012-10-17",
-        "Statement": [
-            {
-                "Sid": "VisualEditor0",
-                "Effect": "Allow",
-                "Action": [
-                    "autoscaling:SetDesiredCapacity",
-                    "autoscaling:TerminateInstanceInAutoScalingGroup"
-                ],
-                "Resource": "*",
-                "Condition": {
-                    "StringEquals": {
-                        "aws:ResourceTag/k8s.io/cluster-autoscaler/<cluster name>": "owned"
-                    }
-                }
-            },
-            {
-                "Sid": "VisualEditor1",
-                "Effect": "Allow",
-                "Action": [
-                    "autoscaling:DescribeAutoScalingInstances",
-                    "autoscaling:DescribeAutoScalingGroups",
-                    "ec2:DescribeLaunchTemplateVersions",
-                    "autoscaling:DescribeTags",
-                    "autoscaling:DescribeLaunchConfigurations",
-                    "ec2:DescribeInstanceTypes"
-                ],
-                "Resource": "*"
-            }
-        ]
-    }
-    ```
-
 === "Using command" 
-    ``` shell hl_lines="1 2 3 4"
+    ``` shell hl_lines="1 2 3 4 5"
     POLICY_NAME="<policy name>"
     ROLE_NAME="<role name>"
     CLUSTER_NAME="<cluster name>"
     PROJECT_NAME="<project name>"
+    REGION="<region code>"
 
     cat << EOF > cluster-autoscaler-policy.json
     {
@@ -125,14 +61,79 @@ helm install cluster-autoscaler autoscaler/cluster-autoscaler \
         --name=cluster-autoscaler \
         --role-name=$ROLE_NAME \
         --attach-policy-arn=$POLICY_ARN \
+        --region $REGION \
         --override-existing-serviceaccounts \
         --approve
-    
-    kubectl rollout restart deployment/cluster-autoscaler-aws-cluster-autoscaler -n kube-system
+    ```
+
+=== "JSON file"
+    ``` json hl_lines="14"
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Sid": "VisualEditor0",
+                "Effect": "Allow",
+                "Action": [
+                    "autoscaling:SetDesiredCapacity",
+                    "autoscaling:TerminateInstanceInAutoScalingGroup"
+                ],
+                "Resource": "*",
+                "Condition": {
+                    "StringEquals": {
+                        "aws:ResourceTag/k8s.io/cluster-autoscaler/<cluster name>": "owned"
+                    }
+                }
+            },
+            {
+                "Sid": "VisualEditor1",
+                "Effect": "Allow",
+                "Action": [
+                    "autoscaling:DescribeAutoScalingInstances",
+                    "autoscaling:DescribeAutoScalingGroups",
+                    "ec2:DescribeLaunchTemplateVersions",
+                    "autoscaling:DescribeTags",
+                    "autoscaling:DescribeLaunchConfigurations",
+                    "ec2:DescribeInstanceTypes"
+                ],
+                "Resource": "*"
+            }
+        ]
+    }
     ```
 
 [AWS Documentation](https://docs.aws.amazon.com/ko_kr/eks/latest/userguide/autoscaling.html#ca-create-policy)
+
 [Autoscaler Documentation](https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/cloudprovider/aws/README.md#iam-policy)
+
+### Deploy the Cluster Autoscaler using `helm`
+
+``` shell hl_lines="1 2 3"
+CLUSTER_NAME="<cluster name>"
+IMAGE_TAG="<image tag (ex. 1.24.0)>"
+REGION="<region>"
+
+helm repo add autoscaler https://kubernetes.github.io/autoscaler
+
+helm install cluster-autoscaler autoscaler/cluster-autoscaler \
+    --namespace kube-system \
+    --set autoDiscovery.clusterName=$CLUSTER_NAME \
+    --set awsRegion=$REGION \
+    --set cloudProvider=aws \
+    --set extraArgs.logtostderr=true \
+    --set extraArgs.stderrthreshold=info \
+    --set extraArgs.v=4 \
+    --set extraArgs.skip-nodes-with-local-storage=false \
+    --set extraArgs.expander=least-waste \
+    --set extraArgs.balance-similar-node-groups=true \
+    --set extraArgs.skip-nodes-with-system-pods=false \
+    --set image.tag=v$IMAGE_TAG \
+    --set rbac.serviceAccount.create=false \
+    --set rbac.serviceAccount.name=cluster-autoscaler
+```
+> Go to [here](https://github.com/kubernetes/autoscaler/releases) and please check the new version of your kubernetes version.
+
+[AWS Documentation](https://docs.aws.amazon.com/ko_kr/eks/latest/userguide/autoscaling.html#ca-deploy)
 
 ## Using Karpenter
 
