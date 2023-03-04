@@ -5,8 +5,7 @@
 ``` shell
 helm repo add projectcalico https://docs.projectcalico.org/charts
 helm repo update                         
-helm install calico projectcalico/tigera-operator --version v3.21.4
-kubectl get all -n tigera-operator
+helm install calico projectcalico/tigera-operator --version v3.25.0
 kubectl get all -n calico-system
 ```
 
