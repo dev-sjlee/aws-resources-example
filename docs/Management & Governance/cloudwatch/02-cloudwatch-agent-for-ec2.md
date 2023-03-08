@@ -43,6 +43,9 @@ description: Install and config CloudWatch agent for EC2.
                 [
                     "InstanceName",
                     "InstanceId"
+                ],
+                [
+                    "AutoScalingGroupName"
                 ]
             ],
             "append_dimensions": {
@@ -168,6 +171,9 @@ description: Install and config CloudWatch agent for EC2.
                 [
                     "InstanceName",
                     "InstanceId"
+                ],
+                [
+                    "AutoScalingGroupName"
                 ]
             ],
             "append_dimensions": {
