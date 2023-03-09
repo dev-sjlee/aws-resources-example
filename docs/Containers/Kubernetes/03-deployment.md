@@ -52,7 +52,7 @@ spec:
             preStop:
               exec:
                 command: ["/bin/sh", "-c", "sleep 60"]
-          terminationGracePeriodSeconds: 120
+        terminationGracePeriodSeconds: 60
         # tolerations:
         #   - key: "key1"         # taint key
         #     value: "value1"     # taint value

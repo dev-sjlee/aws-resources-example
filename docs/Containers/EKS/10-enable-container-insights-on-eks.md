@@ -2,16 +2,6 @@
 
 ## Using CloudWatch Agent on EC2
 
-### Add a policy to node IAM role
-
-``` shell hl_lines="1"
-NODEGROUP_ROLE_NAME="<nodegroup role name>"
-
-aws iam attach-role-policy \
-    --role-name $NODEGROUP_ROLE_NAME \
-    --policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy
-```
-
 ### Create a namespace for CloudWatch
 
 ``` shell
@@ -90,6 +80,26 @@ kubectl apply -f https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch
     ```
 
 [AWS Documentation](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-setup-metrics.html#create-service-account)
+
+### Create an IAM role for service account
+
+``` shell
+CLUSTER_NAME="<cluster name>"
+ROLE_NAME="<role_name>"
+PROJECT_NAME="<project name>"
+REGION="<region code>"
+
+eksctl create iamserviceaccount \
+    --cluster $CLUSTER_NAME \
+    --name cloudwatch-agent \
+    --namespace amazon-cloudwatch \
+    --attach-policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy \
+    --role-name $ROLE_NAME \
+    --tags project=$PROJECT_NAME \
+    --region $REGION \
+    --override-existing-serviceaccounts \
+    --approve
+```
 
 ### Create a ConfigMap for the CloudWatch agent
 
