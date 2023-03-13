@@ -6,6 +6,8 @@ subtitle: How to control cluster and nodegorup's securiy group?
 
 # Cluster and Nodegroup's Security Group Control
 
+> You can use CloudFormation template [here](https://github.com/marcus16-kang/cloudformation-templates/tree/main/eks/security-group).
+
 ## <span style="background-color: rgb(0, 51, 102);">Cluster Security Group</span>
 
 ### Inbound
