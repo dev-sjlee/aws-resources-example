@@ -4,7 +4,7 @@
 eksctl create cluster -f cluster.yaml
 ```
 
-``` yaml
+``` yaml linenums="1" title="cluster.yaml"
 apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 
@@ -50,11 +50,20 @@ iam:
       tags:
         Name: <external dns role name>
     
+    - metadata: # ebs csi controller
+        name: ebs-csi-controller-sa
+        namespace: kube-system
+      wellKnownPolicies:
+        ebsCSIController: true
+      roleName: <ebs csi controller role name>
+      tags:
+        Name: <ebs csi controller role name>
+
     - metadata: # efs csi controller
         name: efs-csi-controller-sa
         namespace: kube-system
       wellKnownPolicies:
-        externalDNS: true
+        efsCSIController: true
       roleName: <efs csi controller role name>
       tags:
         Name: <efs csi controller role name>
@@ -96,7 +105,7 @@ privateCluster:
 managedNodeGroups:
   - name: <node group name> # ex. ng-1
     amiFamily: AmazonLinux2 # Bottlerocket
-    instanceType: m5.large
+    instanceType: m5.large  # (1)
     subnets:
       - "<subnet id>"
       - "<subnet id>"
@@ -125,3 +134,7 @@ cloudWatch:
 secretsEncryption:
   keyARN: "<kms key arn>" # ex. arn:aws:kms:us-east-1:123456789012:key/12345678-abcd-efgh-ijkl-123456789012
 ```
+
+(eksctl Config file schema)[https://eksctl.io/usage/schema/]
+
+1. If you use launch template, you should define instance type in launch template and do not use this object.

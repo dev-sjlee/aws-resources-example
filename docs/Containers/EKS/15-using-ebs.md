@@ -2,29 +2,78 @@
 
 ## Create service account using `eksctl`
 
-``` shell hl_lines="4 8"
-eksctl create iamserviceaccount \
-    --name ebs-csi-controller-sa \
-    --namespace kube-system \
-    --cluster <cluster name> \
-    --attach-policy-arn arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy \
-    --approve \
-    --role-only \
-    --role-name <role name>
-```
+=== ":simple-linux: Linux"
+
+    ``` bash hl_lines="1 2 3"
+    CLUSTER_NAME="<cluster name>"
+    ROLE_NAME="<role name>"
+    REGION="<region code>"
+
+    eksctl create iamserviceaccount \
+        --name ebs-csi-controller-sa \
+        --namespace kube-system \
+        --cluster $CLUSTER_NAME \
+        --attach-policy-arn arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy \
+        --role-name $ROLE_NAME \
+        --role-only \
+        --region $REGION \
+        --approve
+    ```
+
+=== ":simple-windows: Windows"
+
+    ``` powershell hl_lines="1 2 3"
+    $CLUSTER_NAME="<cluster name>"
+    $ROLE_NAME="<role name>"
+    $REGION="<region code>"
+
+    eksctl create iamserviceaccount `
+        --name ebs-csi-controller-sa `
+        --namespace kube-system `
+        --cluster $CLUSTER_NAME `
+        --attach-policy-arn arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy `
+        --role-name $ROLE_NAME `
+        --role-only `
+        --region $REGION `
+        --approve
+    ```
 
 [AWS Documentation](https://docs.aws.amazon.com/ko_kr/eks/latest/userguide/csi-iam-role.html)
 
-## Install EBS CSI Controller
+## Install EBS CSI Driver
 
-``` shell hl_lines="3 4"
-eksctl create addon \
-    --name aws-ebs-csi-driver \
-    --cluster <cluster name> \
-    --service-account-role-arn arn:aws:iam::<account id>:role/<role name> \
-    --force
-```
+=== ":simple-linux: Linux"
 
-You should check registry account id from [here](https://docs.aws.amazon.com/ko_kr/eks/latest/userguide/add-ons-images.html).
+    ``` bash hl_lines="1 2 3"
+    CLUSTER_NAME="<cluster name>"
+    ROLE_NAME="<role name>"
+    REGION="<region code>"
+
+    ROLE_ARN=$(aws iam get-role --role-name $ROLE_NAME --region $REGION --query 'Role.Arn' --output text)
+
+    eksctl create addon \
+        --name aws-ebs-csi-driver \
+        --cluster $CLUSTER_NAME \
+        --service-account-role-arn $ROLE_ARN \
+        --region $REGION \
+        --force
+    ```
+
+=== ":simple-windows: Windows"
+
+    ``` powershell hl_lines="1 2 3"
+    $CLUSTER_NAME="<cluster name>"
+    $ROLE_NAME="<role name>"
+    $REGION="<region code>"
+
+    $ROLE_ARN = aws iam get-role --role-name $ROLE_NAME --region $REGION --query 'Role.Arn' --output text
+
+    eksctl create addon `
+        --name aws-ebs-csi-driver `
+        --cluster $CLUSTER_NAME `
+        --service-account-role-arn $ROLE_ARN `
+        --region $REGION `
+        --force
+    ```
 
 [AWS Documentation](https://docs.aws.amazon.com/ko_kr/eks/latest/userguide/efs-csi.html#efs-install-driver)

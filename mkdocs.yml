@@ -34,6 +34,8 @@ theme:
     - search.suggest
     - search.highlight
     - search.share
+    - content.code.copy
+    - content.code.annotate
 
 markdown_extensions:
   - admonition
@@ -52,6 +54,8 @@ markdown_extensions:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.highlight:
+      anchor_linenums: true
 
 extra:
   analytics:
