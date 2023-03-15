@@ -2,59 +2,116 @@
 
 ## Create AWS Load Balancer Controller IAM role
 
-``` shell hl_lines="1 2 3 4 5"
-CLUSTER_NAME="<cluster name>"
-POLICY_NAME="<policy name>"
-ROLE_NAME="<role name>"
-PROJECT_NAME="<project name>"
-REGION="<region>"
+=== ":simple-linux: Linux"
 
-curl -o aws-load-balancer-controller-iam-policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.4.6/docs/install/iam_policy.json
+    ``` bash hl_lines="1 2 3 4 5"
+    CLUSTER_NAME="<cluster name>"
+    POLICY_NAME="<policy name>"
+    ROLE_NAME="<role name>"
+    PROJECT_NAME="<project name>"
+    REGION="<region>"
 
-POLICY_ARN=$(aws iam create-policy \
-    --policy-name $POLICY_NAME \
-    --policy-document file://aws-load-balancer-controller-iam-policy.json \
-    --query 'Policy.Arn' \
-    --output text \
-    # --tags Key=project,Value=$PROJECT_NAME \  # AWS CLI v2
-)
+    curl -o aws-load-balancer-controller-iam-policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/main/docs/install/iam_policy.json
 
-eksctl create iamserviceaccount \
-    --cluster=$CLUSTER_NAME \
-    --namespace=kube-system \
-    --name=aws-load-balancer-controller \
-    --role-name "$ROLE_NAME" \
-    --attach-policy-arn=$POLICY_ARN \
-    --tags project=$PROJECT_NAME \
-    --region $REGION \
-    --override-existing-serviceaccounts \
-    --approve
-```
+    POLICY_ARN=$(aws iam create-policy \
+        --policy-name $POLICY_NAME \
+        --policy-document file://aws-load-balancer-controller-iam-policy.json \
+        --query 'Policy.Arn' \
+        --output text \
+        # --tags Key=project,Value=$PROJECT_NAME \  # AWS CLI v2
+    )
+
+    eksctl create iamserviceaccount \
+        --cluster=$CLUSTER_NAME \
+        --namespace=kube-system \
+        --name=aws-load-balancer-controller \
+        --role-name "$ROLE_NAME" \
+        --attach-policy-arn=$POLICY_ARN \
+        --tags project=$PROJECT_NAME \
+        --region $REGION \
+        --override-existing-serviceaccounts \
+        --approve
+    ```
+
+=== ":simple-windows: Windows"
+
+    ``` powershell hl_lines="1 2 3 4 5"
+    $CLUSTER_NAME="<cluster name>"
+    $POLICY_NAME="<policy name>"
+    $ROLE_NAME="<role name>"
+    $PROJECT_NAME="<project name>"
+    $REGION="<region>"
+
+    Invoke-WebRequest https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/main/docs/install/iam_policy.json -Outfile aws-load-balancer-controller-iam-policy.json
+
+    $POLICY_ARN = aws iam create-policy `
+        --policy-name $POLICY_NAME `
+        --policy-document file://aws-load-balancer-controller-iam-policy.json `
+        --query 'Policy.Arn' `
+        --output text `
+        --tags Key=project,Value=$PROJECT_NAME `
+
+    eksctl create iamserviceaccount `
+        --cluster=$CLUSTER_NAME `
+        --namespace=kube-system `
+        --name=aws-load-balancer-controller `
+        --role-name "$ROLE_NAME" `
+        --attach-policy-arn=$POLICY_ARN `
+        --tags project=$PROJECT_NAME `
+        --region $REGION `
+        --override-existing-serviceaccounts `
+        --approve
+    ```
 
 [AWS Documentation](https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html)
 
 ## Install AWS Load Balancer Controller using `helm`
 
-``` shell hl_lines="1 2 3"
-VPC_ID="<vpc id>"
-CLUSTER_NAME="<cluster name>"
-REGION="<region>"
+=== ":simple-linux: Linux"
 
-helm repo add eks https://aws.github.io/eks-charts
-helm repo update
+    ``` bash hl_lines="1 2 3"
+    VPC_ID="<vpc id>"
+    CLUSTER_NAME="<cluster name>"
+    REGION="<region>"
 
-helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
-    -n kube-system \
-    --set clusterName=$CLUSTER_NAME \
-    --set serviceAccount.create=false \
-    --set serviceAccount.name=aws-load-balancer-controller \
-    --set region=$REGION \
-    --set vpcId=$VPC_ID
+    helm repo add eks https://aws.github.io/eks-charts
+    helm repo update
 
-kubectl get deployment aws-load-balancer-controller \
-    -n kube-system \
-    -w
-```
+    helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
+        -n kube-system \
+        --set clusterName=$CLUSTER_NAME \
+        --set serviceAccount.create=false \
+        --set serviceAccount.name=aws-load-balancer-controller \
+        --set region=$REGION \
+        --set vpcId=$VPC_ID
+
+    kubectl get deployment aws-load-balancer-controller \
+        -n kube-system \
+        -w
+    ```
+
+=== ":simple-windows: Windows"
+
+    ``` powershell hl_lines="1 2 3"
+    $VPC_ID="<vpc id>"
+    $CLUSTER_NAME="<cluster name>"
+    $REGION="<region>"
+
+    helm repo add eks https://aws.github.io/eks-charts
+    helm repo update
+
+    helm install aws-load-balancer-controller eks/aws-load-balancer-controller `
+        -n kube-system `
+        --set clusterName=$CLUSTER_NAME `
+        --set serviceAccount.create=false `
+        --set serviceAccount.name=aws-load-balancer-controller `
+        --set region=$REGION `
+        --set vpcId=$VPC_ID
+
+    kubectl get deployment aws-load-balancer-controller `
+        -n kube-system `
+        -w
+    ```
 
 [AWS Documentation](https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html)
 

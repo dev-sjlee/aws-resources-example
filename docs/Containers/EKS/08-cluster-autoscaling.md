@@ -4,48 +4,16 @@
 
 ### Create the service account
 
-=== "Using command" 
-    ``` shell hl_lines="1 2 3 4 5"
+=== ":simple-linux: Linux"
+
+    ``` bash hl_lines="1 2 3 4 5"
     POLICY_NAME="<policy name>"
     ROLE_NAME="<role name>"
     CLUSTER_NAME="<cluster name>"
     PROJECT_NAME="<project name>"
     REGION="<region code>"
 
-    cat << EOF > cluster-autoscaler-policy.json
-    {
-        "Version": "2012-10-17",
-        "Statement": [
-            {
-                "Sid": "VisualEditor0",
-                "Effect": "Allow",
-                "Action": [
-                    "autoscaling:SetDesiredCapacity",
-                    "autoscaling:TerminateInstanceInAutoScalingGroup"
-                ],
-                "Resource": "*",
-                "Condition": {
-                    "StringEquals": {
-                        "aws:ResourceTag/k8s.io/cluster-autoscaler/${CLUSTER_NAME}": "owned"
-                    }
-                }
-            },
-            {
-                "Sid": "VisualEditor1",
-                "Effect": "Allow",
-                "Action": [
-                    "autoscaling:DescribeAutoScalingInstances",
-                    "autoscaling:DescribeAutoScalingGroups",
-                    "ec2:DescribeLaunchTemplateVersions",
-                    "autoscaling:DescribeTags",
-                    "autoscaling:DescribeLaunchConfigurations",
-                    "ec2:DescribeInstanceTypes"
-                ],
-                "Resource": "*"
-            }
-        ]
-    }
-    EOF
+    curl -O https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/cluster-autoscaler-policy.json
 
     POLICY_ARN=$(aws iam create-policy \
         --policy-name $POLICY_NAME \
@@ -66,40 +34,33 @@
         --approve
     ```
 
-=== "JSON file"
-    ``` json hl_lines="14"
-    {
-        "Version": "2012-10-17",
-        "Statement": [
-            {
-                "Sid": "VisualEditor0",
-                "Effect": "Allow",
-                "Action": [
-                    "autoscaling:SetDesiredCapacity",
-                    "autoscaling:TerminateInstanceInAutoScalingGroup"
-                ],
-                "Resource": "*",
-                "Condition": {
-                    "StringEquals": {
-                        "aws:ResourceTag/k8s.io/cluster-autoscaler/<cluster name>": "owned"
-                    }
-                }
-            },
-            {
-                "Sid": "VisualEditor1",
-                "Effect": "Allow",
-                "Action": [
-                    "autoscaling:DescribeAutoScalingInstances",
-                    "autoscaling:DescribeAutoScalingGroups",
-                    "ec2:DescribeLaunchTemplateVersions",
-                    "autoscaling:DescribeTags",
-                    "autoscaling:DescribeLaunchConfigurations",
-                    "ec2:DescribeInstanceTypes"
-                ],
-                "Resource": "*"
-            }
-        ]
-    }
+=== ":simple-windows: Windows"
+
+    ``` powershell hl_lines="1 2 3 4 5"
+    $POLICY_NAME="<policy name>"
+    $ROLE_NAME="<role name>"
+    $CLUSTER_NAME="<cluster name>"
+    $PROJECT_NAME="<project name>"
+    $REGION="<region code>"
+
+    Invoke-WebRequest https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/cluster-autoscaler-policy.json -Outfile cluster-autoscaler-policy.json
+
+    POLICY_ARN = aws iam create-policy `
+        --policy-name $POLICY_NAME `
+        --policy-document file://cluster-autoscaler-policy.json `
+        --query 'Policy.Arn' `
+        --output text `
+       --tags Key=project,Value=$PROJECT_NAME `
+
+    eksctl create iamserviceaccount `
+        --cluster=$CLUSTER_NAME `
+        --namespace=kube-system `
+        --name=cluster-autoscaler `
+        --role-name=$ROLE_NAME `
+        --attach-policy-arn=$POLICY_ARN `
+        --region $REGION `
+        --override-existing-serviceaccounts `
+        --approve
     ```
 
 [AWS Documentation](https://docs.aws.amazon.com/ko_kr/eks/latest/userguide/autoscaling.html#ca-create-policy)
@@ -108,29 +69,58 @@
 
 ### Deploy the Cluster Autoscaler using `helm`
 
-``` shell hl_lines="1 2 3"
-CLUSTER_NAME="<cluster name>"
-IMAGE_TAG="<image tag (ex. 1.24.0)>"
-REGION="<region>"
+=== ":simple-linux: Linux"
 
-helm repo add autoscaler https://kubernetes.github.io/autoscaler
+    ``` bash hl_lines="1 2 3"
+    CLUSTER_NAME="<cluster name>"
+    IMAGE_TAG="<image tag (ex. 1.24.0)>"
+    REGION="<region code>"
 
-helm install cluster-autoscaler autoscaler/cluster-autoscaler \
-    --namespace kube-system \
-    --set autoDiscovery.clusterName=$CLUSTER_NAME \
-    --set awsRegion=$REGION \
-    --set cloudProvider=aws \
-    --set extraArgs.logtostderr=true \
-    --set extraArgs.stderrthreshold=info \
-    --set extraArgs.v=4 \
-    --set extraArgs.skip-nodes-with-local-storage=false \
-    --set extraArgs.expander=least-waste \
-    --set extraArgs.balance-similar-node-groups=true \
-    --set extraArgs.skip-nodes-with-system-pods=false \
-    --set image.tag=v$IMAGE_TAG \
-    --set rbac.serviceAccount.create=false \
-    --set rbac.serviceAccount.name=cluster-autoscaler
-```
+    helm repo add autoscaler https://kubernetes.github.io/autoscaler
+
+    helm install cluster-autoscaler autoscaler/cluster-autoscaler \
+        --namespace kube-system \
+        --set autoDiscovery.clusterName=$CLUSTER_NAME \
+        --set awsRegion=$REGION \
+        --set cloudProvider=aws \
+        --set extraArgs.logtostderr=true \
+        --set extraArgs.stderrthreshold=info \
+        --set extraArgs.v=4 \
+        --set extraArgs.skip-nodes-with-local-storage=false \
+        --set extraArgs.expander=least-waste \
+        --set extraArgs.balance-similar-node-groups=true \
+        --set extraArgs.skip-nodes-with-system-pods=false \
+        --set image.tag=v$IMAGE_TAG \
+        --set rbac.serviceAccount.create=false \
+        --set rbac.serviceAccount.name=cluster-autoscaler
+    ```
+
+=== ":simple-windows: Windows"
+
+    ``` bash hl_lines="1 2 3"
+    $CLUSTER_NAME="<cluster name>"
+    $IMAGE_TAG="<image tag (ex. 1.24.0)>"
+    $REGION="<region code>"
+
+    helm repo add autoscaler https://kubernetes.github.io/autoscaler
+
+    helm install cluster-autoscaler autoscaler/cluster-autoscaler `
+        --namespace kube-system `
+        --set autoDiscovery.clusterName=$CLUSTER_NAME `
+        --set awsRegion=$REGION `
+        --set cloudProvider=aws `
+        --set extraArgs.logtostderr=true `
+        --set extraArgs.stderrthreshold=info `
+        --set extraArgs.v=4 `
+        --set extraArgs.skip-nodes-with-local-storage=false `
+        --set extraArgs.expander=least-waste `
+        --set extraArgs.balance-similar-node-groups=true `
+        --set extraArgs.skip-nodes-with-system-pods=false `
+        --set image.tag=v$IMAGE_TAG `
+        --set rbac.serviceAccount.create=false `
+        --set rbac.serviceAccount.name=cluster-autoscaler
+    ```
+
 > Go to [here](https://github.com/kubernetes/autoscaler/releases) and please check the new version of your kubernetes version.
 
 [AWS Documentation](https://docs.aws.amazon.com/ko_kr/eks/latest/userguide/autoscaling.html#ca-deploy)
@@ -163,7 +153,7 @@ eksctl create iamidentitymapping \
     --group system:nodes
 ```
 
-https://karpenter.sh/v0.13.2/getting-started/getting-started-with-eksctl/#create-the-karpenternode-iam-role
+[Karpenter Documentation](https://karpenter.sh/v0.13.2/getting-started/getting-started-with-eksctl/#create-the-karpenternode-iam-role)
 
 ### Create the service account for KarPenTerController
 

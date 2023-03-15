@@ -3,21 +3,34 @@
 ## Install utilities
 
 === "RedHat"
+    
     ``` bash
     sudo yum update -y
     sudo yum install -y unzip jq
     ```
 
 === "Debian"
+    
     ``` bash
     sudo apt-get update -y
     sudo apt-get upgrade -y
     sudo apt-get install -y unzip jq
     ```
 
+=== "Windows"
+
+    ``` powershell
+    Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+    ```
+
+    !!! note
+
+        You should run this command as administrator.
+
 ## Install `kubectl`
 
 === "Linux (x86_64)"
+    
     ``` bash
     curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.23.7/2022-06-29/bin/linux/amd64/kubectl
     sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
@@ -28,6 +41,7 @@
     ```
 
 === "Linux (ARM64)"
+    
     ``` bash
     curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.23.7/2022-06-29/bin/linux/arm64/kubectl
     sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
@@ -37,7 +51,14 @@
     rm kubectl
     ```
 
-=== "Windows"
+=== "Windows (Chocolatey)"
+    
+    ``` powershell
+    choco install kubernetes-cli
+    ```
+
+=== "Windows (Executable)"
+    
     ``` powershell
     curl.exe -LO "https://dl.k8s.io/release/v1.26.0/bin/windows/amd64/kubectl.exe"
     ```
@@ -48,6 +69,7 @@
 ## Install `eksctl`
 
 === "Linux (x86_64)"
+    
     ``` bash
     curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_Linux_amd64.tar.gz" | tar xz -C /tmp
     sudo cp /tmp/eksctl /usr/local/bin
@@ -57,6 +79,7 @@
     ```
 
 === "Linux (ARM64)"
+    
     ``` bash
     curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_Linux_arm64.tar.gz" | tar xz -C /tmp
     sudo cp /tmp/eksctl /usr/local/bin
@@ -65,7 +88,14 @@
     sudo eksctl version
     ```
 
-=== "Windows"
+=== "Windows (Chocolatey)"
+
+    ``` powershell
+    choco install eksctl
+    ```
+
+=== "Windows (Executable)"
+    
     ``` powershell
     curl.exe -LO https://github.com/weaveworks/eksctl/releases/download/v0.132.0/eksctl_Windows_amd64.zip
     Expand-Archive ./eksctl_Windows_amd64.zip -DestinationPath ./
@@ -76,12 +106,20 @@
 ## Install `helm`
 
 === "Linux"
+    
     ``` bash
     curl -L https://git.io/get_helm.sh | bash -s -- --version v3.8.2
     helm version --short
     ```
 
-=== "Windows"
+=== "Windows (Chocolatey)"
+
+    ``` powershell
+    choco install kubernetes-helm
+    ```
+
+=== "Windows (Executable)"
+    
     ``` powershell
     curl.exe -LO https://get.helm.sh/helm-v3.11.2-windows-amd64.zip
     Expand-Archive ./helm-v3.11.2-windows-amd64.zip -DestinationPath ./
@@ -128,6 +166,7 @@
 **YOU SHOULD INSTALL `awscliv2` IN [HERE](../../General/01-install-awscli-v2.md)**
 
 === "Linux (x86_64)"
+    
     ``` bash
     curl --silent --location "https://github.com/derailed/k9s/releases/download/v0.27.2/k9s_Linux_amd64.tar.gz" | tar xz -C /tmp
     sudo cp /tmp/k9s /usr/local/bin
@@ -137,6 +176,7 @@
     ```
 
 === "Linux (ARM64)"
+    
     ``` bash
     curl --silent --location "https://github.com/derailed/k9s/releases/download/v0.27.2/k9s_Linux_arm64.tar.gz" | tar xz -C /tmp
     sudo cp /tmp/k9s /usr/local/bin
@@ -145,7 +185,14 @@
     sudo k9s version
     ```
 
-=== "Windows"
+=== "Windows (Chocolatey)"
+
+    ``` powershell
+    choco install k9s
+    ```
+
+=== "Windows (Executable)"
+    
     ``` powershell
     curl.exe -LO https://github.com/derailed/k9s/releases/download/v0.27.3/k9s_Windows_amd64.tar.gz
     tar -xvzf k9s_Windows_amd64.tar.gz
@@ -164,7 +211,13 @@
     rm ./kubectx
     ```
 
-=== "Windows"
+=== "Windows (Chocolatey)"
+
+    ``` powershell
+    choco install kubectx
+    ```
+
+=== "Windows (Executable)"
     ``` powershell
     curl.exe -LO https://github.com/ahmetb/kubectx/releases/download/v0.9.4/kubectx_v0.9.4_windows_x86_64.zip
     Expand-Archive ./kubectx_v0.9.4_windows_x86_64.zip -DestinationPath ./
@@ -175,6 +228,7 @@
 ## Install `kubens`
 
 === "Linux"
+    
     ``` bash
     wget https://github.com/ahmetb/kubectx/releases/download/v0.9.4/kubens
     sudo install -o root -g root -m 0755 kubens /usr/local/bin/kubens
@@ -183,7 +237,14 @@
     rm ./kubens
     ```
 
-=== "Windows"
+=== "Windows (Chocolatey)"
+
+    ``` powershell
+    choco install kubens
+    ```
+
+=== "Windows (Executable)"
+    
     ``` powershell
     curl.exe -LO https://github.com/ahmetb/kubectx/releases/download/v0.9.4/kubens_v0.9.4_windows_x86_64.zip
     Expand-Archive ./kubens_v0.9.4_windows_x86_64.zip -DestinationPath ./
@@ -191,7 +252,41 @@
 
 [kubens Documentations](https://github.com/ahmetb/kubectx)
 
-## Install `aws-iam-authenticator`(Optional)
+## Install `argocd`
+
+=== "Linux (x86_64)"
+    
+    ``` bash
+    curl -O https://github.com/argoproj/argo-cd/releases/download/v2.6.5/argocd-linux-amd64
+    sudo install -o root -g root -m 0755 argocd-linux-amd64 /usr/local/bin/argocd
+    sudo install -o root -g root -m 0755 argocd-linux-amd64 /usr/bin/argocd
+    rm argocd-linux-amd64
+    argocd -h
+    ```
+
+=== "Linux (ARM64)"
+    
+    ``` bash
+    curl -O https://github.com/argoproj/argo-cd/releases/download/v2.6.5/argocd-linux-arm64
+    sudo install -o root -g root -m 0755 argocd-linux-arm64 /usr/local/bin/argocd
+    sudo install -o root -g root -m 0755 argocd-linux-arm64 /usr/bin/argocd
+    rm argocd-linux-amd64
+    argocd -h
+    ```
+
+=== "Windows (Chocolatey)"
+    
+    ``` powershell
+    choco install argocd-cli
+    ```
+
+=== "Windows (Executable)"
+    
+    ``` powershell
+    curl.exe -L https://github.com/argoproj/argo-cd/releases/download/v2.6.5/argocd-windows-amd64.exe -o argocd.exe
+    ```
+
+## Install `aws-iam-authenticator` (Optional)
 
 === "Linux (x86_64)"
     ``` bash

@@ -14,7 +14,7 @@ helm install descheduler --namespace kube-system descheduler/descheduler
 
 ## Default Configuration
 
-``` yaml
+``` yaml linenums="1"
 apiVersion: v1
 data:
   policy.yaml: |

@@ -10,7 +10,7 @@ kubectl apply -f https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch
 
 ??? note "cloudwatch-namespace.yaml"
 
-    ``` yaml
+    ``` yaml linenums="1"
     # create amazon-cloudwatch namespace
     apiVersion: v1
     kind: Namespace
@@ -30,7 +30,7 @@ kubectl apply -f https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch
 
 ??? note "cwagent-serviceaccount.yaml"
 
-    ``` yaml
+    ``` yaml linenums="1"
     # create cwagent service account and role binding
     apiVersion: v1
     kind: ServiceAccount
@@ -83,39 +83,75 @@ kubectl apply -f https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch
 
 ### Create an IAM role for service account
 
-``` shell
-CLUSTER_NAME="<cluster name>"
-ROLE_NAME="<role_name>"
-PROJECT_NAME="<project name>"
-REGION="<region code>"
+=== ":simple-linux: Linux"
 
-eksctl create iamserviceaccount \
-    --cluster $CLUSTER_NAME \
-    --name cloudwatch-agent \
-    --namespace amazon-cloudwatch \
-    --attach-policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy \
-    --role-name $ROLE_NAME \
-    --tags project=$PROJECT_NAME \
-    --region $REGION \
-    --override-existing-serviceaccounts \
-    --approve
-```
+    ``` bash hl_lines="1 2 3 4"
+    CLUSTER_NAME="<cluster name>"
+    ROLE_NAME="<role_name>"
+    PROJECT_NAME="<project name>"
+    REGION="<region code>"
+
+    eksctl create iamserviceaccount \
+        --cluster $CLUSTER_NAME \
+        --name cloudwatch-agent \
+        --namespace amazon-cloudwatch \
+        --attach-policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy \
+        --role-name $ROLE_NAME \
+        --tags project=$PROJECT_NAME \
+        --region $REGION \
+        --override-existing-serviceaccounts \
+        --approve
+    ```
+
+=== ":simple-windows: Windows"
+
+    ``` powershell hl_lines="1 2 3 4"
+    $CLUSTER_NAME="<cluster name>"
+    $ROLE_NAME="<role_name>"
+    $PROJECT_NAME="<project name>"
+    $REGION="<region code>"
+
+    eksctl create iamserviceaccount `
+        --cluster $CLUSTER_NAME `
+        --name cloudwatch-agent `
+        --namespace amazon-cloudwatch `
+        --attach-policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy `
+        --role-name $ROLE_NAME `
+        --tags project=$PROJECT_NAME `
+        --region $REGION `
+        --override-existing-serviceaccounts `
+        --approve
+    ```
 
 ### Create a ConfigMap for the CloudWatch agent
 
-``` shell hl_lines="1"
-CLUSTER_NAME="<cluster name>"
+=== ":simple-linux: Linux"
 
-curl -O https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/daemonset/container-insights-monitoring/cwagent/cwagent-configmap.yaml
+    ``` bash hl_lines="1"
+    CLUSTER_NAME="<cluster name>"
 
-sed -i "s/{{cluster_name}}/$CLUSTER_NAME/" cwagent-configmap.yaml
+    curl -O https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/daemonset/container-insights-monitoring/cwagent/cwagent-configmap.yaml
 
-kubectl apply -f cwagent-configmap.yaml
-```
+    sed -i "s/{{cluster_name}}/$CLUSTER_NAME/" cwagent-configmap.yaml
+
+    kubectl apply -f cwagent-configmap.yaml
+    ```
+
+=== ":simple-windows: Windows"
+
+    ``` powershell hl_lines="1"
+    $CLUSTER_NAME="<cluster name>"
+
+    Invoke-WebRequest https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/daemonset/container-insights-monitoring/cwagent/cwagent-configmap.yaml -Outfile cwagent-configmap.yaml
+
+    (Get-Content cwagent-configmap.yaml) | ForEach-Object { $_ -replace '{{cluster_name}}', $CLUSTER_NAME } | Set-Content cwagent-configmap.yaml
+
+    kubectl apply -f cwagent-configmap.yaml
+    ```
 
 ??? note "cwagent-configmap.yaml"
 
-    ``` yaml
+    ``` yaml linenums="1"
     # create configmap for cwagent config
     apiVersion: v1
     data:
@@ -151,7 +187,7 @@ kubectl get pods -n amazon-cloudwatch
 
 ??? note "cwagent-daemonset.yaml"
 
-    ``` yaml
+    ``` yaml linenums="1"
     # deploy cwagent as daemonset
     apiVersion: apps/v1
     kind: DaemonSet
@@ -169,7 +205,7 @@ kubectl get pods -n amazon-cloudwatch
         spec:
           containers:
             - name: cloudwatch-agent
-              image: amazon/cloudwatch-agent:1.247354.0b251981
+              image: public.ecr.aws/cloudwatch-agent/cloudwatch-agent:1.247357.0b252275
               #ports:
               #  - containerPort: 8125
               #    hostPort: 8125
@@ -196,7 +232,7 @@ kubectl get pods -n amazon-cloudwatch
                     fieldRef:
                       fieldPath: metadata.namespace
                 - name: CI_VERSION
-                  value: "k8s/1.3.11"
+                  value: "k8s/1.3.12"
               # Please don't change the mountPath
               volumeMounts:
                 - name: cwagentconfig
@@ -219,6 +255,8 @@ kubectl get pods -n amazon-cloudwatch
                 - name: devdisk
                   mountPath: /dev/disk
                   readOnly: true
+          nodeSelector:
+            kubernetes.io/os: linux
           volumes:
             - name: cwagentconfig
               configMap:
@@ -247,29 +285,63 @@ kubectl get pods -n amazon-cloudwatch
 
 ### Deploy a Fluent Bit as a DaemonSet
 
-``` shell hl_lines="1 2"
-ClusterName="<cluster name>"
-RegionName="<region code>"
-FluentBitHttpPort='2020'
-FluentBitReadFromHead='Off'
-[[ ${FluentBitReadFromHead} = 'On' ]] && FluentBitReadFromTail='Off'|| FluentBitReadFromTail='On'
-[[ -z ${FluentBitHttpPort} ]] && FluentBitHttpServer='Off' || FluentBitHttpServer='On'
-kubectl create configmap fluent-bit-cluster-info \
-    --from-literal=cluster.name=${ClusterName} \
-    --from-literal=http.server=${FluentBitHttpServer} \
-    --from-literal=http.port=${FluentBitHttpPort} \
-    --from-literal=read.head=${FluentBitReadFromHead} \
-    --from-literal=read.tail=${FluentBitReadFromTail} \
-    --from-literal=logs.region=${RegionName} -n amazon-cloudwatch
+=== ":simple-linux: Linux"
 
-kubectl apply -f https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/daemonset/container-insights-monitoring/fluent-bit/fluent-bit.yaml
+    ``` bash hl_lines="1 2"
+    ClusterName="<cluster name>"
+    RegionName="<region code>"
+    FluentBitHttpPort='2020'
+    FluentBitReadFromHead='Off'
+    [[ ${FluentBitReadFromHead} = 'On' ]] && FluentBitReadFromTail='Off'|| FluentBitReadFromTail='On'
+    [[ -z ${FluentBitHttpPort} ]] && FluentBitHttpServer='Off' || FluentBitHttpServer='On'
+    kubectl create configmap fluent-bit-cluster-info \
+        --from-literal=cluster.name=${ClusterName} \
+        --from-literal=http.server=${FluentBitHttpServer} \
+        --from-literal=http.port=${FluentBitHttpPort} \
+        --from-literal=read.head=${FluentBitReadFromHead} \
+        --from-literal=read.tail=${FluentBitReadFromTail} \
+        --from-literal=logs.region=${RegionName} -n amazon-cloudwatch
 
-kubectl get pods -n amazon-cloudwatch
-```
+    kubectl apply -f https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/daemonset/container-insights-monitoring/fluent-bit/fluent-bit.yaml
+
+    kubectl get pods -n amazon-cloudwatch
+    ```
+
+=== ":simple-windows: Windows"
+
+    ``` powershell hl_lines="1 2"
+    $CLUSTER_NAME="<cluster name>"
+    $REGION="<region code>"
+    $FluentBitHttpPort="2020"
+    $FluentBitReadFromHead="Off"
+    
+    if ($FluentBitReadFromHead -eq 'On') {
+        $FluentBitReadFromTail = 'Off'
+    } else {
+        $FluentBitReadFromTail = 'On'
+    }
+    if (-not $FluentBitHttpPort) {
+        $FluentBitHttpServer = 'Off'
+    } else {
+        $FluentBitHttpServer = 'On'
+    }
+
+    kubectl create configmap fluent-bit-cluster-info `
+        --from-literal=cluster.name=${CLUSTER_NAME} `
+        --from-literal=http.server=${FluentBitHttpServer} `
+        --from-literal=http.port=${FluentBitHttpPort} `
+        --from-literal=read.head=${FluentBitReadFromHead} `
+        --from-literal=read.tail=${FluentBitReadFromTail} `
+        --from-literal=logs.region=${REGION} -n amazon-cloudwatch
+
+    kubectl apply -f https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/daemonset/container-insights-monitoring/fluent-bit/fluent-bit.yaml
+
+    kubectl get pods -n amazon-cloudwatch
+    ```
 
 ??? note "fluent-bit.yaml"
 
-    ``` yaml
+    ``` yaml linenums="1"
     apiVersion: v1
     kind: ServiceAccount
     metadata:
@@ -318,6 +390,7 @@ kubectl get pods -n amazon-cloudwatch
       fluent-bit.conf: |
         [SERVICE]
             Flush                     5
+            Grace                     30
             Log_Level                 info
             Daemon                    off
             Parsers_File              parsers.conf
@@ -339,10 +412,7 @@ kubectl get pods -n amazon-cloudwatch
             Tag                 application.*
             Exclude_Path        /var/log/containers/cloudwatch-agent*, /var/log/containers/fluent-bit*, /var/log/containers/aws-node*, /var/log/containers/kube-proxy*
             Path                /var/log/containers/*.log
-            Docker_Mode         On
-            Docker_Mode_Flush   5
-            Docker_Mode_Parser  container_firstline
-            Parser              docker
+            multiline.parser    docker, cri
             DB                  /var/fluent-bit/state/flb_container.db
             Mem_Buf_Limit       50MB
             Skip_Long_Lines     On
@@ -355,7 +425,7 @@ kubectl get pods -n amazon-cloudwatch
             Name                tail
             Tag                 application.*
             Path                /var/log/containers/fluent-bit*
-            Parser              docker
+            multiline.parser    docker, cri
             DB                  /var/fluent-bit/state/flb_log.db
             Mem_Buf_Limit       5MB
             Skip_Long_Lines     On
@@ -366,10 +436,7 @@ kubectl get pods -n amazon-cloudwatch
             Name                tail
             Tag                 application.*
             Path                /var/log/containers/cloudwatch-agent*
-            Docker_Mode         On
-            Docker_Mode_Flush   5
-            Docker_Mode_Parser  cwagent_firstline
-            Parser              docker
+            multiline.parser    docker, cri
             DB                  /var/fluent-bit/state/flb_cwagent.db
             Mem_Buf_Limit       5MB
             Skip_Long_Lines     On
@@ -414,10 +481,7 @@ kubectl get pods -n amazon-cloudwatch
             Name                tail
             Tag                 dataplane.tail.*
             Path                /var/log/containers/aws-node*, /var/log/containers/kube-proxy*
-            Docker_Mode         On
-            Docker_Mode_Flush   5
-            Docker_Mode_Parser  container_firstline
-            Parser              docker
+            multiline.parser    docker, cri
             DB                  /var/fluent-bit/state/flb_dataplane_tail.db
             Mem_Buf_Limit       50MB
             Skip_Long_Lines     On
@@ -447,13 +511,13 @@ kubectl get pods -n amazon-cloudwatch
             log_stream_prefix   ${HOST_NAME}-
             auto_create_group   true
             extra_user_agent    container-insights
-        
+
       host-log.conf: |
         [INPUT]
             Name                tail
             Tag                 host.dmesg
             Path                /var/log/dmesg
-            Parser              syslog
+            Key                 message
             DB                  /var/fluent-bit/state/flb_dmesg.db
             Mem_Buf_Limit       5MB
             Skip_Long_Lines     On
@@ -497,12 +561,6 @@ kubectl get pods -n amazon-cloudwatch
             extra_user_agent    container-insights
 
       parsers.conf: |
-        [PARSER]
-            Name                docker
-            Format              json
-            Time_Key            time
-            Time_Format         %Y-%m-%dT%H:%M:%S.%LZ
-
         [PARSER]
             Name                syslog
             Format              regex
@@ -589,7 +647,7 @@ kubectl get pods -n amazon-cloudwatch
                       apiVersion: v1
                       fieldPath: metadata.name
                 - name: CI_VERSION
-                  value: "k8s/1.3.11"
+                  value: "k8s/1.3.12"
             resources:
                 limits:
                   memory: 200Mi
@@ -661,7 +719,7 @@ kubectl get pods -l name=aws-otel-eks-ci -n aws-otel-eks
 
 ??? note "otel-container-insights-infra.yaml"
 
-    ``` yaml
+    ``` yaml linenums="1"
     # create namespace
     apiVersion: v1
     kind: Namespace
@@ -878,6 +936,8 @@ kubectl get pods -l name=aws-otel-eks-ci -n aws-otel-eks
                 - name: dockersock
                   mountPath: /var/run/docker.sock
                   readOnly: true
+                - name: containerdsock
+                  mountPath: /run/containerd/containerd.sock
                 - name: varlibdocker
                   mountPath: /var/lib/docker
                   readOnly: true
@@ -912,6 +972,9 @@ kubectl get pods -l name=aws-otel-eks-ci -n aws-otel-eks
             - name: varlibdocker
               hostPath:
                 path: /var/lib/docker
+            - name: containerdsock
+              hostPath:
+                path: /run/containerd/containerd.sock
             - name: sys
               hostPath:
                 path: /sys
@@ -925,23 +988,49 @@ kubectl get pods -l name=aws-otel-eks-ci -n aws-otel-eks
 
 ### Update service account to put logs using IAM role
 
-```shell hl_lines="1 2 3"
-CLUSTER_NAME="<cluster name>"
-ROLE_NAME="<role name>"
-PROJECT_NAME="<project name>"
+=== ":simple-linux: Linux"
 
-eksctl create iamserviceaccount \
-    --cluster $CLUSTER_NAME \
-    --name aws-otel-sa \
-    --namespace aws-otel-eks \
-    --attach-policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy \
-    --role-name $ROLE_NAME \
-    --tags project=$PROJECT_NAME \
-    --override-existing-serviceaccounts \
-    --approve
+    ``` bash hl_lines="1 2 3 4"
+    CLUSTER_NAME="<cluster name>"
+    ROLE_NAME="<role name>"
+    PROJECT_NAME="<project name>"
+    REGION="<region code>"
 
-kubectl rollout restart ds/aws-otel-eks-ci -n aws-otel-eks
-```
+    eksctl create iamserviceaccount \
+        --cluster $CLUSTER_NAME \
+        --name aws-otel-sa \
+        --namespace aws-otel-eks \
+        --attach-policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy \
+        --role-name $ROLE_NAME \
+        --tags project=$PROJECT_NAME \
+        --region $REGION \
+        --override-existing-serviceaccounts \
+        --approve
+
+    kubectl rollout restart ds/aws-otel-eks-ci -n aws-otel-eks
+    ```
+
+=== ":simple-windows: Windows"
+
+    ``` powershell hl_lines="1 2 3 4"
+    $CLUSTER_NAME="<cluster name>"
+    $ROLE_NAME="<role name>"
+    $PROJECT_NAME="<project name>"
+    $REGION="<region code>"
+
+    eksctl create iamserviceaccount ` 
+        --cluster $CLUSTER_NAME ` 
+        --name aws-otel-sa ` 
+        --namespace aws-otel-eks ` 
+        --attach-policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy ` 
+        --role-name $ROLE_NAME ` 
+        --tags project=$PROJECT_NAME ` 
+        --region $REGION `
+        --override-existing-serviceaccounts ` 
+        --approve
+
+    kubectl rollout restart ds/aws-otel-eks-ci -n aws-otel-eks
+    ```
 
 ## Using ADOT on Fargate
 
@@ -949,18 +1038,8 @@ kubectl rollout restart ds/aws-otel-eks-ci -n aws-otel-eks
 
 ### Create the namespace for ADOT
 
-=== "YAML file"
-    ``` yaml
-    apiVersion: v1
-    kind: Namespace
-    metadata:
-      name: fargate-container-insights
-      labels:
-        name: fargate-container-insights
-    ```
-
-=== "Using command"
-    ``` shell
+=== ":simple-linux: Linux"
+    ``` bash
     cat << EOF >> otel-fargate-namespace.yaml
     apiVersion: v1
     kind: Namespace
@@ -973,34 +1052,105 @@ kubectl rollout restart ds/aws-otel-eks-ci -n aws-otel-eks
     kubectl apply -f otel-fargate-namespace.yaml
     ```
 
+=== ":simple-windows: Windows"
+
+    ``` powershell
+    @"
+    apiVersion: v1
+    kind: Namespace
+    metadata:
+      name: fargate-container-insights
+      labels:
+        name: fargate-container-insights
+    "@ | Add-Content -Path otel-fargate-namespace.yaml
+
+    kubectl apply -f otel-fargate-namespace.yaml
+    ```
+
+??? note "otel-fargate-namespace.yaml"
+    
+    ``` yaml linenums="1"
+    apiVersion: v1
+    kind: Namespace
+    metadata:
+      name: fargate-container-insights
+      labels:
+        name: fargate-container-insights
+    ```
+
 [AWS Knowledge Center](https://aws.amazon.com/ko/premiumsupport/knowledge-center/cloudwatch-container-insights-eks-fargate/#Set_up_Container_Insights_metrics_on_an_EKS_Fargate_cluster_using_ADOT)
 
 ### Create the service account for ADOT
 
-``` shell hl_lines="2 3 6"
-eksctl create iamserviceaccount \
-    --cluster=<cluster name> \
-    --region=<region code> \
-    --name=adot-collector \
-    --namespace=fargate-container-insights \
-    --role-name=<service account IAM role name> \
-    --attach-policy-arn=arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy \
-    --approve
-```
+=== ":simple-linux: Linux"
+    
+    ``` bash hl_lines="1 2 3 4"
+    CLUSTER_NAME="<cluster name>"
+    ROLE_NAME="<role name>"
+    PROJECT_NAME="<project name>"
+    REGION="<region code>"
+
+    eksctl create iamserviceaccount \
+        --cluster=$CLUSTER_NAME \
+        --name=adot-collector \
+        --namespace=fargate-container-insights \
+        --role-name=$ROLE_NAME \
+        --attach-policy-arn=arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy \
+        --tags project=$PROJECT_NAME \
+        --region=$REGION \
+        --approve
+    ```
+
+=== ":simple-windows: Windows"
+
+    ``` powershell hl_lines="1 2 3 4"
+    $CLUSTER_NAME="<cluster name>"
+    $ROLE_NAME="<role name>"
+    $PROJECT_NAME="<project name>"
+    $REGION="<region code>"
+
+    eksctl create iamserviceaccount `
+        --cluster=$CLUSTER_NAME `
+        --name=adot-collector `
+        --namespace=fargate-container-insights `
+        --role-name=$ROLE_NAME `
+        --attach-policy-arn=arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy `
+        --tags project=$PROJECT_NAME `
+        --region=$REGION `
+        --approve
+    ```
 
 [AWS Knowledge Center](https://aws.amazon.com/ko/premiumsupport/knowledge-center/cloudwatch-container-insights-eks-fargate/#Set_up_Container_Insights_metrics_on_an_EKS_Fargate_cluster_using_ADOT)
 
 ### Deploy a ADOT as a StatefulSet
 
-``` shell hl_lines="2"
-curl https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/deployment-template/eks/otel-fargate-container-insights.yaml | \
-    sed 's/YOUR-EKS-CLUSTER-NAME/'<cluster name>'/;s/us-east-1/'<region code>'/' | \
-    kubectl apply -f -
-```
+=== ":simple-linux: Linux"
+    
+    ``` bash hl_lines="1 2"
+    CLUSTER_NAME="<cluster name>"
+    REGION="<region code>"
 
-??? note "fluent-bit.yaml"
+    curl https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/deployment-template/eks/otel-fargate-container-insights.yaml | \
+        sed "s/$CLUSTER_NAME/'<cluster name>'/;s/$REGION/'<region code>'/" | \
+        kubectl apply -f -
+    ```
 
-    ``` yaml
+=== ":simple-windows: Windows"
+
+    ``` powershell hl_lines="1 2"
+    $CLUSTER_NAME="<cluster name>"
+    $REGION="<region code>"
+
+    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/deployment-template/eks/otel-fargate-container-insights.yaml" -UseBasicParsing | 
+        Select-String -Pattern $CLUSTER_NAME, $REGION | 
+        ForEach-Object { $_.Line = $_.Line -replace $CLUSTER_NAME, "'<cluster name>'" -replace $REGION, "'<region code>'" } | 
+        %{ $_.Line } | 
+        kubectl apply -f -
+    ```
+
+??? note "otel-fargate-container-insights.yaml"
+
+    ``` yaml linenums="1"
     ---
     kind: ClusterRole
     apiVersion: rbac.authorization.k8s.io/v1
@@ -1326,25 +1476,27 @@ curl https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main
 
           # convert cumulative sum datapoints to delta
           cumulativetodelta:
-            metrics:
-              - new_container_cpu_usage_seconds_total
-              - pod_cpu_usage_seconds_total
-              - pod_memory_pgfault
-              - pod_memory_pgmajfault
-              - pod_memory_hierarchical_pgfault
-              - pod_memory_hierarchical_pgmajfault
-              - pod_network_rx_bytes
-              - pod_network_rx_dropped
-              - pod_network_rx_errors
-              - pod_network_rx_packets
-              - pod_network_tx_bytes
-              - pod_network_tx_dropped
-              - pod_network_tx_errors
-              - pod_network_tx_packets
-              - new_container_memory_pgfault
-              - new_container_memory_pgmajfault
-              - new_container_memory_hierarchical_pgfault
-              - new_container_memory_hierarchical_pgmajfault
+            include:
+                metrics:
+                    - new_container_cpu_usage_seconds_total
+                    - pod_cpu_usage_seconds_total
+                    - pod_memory_pgfault
+                    - pod_memory_pgmajfault
+                    - pod_memory_hierarchical_pgfault
+                    - pod_memory_hierarchical_pgmajfault
+                    - pod_network_rx_bytes
+                    - pod_network_rx_dropped
+                    - pod_network_rx_errors
+                    - pod_network_rx_packets
+                    - pod_network_tx_bytes
+                    - pod_network_tx_dropped
+                    - pod_network_tx_errors
+                    - pod_network_tx_packets
+                    - new_container_memory_pgfault
+                    - new_container_memory_pgmajfault
+                    - new_container_memory_hierarchical_pgfault
+                    - new_container_memory_hierarchical_pgmajfault
+                match_type: strict
 
           # convert delta to rate
           deltatorate:

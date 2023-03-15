@@ -7,7 +7,7 @@
 ### Using CloudFormation
 
 === ":simple-linux: Linux"
-    ``` shell hl_lines="1 2 3 4"
+    ``` bash hl_lines="1 2 3 4"
     EKS_CLUSTER_ROLE_STACK_NAME="<stack name>"
     EKS_CLUSTER_ROLE_NAME="<role name>"
     PROJECT_NAME="<project name>"
@@ -22,6 +22,7 @@
         --capabilities CAPABILITY_NAMED_IAM \
         --parameter-overrides RoleName=$EKS_CLUSTER_ROLE_NAME ProjectName=$PROJECT_NAME \
         --tags project=$PROJECT_NAME \
+        --disable-rollback \
         --region $REGION
 
     # Get IAM role arn
@@ -33,7 +34,7 @@
     ```
 
 === ":simple-windows: Windows"
-    ``` shell hl_lines="1 2 3 4"
+    ``` powershell hl_lines="1 2 3 4"
     $EKS_CLUSTER_ROLE_STACK_NAME="<stack name>"
     $EKS_CLUSTER_ROLE_NAME="<role name>"
     $PROJECT_NAME="<project name>"
@@ -48,6 +49,7 @@
         --capabilities CAPABILITY_NAMED_IAM `
         --parameter-overrides RoleName=$EKS_CLUSTER_ROLE_NAME ProjectName=$PROJECT_NAME `
         --tags project=$PROJECT_NAME `
+        --disable-rollback `
         --region $REGION
 
     # Get IAM role arn
@@ -141,28 +143,55 @@ eksctl create cluster -f cluster.yaml
 
 ## Create IAM OIDC provider
 
-``` shell hl_lines="1 2"
-CLUSTER_NAME="cluster name"
-REGION="region"
+=== ":simple-linux: Linux"
 
-eksctl utils associate-iam-oidc-provider \
-    --cluster $CLUSTER_NAME \
-    --region $REGION \
-    --approve
-```
+    ``` bash hl_lines="1 2"
+    CLUSTER_NAME="cluster name"
+    REGION="region"
+
+    eksctl utils associate-iam-oidc-provider \
+        --cluster $CLUSTER_NAME \
+        --region $REGION \
+        --approve
+    ```
+
+=== ":simple-windows: Windows"
+
+    ``` powershell hl_lines="1 2"
+    $CLUSTER_NAME="cluster name"
+    $REGION="region"
+
+    eksctl utils associate-iam-oidc-provider `
+        --cluster $CLUSTER_NAME `
+        --region $REGION `
+        --approve
+    ```
 
 [AWS Documentation](https://docs.aws.amazon.com/eks/latest/userguide/enable-iam-roles-for-service-accounts.html)
 
 ## Create `kubeconfig` for EKS cluster
 
-``` shell hl_lines="1 2"
-CLUSTER_NAME="cluster name"
-REGION="region"
+=== ":simple-linux: Linux"
 
-aws eks update-kubeconfig \
-    --name $CLUSTER_NAME \
-    --region $REGION
-```
+    ``` bash hl_lines="1 2"
+    CLUSTER_NAME="<cluster name>"
+    REGION="<region code>"
+
+    aws eks update-kubeconfig \
+        --name $CLUSTER_NAME \
+        --region $REGION
+    ```
+
+=== ":simple-windows: Windows"
+
+    ``` powershell hl_lines="1 2"
+    $CLUSTER_NAME="<cluster name>"
+    $REGION="<region code>"
+
+    aws eks update-kubeconfig `
+        --name $CLUSTER_NAME `
+        --region $REGION
+    ```
 
 !!! note
 

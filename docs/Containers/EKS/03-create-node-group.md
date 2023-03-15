@@ -20,6 +20,12 @@
         --capabilities CAPABILITY_NAMED_IAM \
         --tags project=$PROJECT_NAME \
         --region $REGION
+    
+    aws cloudformation describe-stacks \
+        --stack-name $NODE_GROUP_ROLE_STACK_NAME \
+        --query "Stacks[0].Outputs[0].OutputValue" \
+        --output text \
+        --region $REGION
     ```
 
 === ":simple-windows: Windows"
@@ -37,6 +43,12 @@
         --parameter-overrides RoleName=$NODE_GROUP_ROLE_NAME ProjectName=$PROJECT_NAME `
         --capabilities CAPABILITY_NAMED_IAM `
         --tags project=$PROJECT_NAME `
+        --region $REGION
+    
+    aws cloudformation describe-stacks `
+        --stack-name $NODE_GROUP_ROLE_STACK_NAME `
+        --query "Stacks[0].Outputs[0].OutputValue" `
+        --output text `
         --region $REGION
     ```
 

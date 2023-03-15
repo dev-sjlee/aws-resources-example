@@ -1,0 +1,25 @@
+configs:
+  cm:
+    accounts.image-updater: apiKey
+  rbac:
+    policy.csv: |
+      p, role:image-updater, applications, get, */*, allow
+      p, role:image-updater, applications, update, */*, allow
+      g, image-updater, role:image-updater
+    policy.default: role.readonly
+redis-ha:
+  enabled: true
+controller:
+  replicas: 1
+  args:
+    appResyncPeriod: 60
+server:
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+repoServer:
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+applicationSet:
+  replicaCount: 2

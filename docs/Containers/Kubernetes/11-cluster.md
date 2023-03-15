@@ -76,6 +76,13 @@ vpc:
         id: "<subnet id>" # ex. subnet-08cb9a2ed60394ce3
       <az code>:  # ex. eu-north-1c
         id: "<subnet id>" # ex. subnet-00f71956cdec8f1dc
+  sharedNodeSecurityGroup: "<general nodegroup security group>" # ex. sg-013f261f9fb5855f7
+  manageSharedNodeSecurityGroupRules: false
+  # clusterEndpoints:
+  #   publicAccess: true
+  #   privateAccess: true
+  # publicAccessCIDRs:
+  #   - 0.0.0.0/0 # or my ip
 
 addons:
   - name: vpc-cni
@@ -88,7 +95,7 @@ privateCluster:
 
 managedNodeGroups:
   - name: <node group name> # ex. ng-1
-    amiFamily: AmazonLinux2
+    amiFamily: AmazonLinux2 # Bottlerocket
     instanceType: m5.large
     subnets:
       - "<subnet id>"
@@ -97,6 +104,17 @@ managedNodeGroups:
     desiredCapacity: 3
     minSize: 3
     maxSize: 6
+    # labels:
+    #   key1: value1
+    privateNetworking: true
+    # tags:
+    #   key1: value1
+    # taints:
+    #   - key:
+    #     value:
+    #     effect:
+    launchTemplate:
+      id: <launch template id>
     iam:
       instanceRoleARN: "<node group role arn>"
 

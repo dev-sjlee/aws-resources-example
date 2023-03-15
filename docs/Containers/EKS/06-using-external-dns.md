@@ -2,40 +2,16 @@
 
 ## Create the service account for External DNS
 
-=== "Using command"
-    ``` shell hl_lines="1 2 3 4 5"
+=== ":simple-linux: Linux"
+
+    ``` bash hl_lines="1 2 3 4 5"
     CLUSTER_NAME="<cluster name>"
     POLICY_NAME="<policy name>"
     ROLE_NAME="<role name>"
     PROJECT_NAME="<project name>"
     REGION="<region>"
 
-    cat << EOF > external-dns-iam-policy.json
-    {
-      "Version": "2012-10-17",
-      "Statement": [
-        {
-          "Effect": "Allow",
-          "Action": [
-            "route53:ChangeResourceRecordSets"
-          ],
-          "Resource": [
-            "arn:aws:route53:::hostedzone/*"
-          ]
-        },
-        {
-          "Effect": "Allow",
-          "Action": [
-            "route53:ListHostedZones",
-            "route53:ListResourceRecordSets"
-          ],
-          "Resource": [
-            "*"
-          ]
-        }
-      ]
-    }
-    EOF
+    curl -O https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/external-dns-iam-policy.json
 
     POLICY_ARN=$(aws iam create-policy \
         --policy-name $POLICY_NAME \
@@ -57,32 +33,34 @@
         --approve
     ```
 
-=== "JSON file"
-    ``` json title="external-dns-iam-policy.json" linenums="1"
-    {
-      "Version": "2012-10-17",
-      "Statement": [
-        {
-          "Effect": "Allow",
-          "Action": [
-            "route53:ChangeResourceRecordSets"
-          ],
-          "Resource": [
-            "arn:aws:route53:::hostedzone/*"
-          ]
-        },
-        {
-          "Effect": "Allow",
-          "Action": [
-            "route53:ListHostedZones",
-            "route53:ListResourceRecordSets"
-          ],
-          "Resource": [
-            "*"
-          ]
-        }
-      ]
-    }
+=== ":simple-windows: Windows"
+
+    ``` powershell hl_lines="1 2 3 4 5"
+    $CLUSTER_NAME="<cluster name>"
+    $POLICY_NAME="<policy name>"
+    $ROLE_NAME="<role name>"
+    $PROJECT_NAME="<project name>"
+    $REGION="<region>"
+
+    Invoke-WebRequest https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/external-dns-iam-policy.json -Outfile external-dns-iam-policy.json
+
+    $POLICY_ARN = aws iam create-policy `
+        --policy-name $POLICY_NAME `
+        --policy-document file://external-dns-iam-policy.json `
+        --query 'Policy.Arn' `
+        --output text `
+        --tags Key=project,Value=$PROJECT_NAME
+    
+    eksctl create iamserviceaccount `
+        --name external-dns `
+        --namespace external-dns `
+        --cluster $CLUSTER_NAME `
+        --attach-policy-arn $POLICY_ARN `
+        --role-name $ROLE_NAME `
+        --tags project=$PROJECT_NAME `
+        --region $REGION `
+        --override-existing-serviceaccounts `
+        --approve
     ```
 
 [AWS Documentation](https://aws.amazon.com/ko/premiumsupport/knowledge-center/eks-set-up-externaldns/)
@@ -92,24 +70,45 @@
 
 ## Install External DNS using `helm`
 
-``` shell hl_lines="1 2"
-DOMAIN_NAME="<domain name (ex. my-org.com)>"
-ZONE_TYPE="<zone type (public or private)>"
+=== ":simple-linux: Linux"
 
-helm repo add external-dns https://kubernetes-sigs.github.io/external-dns/
+    ``` bash hl_lines="1 2"
+    DOMAIN_NAME="<domain name (ex. my-org.com)>"
+    ZONE_TYPE="<zone type (public or private)>"
 
-helm upgrade --install external-dns external-dns/external-dns \
-    --namespace external-dns \
-    --set serviceAccount.create=false \
-    --set serviceAccount.name=external-dns \
-    --set policy=sync \
-    --set registry=txt \
-    --set txtOwnerId=my-hostedzone-identifier \
-    --set domainFilters[0]=$DOMAIN_NAME \
-    --set provider=aws \
-    --set extraArgs[0]="--aws-zone-type=$ZONE_TYPE"
+    helm repo add external-dns https://kubernetes-sigs.github.io/external-dns/
 
-```
+    helm upgrade --install external-dns external-dns/external-dns \
+        --namespace external-dns \
+        --set serviceAccount.create=false \
+        --set serviceAccount.name=external-dns \
+        --set policy=sync \
+        --set registry=txt \
+        --set txtOwnerId=my-hostedzone-identifier \
+        --set domainFilters[0]=$DOMAIN_NAME \
+        --set provider=aws \
+        --set extraArgs[0]="--aws-zone-type=$ZONE_TYPE"
+    ```
+
+=== ":simple-windows: Windows"
+
+    ``` powershell hl_lines="1 2"
+    $DOMAIN_NAME="<domain name (ex. my-org.com)>"
+    $ZONE_TYPE="<zone type (public or private)>"
+
+    helm repo add external-dns https://kubernetes-sigs.github.io/external-dns/
+
+    helm upgrade --install external-dns external-dns/external-dns `
+        --namespace external-dns `
+        --set serviceAccount.create=false `
+        --set serviceAccount.name=external-dns `
+        --set policy=sync `
+        --set registry=txt `
+        --set txtOwnerId=my-hostedzone-identifier `
+        --set domainFilters[0]=$DOMAIN_NAME `
+        --set provider=aws `
+        --set extraArgs[0]="--aws-zone-type=$ZONE_TYPE"
+    ```
 
 [External DNS Helm Chart Documentation](https://github.com/kubernetes-sigs/external-dns/tree/master/charts/external-dns)
 

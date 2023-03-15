@@ -39,3 +39,8 @@ Resources:
       InstanceProfileName: !Ref EKSNodeGroupRole
       Roles: 
         - !Ref EKSNodeGroupRole
+
+Outputs:
+  RoleArn:
+    Description: Arn of cluster IAM role.
+    Value: !GetAtt EKSNodeGroupRole.Arn
