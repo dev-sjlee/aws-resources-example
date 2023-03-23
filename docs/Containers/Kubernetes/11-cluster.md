@@ -1,5 +1,7 @@
 # Cluster
 
+[eksctl config file schema](https://eksctl.io/usage/schema/)
+
 ``` shell
 eksctl create cluster -f cluster.yaml
 ```
@@ -11,7 +13,7 @@ kind: ClusterConfig
 metadata:
   name: <cluster name>
   region: <region code>
-  version: "1.24" # default is "1.24"
+  version: "1.25" # default is "1.25"
   # tags:
   #   <key1>: <value1>
   #   <key2>: <value2>
@@ -135,6 +137,6 @@ secretsEncryption:
   keyARN: "<kms key arn>" # ex. arn:aws:kms:us-east-1:123456789012:key/12345678-abcd-efgh-ijkl-123456789012
 ```
 
-(eksctl Config file schema)[https://eksctl.io/usage/schema/]
-
 1. If you use launch template, you should define instance type in launch template and do not use this object.
+
+[eksctl Config file schema](https://eksctl.io/usage/schema/)

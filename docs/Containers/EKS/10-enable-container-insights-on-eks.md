@@ -22,7 +22,7 @@ kubectl apply -f https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch
 
 [AWS Documentation](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-setup-metrics.html#create-namespace-metrics)
 
-### Create a service account in the cluster
+### Create a service account for CloudWatch Agent
 
 ``` shell
 kubectl apply -f https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/daemonset/container-insights-monitoring/cwagent/cwagent-serviceaccount.yaml
@@ -81,7 +81,7 @@ kubectl apply -f https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch
 
 [AWS Documentation](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-setup-metrics.html#create-service-account)
 
-### Create an IAM role for service account
+### Create an IAM role for CloudWatch Agent service account
 
 === ":simple-linux: Linux"
 
@@ -705,7 +705,81 @@ kubectl get pods -n amazon-cloudwatch
             effect: "NoSchedule"
     ```
 
+!!! tip
+
+    Do you want to log with custom cloudwatch log group, please add some config like this in `fluent-bit-config` configmap.
+
+    ``` conf
+    [INPUT]
+        Name                tail
+        Tag                 application.app_name
+        Path                /var/log/containers/app_name-*
+        multiline.parser    docker, cri
+        DB                  /var/fluent-bit/state/flb_app_name.db
+        Mem_Buf_Limit       50MB
+        Skip_Long_Lines     On
+        Refresh_Interval    10
+        Rotate_Wait         30
+        storage.type        filesystem
+        Read_from_Head      ${READ_FROM_HEAD}
+    
+    [OUTPUT]
+        Name                cloudwatch_logs
+        Match               application.app_name
+        region              ${AWS_REGION}
+        log_group_name      /aws/${AWS_REGION}/app_name # log group name
+        log_stream_prefix   ${HOST_NAME}-
+        auto_create_group   true
+        extra_user_agent    container-insights
+    ```
+
 [AWS Documentation](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-setup-logs-FluentBit.html#Container-Insights-FluentBit-setup)
+
+### Update the Fluent Bit service account
+
+=== ":simple-linux: Linux"
+
+    ``` bash hl_lines="1 2 3 4"
+    CLUSTER_NAME="<cluster name>"
+    ROLE_NAME="<role_name>"
+    PROJECT_NAME="<project name>"
+    REGION="<region code>"
+
+    eksctl create iamserviceaccount \
+        --cluster $CLUSTER_NAME \
+        --name fluent-bit \
+        --namespace amazon-cloudwatch \
+        --attach-policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy \
+        --role-name $ROLE_NAME \
+        --tags project=$PROJECT_NAME \
+        --region $REGION \
+        --override-existing-serviceaccounts \
+        --approve
+    
+    kubectl rollout restart ds/fluent-bit -n amazon-cloudwatch
+    ```
+
+=== ":simple-windows: Windows"
+
+    ``` powershell hl_lines="1 2 3 4"
+    $CLUSTER_NAME="<cluster name>" 
+    $ROLE_NAME="<role_name>"
+    $PROJECT_NAME="<project name>"
+    $REGION="<region code>"
+
+    eksctl create iamserviceaccount `
+        --cluster $CLUSTER_NAME `
+        --name fluent-bit `
+        --namespace amazon-cloudwatch `
+        --attach-policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy `
+        --role-name $ROLE_NAME `
+        --tags project=$PROJECT_NAME `
+        --region $REGION `
+        --override-existing-serviceaccounts `
+        --approve
+    
+    kubectl rollout restart ds/fluent-bit -n amazon-cloudwatch
+    ```
 
 ## Using ADOT on EC2
 
