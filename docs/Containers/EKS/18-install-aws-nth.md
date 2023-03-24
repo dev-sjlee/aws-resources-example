@@ -17,7 +17,7 @@ NTH_INFRA_STACK_NAME="<stack name>"
 PROJECT_NAME="<project name>"
 REGION="<region code>"
 
-curl -O https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/nth-cfn.yaml
+curl -LO https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/nth-cfn.yaml
 
 aws cloudformation deploy \
     --template-file ./nth-cfn.yaml \

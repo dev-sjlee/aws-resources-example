@@ -11,7 +11,7 @@
     PROJECT_NAME="<project name>"
     REGION="<region code>"
 
-    curl -O https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/nodegroup-role-cfn.yaml
+    curl -LO https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/nodegroup-role-cfn.yaml
 
     aws cloudformation deploy \
         --stack-name $NODE_GROUP_ROLE_STACK_NAME \
@@ -35,7 +35,7 @@
     $PROJECT_NAME="<project name>"
     $REGION="<region code>"
 
-    Invoke-WebRequest https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/nodegroup-role-cfn.yaml -Outfile nodegroup-role-cfn.yaml
+    curl.exe -LO https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/nodegroup-role-cfn.yaml
 
     aws cloudformation deploy `
         --stack-name $NODE_GROUP_ROLE_STACK_NAME `

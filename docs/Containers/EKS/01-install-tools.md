@@ -32,7 +32,7 @@
 === "Linux (x86_64)"
     
     ``` bash
-    curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.23.7/2022-06-29/bin/linux/amd64/kubectl
+    curl -LO https://s3.us-west-2.amazonaws.com/amazon-eks/1.23.7/2022-06-29/bin/linux/amd64/kubectl
     sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
     sudo install -o root -g root -m 0755 kubectl /usr/bin/kubectl
     kubectl version --short --client
@@ -43,7 +43,7 @@
 === "Linux (ARM64)"
     
     ``` bash
-    curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.23.7/2022-06-29/bin/linux/arm64/kubectl
+    curl -LO https://s3.us-west-2.amazonaws.com/amazon-eks/1.23.7/2022-06-29/bin/linux/arm64/kubectl
     sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
     sudo install -o root -g root -m 0755 kubectl /usr/bin/kubectl
     kubectl version --short --client

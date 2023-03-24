@@ -13,7 +13,7 @@
 
     ACCOUNT_ID=$(aws sts get-caller-identity --query 'Account' --output text)
 
-    curl -O https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/fargate-profile-role-cfn.yaml
+    curl -LO https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/fargate-profile-role-cfn.yaml
 
     aws cloudformation deploy \
         --template-file ./fargate-profile-role-cfn.yaml \
@@ -31,7 +31,7 @@
     $PROJECT_NAME="<project name>"
     $REGION="<region>"
 
-    Invoke-WebRequest https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/fargate-profile-role-cfn.yaml -Outfile fargate-profile-role-cfn.yaml
+    curl.exe -LO https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/fargate-profile-role-cfn.yaml
 
     aws cloudformation deploy `
         --template-file ./fargate-profile-role-cfn.yaml `

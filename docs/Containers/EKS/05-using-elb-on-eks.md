@@ -11,7 +11,7 @@
     PROJECT_NAME="<project name>"
     REGION="<region>"
 
-    curl -o aws-load-balancer-controller-iam-policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/main/docs/install/iam_policy.json
+    curl -L -o aws-load-balancer-controller-iam-policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/main/docs/install/iam_policy.json
 
     POLICY_ARN=$(aws iam create-policy \
         --policy-name $POLICY_NAME \
@@ -42,7 +42,7 @@
     $PROJECT_NAME="<project name>"
     $REGION="<region>"
 
-    Invoke-WebRequest https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/main/docs/install/iam_policy.json -Outfile aws-load-balancer-controller-iam-policy.json
+    curl.exe -L -o aws-load-balancer-controller-iam-policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/main/docs/install/iam_policy.json
 
     $POLICY_ARN = aws iam create-policy `
         --policy-name $POLICY_NAME `

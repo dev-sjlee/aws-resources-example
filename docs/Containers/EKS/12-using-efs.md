@@ -11,7 +11,7 @@
     PROJECT_NAME="<project name>"
     REGION="<region code>"
 
-    curl -o efs-csi-driver-policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-efs-csi-driver/master/docs/iam-policy-example.json
+    curl -L -o efs-csi-driver-policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-efs-csi-driver/master/docs/iam-policy-example.json
 
     POLICY_ARN=$(aws iam create-policy \
         --policy-name $POLICY_NAME \

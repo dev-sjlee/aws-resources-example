@@ -61,5 +61,5 @@ exit
 ``` bash hl_lines="1"
 REGION="<REGION_CODE>"
 
-curl --silent https://ip-ranges.amazonaws.com/ip-ranges.json | jq '.prefixes[] | select((.service=="CLOUD9") and (.region=='\"$REGION\"'))'
+curl -L --silent https://ip-ranges.amazonaws.com/ip-ranges.json | jq '.prefixes[] | select((.service=="CLOUD9") and (.region=='\"$REGION\"'))'
 ```

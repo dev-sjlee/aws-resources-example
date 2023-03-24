@@ -13,7 +13,7 @@
     PROJECT_NAME="<project name>"
     REGION="<region code>"
 
-    curl -O https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/cluster-role-cfn.yaml
+    curl -LO https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/cluster-role-cfn.yaml
 
     # Deploy stack
     aws cloudformation deploy \
@@ -40,7 +40,7 @@
     $PROJECT_NAME="<project name>"
     $REGION="<region code>"
 
-    Invoke-WebRequest https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/cluster-role-cfn.yaml -Outfile cluster-role-cfn.yaml
+    curl.exe -LO https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/cluster-role-cfn.yaml
 
     # Deploy stack
     aws cloudformation deploy `
@@ -204,7 +204,7 @@ eksctl create cluster -f cluster.yaml
 ## Install AWS Authenticator Config Map
 
 ``` shell
-curl -o aws-auth-cm.yaml https://s3.us-west-2.amazonaws.com/amazon-eks/cloudformation/2020-10-29/aws-auth-cm.yaml
+curl -LO aws-auth-cm.yaml https://s3.us-west-2.amazonaws.com/amazon-eks/cloudformation/2020-10-29/aws-auth-cm.yaml
 ```
 
 You should open file and change to IAM role arn(not instance profile).

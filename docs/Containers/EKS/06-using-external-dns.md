@@ -11,7 +11,7 @@
     PROJECT_NAME="<project name>"
     REGION="<region>"
 
-    curl -O https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/external-dns-iam-policy.json
+    curl -LO https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/external-dns-iam-policy.json
 
     POLICY_ARN=$(aws iam create-policy \
         --policy-name $POLICY_NAME \
@@ -42,7 +42,7 @@
     $PROJECT_NAME="<project name>"
     $REGION="<region>"
 
-    Invoke-WebRequest https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/external-dns-iam-policy.json -Outfile external-dns-iam-policy.json
+    curl.exe -LO https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/external-dns-iam-policy.json
 
     $POLICY_ARN = aws iam create-policy `
         --policy-name $POLICY_NAME `

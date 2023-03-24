@@ -13,7 +13,7 @@
     PROJECT_NAME="<project name>"
     REGION="<region code>"
 
-    curl -O https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/cluster-autoscaler-policy.json
+    curl -LO https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/cluster-autoscaler-policy.json
 
     POLICY_ARN=$(aws iam create-policy \
         --policy-name $POLICY_NAME \
@@ -43,7 +43,7 @@
     $PROJECT_NAME="<project name>"
     $REGION="<region code>"
 
-    Invoke-WebRequest https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/cluster-autoscaler-policy.json -Outfile cluster-autoscaler-policy.json
+    curl.exe -LO https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/cluster-autoscaler-policy.json
 
     POLICY_ARN = aws iam create-policy `
         --policy-name $POLICY_NAME `

@@ -130,7 +130,7 @@ kubectl apply -f https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch
     ``` bash hl_lines="1"
     CLUSTER_NAME="<cluster name>"
 
-    curl -O https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/daemonset/container-insights-monitoring/cwagent/cwagent-configmap.yaml
+    curl -LO https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/daemonset/container-insights-monitoring/cwagent/cwagent-configmap.yaml
 
     sed -i "s/{{cluster_name}}/$CLUSTER_NAME/" cwagent-configmap.yaml
 
@@ -142,7 +142,7 @@ kubectl apply -f https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch
     ``` powershell hl_lines="1"
     $CLUSTER_NAME="<cluster name>"
 
-    Invoke-WebRequest https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/daemonset/container-insights-monitoring/cwagent/cwagent-configmap.yaml -Outfile cwagent-configmap.yaml
+    curl.exe -LO https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/daemonset/container-insights-monitoring/cwagent/cwagent-configmap.yaml
 
     (Get-Content cwagent-configmap.yaml) | ForEach-Object { $_ -replace '{{cluster_name}}', $CLUSTER_NAME } | Set-Content cwagent-configmap.yaml
 
@@ -1204,9 +1204,11 @@ kubectl get pods -l name=aws-otel-eks-ci -n aws-otel-eks
     CLUSTER_NAME="<cluster name>"
     REGION="<region code>"
 
-    curl https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/deployment-template/eks/otel-fargate-container-insights.yaml | \
-        sed "s/$CLUSTER_NAME/'<cluster name>'/;s/$REGION/'<region code>'/" | \
-        kubectl apply -f -
+    curl -LO https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/deployment-template/eks/otel-fargate-container-insights.yaml
+    sed -i "s|YOUR-EKS-CLUSTER-NAME|$CLUSTER_NAME|g" otel-fargate-container-insights.yaml
+    sed -i "s|us-east-1|$REGION|g" otel-fargate-container-insights.yaml
+
+    kubectl apply -f otel-fargate-container-insights.yaml
     ```
 
 === ":simple-windows: Windows"
@@ -1215,11 +1217,13 @@ kubectl get pods -l name=aws-otel-eks-ci -n aws-otel-eks
     $CLUSTER_NAME="<cluster name>"
     $REGION="<region code>"
 
-    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/deployment-template/eks/otel-fargate-container-insights.yaml" -UseBasicParsing | 
-        Select-String -Pattern $CLUSTER_NAME, $REGION | 
-        ForEach-Object { $_.Line = $_.Line -replace $CLUSTER_NAME, "'<cluster name>'" -replace $REGION, "'<region code>'" } | 
-        %{ $_.Line } | 
-        kubectl apply -f -
+    curl.exe -LO https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/deployment-template/eks/otel-fargate-container-insights.yaml
+    $content = Get-Content otel-fargate-container-insights.yaml
+    $content = $content -replace "YOUR-EKS-CLUSTER-NAME", $CLUSTER_NAME
+    $content = $content -replace "us-east-1", $REGION
+    $content | Set-Content otel-fargate-container-insights.yaml
+
+    kubectl apply -f otel-fargate-container-insights.yaml
     ```
 
 ??? note "otel-fargate-container-insights.yaml"

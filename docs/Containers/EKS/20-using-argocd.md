@@ -27,7 +27,7 @@ kubectl create ns argocd
 === ":simple-windows: Windows"
 
     ``` powershell
-    Invoke-WebRequest https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/argocd-values.yaml -Outfile argocd-values.yaml
+    curl.exe -LO https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/argocd-values.yaml
     
     helm repo add argo https://argoproj.github.io/argo-helm
     helm install argocd argo/argo-cd `
@@ -175,7 +175,7 @@ argocd account generate-token --account image-updater --id image-updater
 
     $ACCOUNT_ID = aws sts get-caller-identity --query "Account" --output text
     
-    Invoke-WebRequest https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/argocd-image-updater-values.yaml -Outfile argocd-image-updater-values.yaml
+    curl.exe -LO https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/argocd-image-updater-values.yaml
 
     (Get-Content -Path argocd-image-updater-values.yaml -Raw) -replace 'ARGOCD_TOKEN', $TOKEN `
                                                             -replace 'ACCOUNT_ID', $ACCOUNT_ID `
