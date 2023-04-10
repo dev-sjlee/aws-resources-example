@@ -99,7 +99,7 @@
 
     ``` bash hl_lines="1 2 3"
     $CLUSTER_NAME="<cluster name>"
-    $IMAGE_TAG="<image tag (ex. 1.24.0)>"
+    $IMAGE_TAG="<image tag (ex. 1.25.1)>"
     $REGION="<region code>"
 
     helm repo add autoscaler https://kubernetes.github.io/autoscaler
@@ -121,7 +121,14 @@
         --set rbac.serviceAccount.name=cluster-autoscaler
     ```
 
-> Go to [here](https://github.com/kubernetes/autoscaler/releases) and please check the new version of your kubernetes version.
+| Kubernetes | CA     | Default |
+|------------|--------|---------|
+| 1.25       | 1.25.1 | default |
+| 1.24       | 1.24.1 |         |
+| 1.23       | 1.23   |         |
+| 1.22       | 1.22.2 |         |
+
+> Go to [here](https://github.com/kubernetes/autoscaler/releases) and please check the new version of your kubernetes version. (2023-04-07)
 
 [AWS Documentation](https://docs.aws.amazon.com/ko_kr/eks/latest/userguide/autoscaling.html#ca-deploy)
 

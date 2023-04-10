@@ -283,26 +283,68 @@ kubectl get pods -n amazon-cloudwatch
           serviceAccountName: cloudwatch-agent
     ```
 
+### Create a service account for Fluent Bit
+
+=== ":simple-linux: Linux"
+
+    ``` bash hl_lines="1 2 3 4"
+    CLUSTER_NAME="<cluster name>"
+    ROLE_NAME="<role_name>"
+    PROJECT_NAME="<project name>"
+    REGION="<region code>"
+
+    eksctl create iamserviceaccount \
+        --cluster $CLUSTER_NAME \
+        --name fluent-bit \
+        --namespace amazon-cloudwatch \
+        --attach-policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy \
+        --role-name $ROLE_NAME \
+        --tags project=$PROJECT_NAME \
+        --region $REGION \
+        --override-existing-serviceaccounts \
+        --approve
+    ```
+
+=== ":simple-windows: Windows"
+
+    ``` powershell hl_lines="1 2 3 4"
+    $CLUSTER_NAME="<cluster name>" 
+    $ROLE_NAME="<role_name>"
+    $PROJECT_NAME="<project name>"
+    $REGION="<region code>"
+
+    eksctl create iamserviceaccount `
+        --cluster $CLUSTER_NAME `
+        --name fluent-bit `
+        --namespace amazon-cloudwatch `
+        --attach-policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy `
+        --role-name $ROLE_NAME `
+        --tags project=$PROJECT_NAME `
+        --region $REGION `
+        --override-existing-serviceaccounts `
+        --approve
+    ```
+
 ### Deploy a Fluent Bit as a DaemonSet
 
 === ":simple-linux: Linux"
 
     ``` bash hl_lines="1 2"
-    ClusterName="<cluster name>"
-    RegionName="<region code>"
+    CLUSTER_NAME="<cluster name>"
+    REGION="<region code>"
     FluentBitHttpPort='2020'
     FluentBitReadFromHead='Off'
     [[ ${FluentBitReadFromHead} = 'On' ]] && FluentBitReadFromTail='Off'|| FluentBitReadFromTail='On'
     [[ -z ${FluentBitHttpPort} ]] && FluentBitHttpServer='Off' || FluentBitHttpServer='On'
     kubectl create configmap fluent-bit-cluster-info \
-        --from-literal=cluster.name=${ClusterName} \
+        --from-literal=cluster.name=${CLUSTER_NAME} \
         --from-literal=http.server=${FluentBitHttpServer} \
         --from-literal=http.port=${FluentBitHttpPort} \
         --from-literal=read.head=${FluentBitReadFromHead} \
         --from-literal=read.tail=${FluentBitReadFromTail} \
-        --from-literal=logs.region=${RegionName} -n amazon-cloudwatch
+        --from-literal=logs.region=${REGION} -n amazon-cloudwatch
 
-    kubectl apply -f https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/daemonset/container-insights-monitoring/fluent-bit/fluent-bit.yaml
+    kubectl apply -f https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/fluent-bit.yaml
 
     kubectl get pods -n amazon-cloudwatch
     ```
@@ -334,7 +376,7 @@ kubectl get pods -n amazon-cloudwatch
         --from-literal=read.tail=${FluentBitReadFromTail} `
         --from-literal=logs.region=${REGION} -n amazon-cloudwatch
 
-    kubectl apply -f https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/daemonset/container-insights-monitoring/fluent-bit/fluent-bit.yaml
+    kubectl apply -f https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/fluent-bit.yaml
 
     kubectl get pods -n amazon-cloudwatch
     ```
@@ -342,11 +384,11 @@ kubectl get pods -n amazon-cloudwatch
 ??? note "fluent-bit.yaml"
 
     ``` yaml linenums="1"
-    apiVersion: v1
-    kind: ServiceAccount
-    metadata:
-      name: fluent-bit
-      namespace: amazon-cloudwatch
+    # apiVersion: v1
+    # kind: ServiceAccount
+    # metadata:
+    #   name: fluent-bit
+    #   namespace: amazon-cloudwatch
     ---
     apiVersion: rbac.authorization.k8s.io/v1
     kind: ClusterRole
@@ -501,7 +543,7 @@ kubectl get pods -n amazon-cloudwatch
         [FILTER]
             Name                aws
             Match               dataplane.*
-            imds_version        v1
+            imds_version        v2
 
         [OUTPUT]
             Name                cloudwatch_logs
@@ -549,7 +591,7 @@ kubectl get pods -n amazon-cloudwatch
         [FILTER]
             Name                aws
             Match               host.*
-            imds_version        v1
+            imds_version        v2
 
         [OUTPUT]
             Name                cloudwatch_logs
@@ -647,7 +689,7 @@ kubectl get pods -n amazon-cloudwatch
                       apiVersion: v1
                       fieldPath: metadata.name
                 - name: CI_VERSION
-                  value: "k8s/1.3.12"
+                  value: "k8s/1.3.13"
             resources:
                 limits:
                   memory: 200Mi
@@ -727,59 +769,13 @@ kubectl get pods -n amazon-cloudwatch
         Name                cloudwatch_logs
         Match               application.app_name
         region              ${AWS_REGION}
-        log_group_name      /aws/${AWS_REGION}/app_name # log group name
+        log_group_name      /aws/${AWS_REGION}/app_name
         log_stream_prefix   ${HOST_NAME}-
         auto_create_group   true
         extra_user_agent    container-insights
     ```
 
 [AWS Documentation](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-setup-logs-FluentBit.html#Container-Insights-FluentBit-setup)
-
-### Update the Fluent Bit service account
-
-=== ":simple-linux: Linux"
-
-    ``` bash hl_lines="1 2 3 4"
-    CLUSTER_NAME="<cluster name>"
-    ROLE_NAME="<role_name>"
-    PROJECT_NAME="<project name>"
-    REGION="<region code>"
-
-    eksctl create iamserviceaccount \
-        --cluster $CLUSTER_NAME \
-        --name fluent-bit \
-        --namespace amazon-cloudwatch \
-        --attach-policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy \
-        --role-name $ROLE_NAME \
-        --tags project=$PROJECT_NAME \
-        --region $REGION \
-        --override-existing-serviceaccounts \
-        --approve
-    
-    kubectl rollout restart ds/fluent-bit -n amazon-cloudwatch
-    ```
-
-=== ":simple-windows: Windows"
-
-    ``` powershell hl_lines="1 2 3 4"
-    $CLUSTER_NAME="<cluster name>" 
-    $ROLE_NAME="<role_name>"
-    $PROJECT_NAME="<project name>"
-    $REGION="<region code>"
-
-    eksctl create iamserviceaccount `
-        --cluster $CLUSTER_NAME `
-        --name fluent-bit `
-        --namespace amazon-cloudwatch `
-        --attach-policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy `
-        --role-name $ROLE_NAME `
-        --tags project=$PROJECT_NAME `
-        --region $REGION `
-        --override-existing-serviceaccounts `
-        --approve
-    
-    kubectl rollout restart ds/fluent-bit -n amazon-cloudwatch
-    ```
 
 ## Using ADOT on EC2
 
