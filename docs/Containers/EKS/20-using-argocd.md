@@ -48,21 +48,21 @@ kubectl create ns argocd
           g, image-updater, role:image-updater
         policy.default: role.readonly
     redis-ha:
-      enabled: true
+      enabled: false
     controller:
       replicas: 1
       args:
         appResyncPeriod: 60
     server:
       autoscaling:
-        enabled: true
-        minReplicas: 2
+        enabled: false
+        minReplicas: 1
     repoServer:
       autoscaling:
-        enabled: true
-        minReplicas: 2
+        enabled: false
+        minReplicas: 1
     applicationSet:
-      replicaCount: 2
+      replicaCount: 1
     ```
 
 [Github Documentation](https://github.com/argoproj/argo-helm/tree/main/charts/argo-cd)
