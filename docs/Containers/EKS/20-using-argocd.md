@@ -159,7 +159,7 @@ argocd account generate-token --account image-updater --id image-updater
 
     sed -i "s|ARGOCD_TOKEN|$TOKEN|g" argocd-image-updater-values.yaml
     sed -i "s|ACCOUNT_ID|$ACCOUNT_ID|g" argocd-image-updater-values.yaml
-    sed -i "s|REGION_CODE|$REGION_CODE|g" argocd-image-updater-values.yaml
+    sed -i "s|REGION_CODE|$REGION|g" argocd-image-updater-values.yaml
 
     helm repo add argo https://argoproj.github.io/argo-helm
     helm install argocd-image-updater argo/argocd-image-updater \
@@ -208,10 +208,11 @@ argocd account generate-token --account image-updater --id image-updater
           credsexpire: 10h
     authScripts:
       enabled: true
-      auth1.sh: |
-        #!/bin/sh
-    
-        aws ecr --region REGION_CODE get-authorization-token --output text --query 'authorizationData[].authorizationToken' | base64 -d
+      scripts:
+        auth1.sh: |
+          #!/bin/sh
+
+          aws ecr --region REGION_CODE get-authorization-token --output text --query 'authorizationData[].authorizationToken' | base64 -d
     serviceAccount:
       create: false
       name: argocd-image-updater

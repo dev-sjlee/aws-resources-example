@@ -9,7 +9,7 @@ metadata:
   labels:
     app: nginx
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: nginx
@@ -24,9 +24,9 @@ spec:
           image: nginx:1.14.2
           ports:
             - containerPort: 80
-          env:
-            - name: TEST
-              value: "Hello, World!"
+          # env:
+          #   - name: TEST
+          #     value: "Hello, World!"
           resources:
             requests:
               cpu: "250m"
@@ -53,13 +53,13 @@ spec:
               exec:
                 command: ["/bin/sh", "-c", "sleep 60"]
         terminationGracePeriodSeconds: 60
-        # tolerations:
-        #   - key: "key1"         # taint key
-        #     value: "value1"     # taint value
-        #     operator: "Equal"
-        #     effect: "NoSchedule"
-        # nodeSelector:
-        #   key: value            # node label key and value
+      # tolerations:
+      #   - key: "key1"         # taint key
+      #     value: "value1"     # taint value
+      #     operator: "Equal"
+      #     effect: "NoSchedule"
+      # nodeSelector:
+      #   key: value            # node label key and value
 ```
 
 [Kubernetes Documentation](https://kubernetes.io/ko/docs/concepts/workloads/controllers/deployment/)

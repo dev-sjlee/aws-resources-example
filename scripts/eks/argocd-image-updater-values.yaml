@@ -16,10 +16,11 @@ config:
       credsexpire: 10h
 authScripts:
   enabled: true
-  auth1.sh: |
-    #!/bin/sh
+  scripts:
+    auth1.sh: |
+      #!/bin/sh
 
-    aws ecr --region REGION_CODE get-authorization-token --output text --query 'authorizationData[].authorizationToken' | base64 -d
+      aws ecr --region REGION_CODE get-authorization-token --output text --query 'authorizationData[].authorizationToken' | base64 -d
 serviceAccount:
   create: false
   name: argocd-image-updater

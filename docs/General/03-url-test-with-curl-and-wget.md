@@ -59,10 +59,16 @@ curl -X DELETE "<URL>"
 curl -o /dev/null -w "%{http_code}" "<URL>"
 ```
 
-# URL Test with Wget
+## URL Test with Wget
 
-## Request URL silently
+### Request URL silently
 
 ``` bash
 wget --spider -S "<URL>"
+```
+
+## Create UUID (Random String)
+
+``` bash
+uuidgen -r
 ```

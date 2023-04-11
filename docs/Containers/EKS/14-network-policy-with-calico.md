@@ -43,6 +43,9 @@ spec:
   podSelector:
     matchLabels:
       app: app1 # app-label
+  types:
+    - ingress
+    - egress
   ingress:
     - from:
         - ipBlock:
@@ -51,7 +54,9 @@ spec:
             cidr: 10.0.2.0/24 # allow from elb
         - podSelector:
             matchLabels:
-              app: order      # allow from pod
+              app: app2      # allow from pod
       ports:
-        - port: 8080 # the port which should be Internet-accessible
+        - protocol: TCP
+          port: 8080 # the port which should be Internet-accessible
+  egress: {}  # egress any open
 ```

@@ -11,12 +11,12 @@
     PROJECT_NAME="<project name>"
     REGION="<region code>"
 
-    curl -L -o efs-csi-driver-policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-efs-csi-driver/master/docs/iam-policy-example.json
+    curl -Lo efs-csi-driver-policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-efs-csi-driver/master/docs/iam-policy-example.json
 
     POLICY_ARN=$(aws iam create-policy \
         --policy-name $POLICY_NAME \
         --policy-document file://efs-csi-driver-policy.json \
-        --tags Key=project,Value=$PROJECT_NAME \
+        # --tags Key=project,Value=$PROJECT_NAME \  # AWS CLI v2
     | jq -r '.Policy.Arn')
 
     eksctl create iamserviceaccount \
@@ -40,7 +40,7 @@
     $PROJECT_NAME="<project name>"
     $REGION="<region code>"
 
-    curl -o efs-csi-driver-policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-efs-csi-driver/master/docs/iam-policy-example.json
+    curl.exe -Lo efs-csi-driver-policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-efs-csi-driver/master/docs/iam-policy-example.json
 
     POLICY_ARN = aws iam create-policy `
         --policy-name $POLICY_NAME `
