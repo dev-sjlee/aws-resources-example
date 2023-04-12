@@ -1,5 +1,5 @@
 ---
-title: ArgoCD Templates
+title: ArgoCD
 description: Kubernetes manifests for deploying ArgoCD resources.
 ---
 

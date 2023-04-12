@@ -123,16 +123,17 @@
 
 | Kubernetes | CA     | Default |
 |------------|--------|---------|
+| 1.26       | 1.26.2 |         |
 | 1.25       | 1.25.1 | default |
 | 1.24       | 1.24.1 |         |
 | 1.23       | 1.23   |         |
 | 1.22       | 1.22.2 |         |
 
-> Go to [here](https://github.com/kubernetes/autoscaler/releases) and please check the new version of your kubernetes version. (2023-04-07)
+> Go to [here](https://github.com/kubernetes/autoscaler/releases) and please check the new version of your kubernetes version. (2023-04-12)
 
 [AWS Documentation](https://docs.aws.amazon.com/ko_kr/eks/latest/userguide/autoscaling.html#ca-deploy)
 
-## Using Karpenter
+## Using Karpenter (WIP)
 
 ### Create the Karpenter namespace
 

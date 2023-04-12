@@ -9,7 +9,8 @@ metadata:
   labels:
     app: nginx
 spec:
-  replicas: 2
+  # do not include replicas in the manifests if you want replicas to be controlled by HPA
+  # replicas: 2
   selector:
     matchLabels:
       app: nginx
@@ -63,3 +64,9 @@ spec:
 ```
 
 [Kubernetes Documentation](https://kubernetes.io/ko/docs/concepts/workloads/controllers/deployment/)
+
+!!! quote "Leaving Room For Imperativeness"
+
+    It may be desired to leave room for some imperativeness/automation, and not have everything defined in your Git manifests. For example, if you want the number of your deployment's replicas to be managed by Horizontal Pod Autoscaler, then you would not want to track replicas in Git.
+
+    [ArgoCD Best Practices](https://argo-cd.readthedocs.io/en/stable/user-guide/best_practices/#leaving-room-for-imperativeness)
