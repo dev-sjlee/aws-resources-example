@@ -1,6 +1,7 @@
 configs:
   cm:
     accounts.image-updater: apiKey
+    timeout.reconciliation: 60s
   rbac:
     policy.csv: |
       p, role:image-updater, applications, get, */*, allow
@@ -11,8 +12,6 @@ redis-ha:
   enabled: false
 controller:
   replicas: 1
-  args:
-    appResyncPeriod: 60
 server:
   autoscaling:
     enabled: false
