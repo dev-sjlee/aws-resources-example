@@ -173,6 +173,14 @@ spec:
       protocol: <protocol> # like TCP
 ```
 
+!!! note
+
+    If you want to use NLB, you should create a tag to target's security group like this:
+
+    ```
+    kubernetes.io/cluster/${CLUSTER_NAME}: owned
+    ```
+
 [AWS Documentation](https://docs.aws.amazon.com/eks/latest/userguide/network-load-balancing.html)
 
 [AWS Load Balancer Controller Documentation](https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.4/)

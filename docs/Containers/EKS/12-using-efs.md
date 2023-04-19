@@ -20,9 +20,9 @@
     | jq -r '.Policy.Arn')
 
     eksctl create iamserviceaccount \
-        --cluster $CLUSTSER_NAME \
-        --namespace kube-system \
-        --name efs-csi-controller-sa \
+        --cluster $CLUSTER_NAME \
+        --namespace=kube-system \
+        --name=efs-csi-controller-sa \
         --attach-policy-arn $POLICY_ARN \
         --role-name $ROLE_NAME \
         --tags project=$PROJECT_NAME \
@@ -42,7 +42,7 @@
 
     curl.exe -Lo efs-csi-driver-policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-efs-csi-driver/master/docs/iam-policy-example.json
 
-    POLICY_ARN = aws iam create-policy `
+    $POLICY_ARN = aws iam create-policy `
         --policy-name $POLICY_NAME `
         --policy-document file://efs-csi-driver-policy.json `
         --tags Key=project,Value=$PROJECT_NAME `
@@ -50,14 +50,14 @@
         --output text
 
     eksctl create iamserviceaccount `
-        --cluster $CLUSTSER_NAME `
-        --namespace kube-system `
-        --name efs-csi-controller-sa `
+        --cluster $CLUSTER_NAME `
+        --namespace=kube-system `
+        --name=efs-csi-controller-sa `
         --attach-policy-arn $POLICY_ARN `
         --role-name $ROLE_NAME `
         --tags project=$PROJECT_NAME `
         --region $REGION `
-        --override-existing-serviceaccount `
+        --override-existing-serviceaccounts `
         --approve
     ```
 

@@ -73,7 +73,7 @@
 
     ``` bash hl_lines="1 2 3"
     CLUSTER_NAME="<cluster name>"
-    IMAGE_TAG="<image tag (ex. 1.24.0)>"
+    IMAGE_TAG="<image tag (ex. 1.25.1)>"
     REGION="<region code>"
 
     helm repo add autoscaler https://kubernetes.github.io/autoscaler
