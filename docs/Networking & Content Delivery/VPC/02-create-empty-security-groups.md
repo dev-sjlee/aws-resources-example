@@ -43,9 +43,9 @@ description: Create empty security groups using AWS CLI
 === "Linux (Bash) :simple-linux:"
 
     ``` bash linenums="1" hl_lines="1 2 3 6 7"
-    VPC_ID = ""
-    PROJECT_NAME = ""
-    REGION = ""
+    VPC_ID=""
+    PROJECT_NAME=""
+    REGION=""
 
     NAME_LIST=(
         "elb-sg"
@@ -113,9 +113,9 @@ description: Create empty security groups using AWS CLI
 === "Linux (Bash) :simple-linux:"
 
     ``` bash linenums="1" hl_lines="1 2 3 6 7"
-    VPC_ID = ""
-    PROJECT_NAME = ""
-    REGION = ""
+    VPC_ID=""
+    PROJECT_NAME=""
+    REGION=""
 
     NAME_LIST=(
         "elb-sg"

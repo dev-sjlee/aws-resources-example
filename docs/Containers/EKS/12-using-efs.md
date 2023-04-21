@@ -27,7 +27,7 @@
         --role-name $ROLE_NAME \
         --tags project=$PROJECT_NAME \
         --region $REGION \
-        --override-existing-serviceaccount \
+        --override-existing-serviceaccounts \
         --approve
     ```
 
@@ -142,3 +142,122 @@
     You should check registry account id from [here](https://docs.aws.amazon.com/ko_kr/eks/latest/userguide/add-ons-images.html).
 
 [AWS Documentation](https://docs.aws.amazon.com/ko_kr/eks/latest/userguide/efs-csi.html#efs-install-driver)
+
+## Use EFS File System
+
+### Static Provisioning
+
+!!! note
+
+    You can see examples in [HERE](https://github.com/kubernetes-sigs/aws-efs-csi-driver/tree/master/examples/kubernetes/static_provisioning).
+
+``` yaml title="persistent-volume.yaml"
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: efs-pv
+spec:
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  persistentVolumeReclaimPolicy: Retain   # `Retain` or `Delete`
+  csi:
+    driver: efs.csi.aws.com
+    volumeHandle: fs-XXXXXXXXXXXXXXXXX
+```
+
+``` yaml title="persistent-volume-claim.yaml"
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: efs-claim
+  namespace: default
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  resources:
+    requests:
+      storage: 5Gi
+```
+
+``` yaml title="pod.yaml"
+apiVersion: apps/v1
+kind: Pod
+metadata:
+  name: nginx
+  namespace: default
+  labels:
+    app: nginx
+spec:
+  containers:
+    - name: nginx
+      image: public.ecr.aws/docker/library/nginx:1.24.0-alpine3.17-slim
+      volumeMounts:
+        - name: persistent-volume
+          mountPath: /usr/share/nginx/html
+  volumes:
+    - name: persistent-volume
+      persistentVolumeClaim:
+        claimName: efs-claim
+```
+
+### Dynamic Provisioning
+
+!!! note
+
+    You can see examples in [HERE](https://github.com/kubernetes-sigs/aws-efs-csi-driver/tree/master/examples/kubernetes/dynamic_provisioning).
+
+``` yaml title="storage-class.yaml"
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: efs-sc
+provisioner: efs.csi.aws.com
+parameters:
+  provisioningMode: efs-ap
+  fileSystemId: fs-XXXXXXXXXXXXXXXXX
+  directoryPerms: "700"
+  uid: "101"
+  gid: "101"
+  basePath: "/nginx" # optional
+```
+
+``` yaml title="persistent-volume-claim.yaml"
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: efs-claim
+  namespace: default
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: efs
+  resources:
+    requests:
+      storage: 5Gi
+```
+
+``` yaml title="deployment.yaml"
+apiVersion: apps/v1
+kind: Pod
+metadata:
+  name: nginx
+  namespace: default
+  labels:
+    app: nginx
+spec:
+  containers:
+    - name: nginx
+      image: public.ecr.aws/docker/library/nginx:1.24.0-alpine3.17-slim
+      volumeMounts:
+        - name: persistent-volume
+          mountPath: /usr/share/nginx/html
+  volumes:
+    - name: persistent-volume
+      persistentVolumeClaim:
+        claimName: efs-claim
+```

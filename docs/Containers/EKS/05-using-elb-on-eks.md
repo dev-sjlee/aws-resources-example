@@ -148,7 +148,7 @@ spec:
 
 [AWS Documentation](https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html)
 
-[AWS Load Balancer Controller Documentation](https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.4/)
+[AWS Load Balancer Controller Documentation](https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/)
 
 ## Create NLB using Service (type: `LoadBalancer`)
 

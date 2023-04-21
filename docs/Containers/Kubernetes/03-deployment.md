@@ -53,7 +53,14 @@ spec:
             preStop:
               exec:
                 command: ["/bin/sh", "-c", "sleep 60"]
-        terminationGracePeriodSeconds: 60
+          # volumeMounts:
+          #   - name: volume-1
+          #     mountPath: "/mnt/volume-1"
+          #     readOnly: true
+      terminationGracePeriodSeconds: 60
+      # volumes:
+      #   - name: volume-1
+      #     emptyDir: {}
       # tolerations:
       #   - key: "key1"         # taint key
       #     value: "value1"     # taint value

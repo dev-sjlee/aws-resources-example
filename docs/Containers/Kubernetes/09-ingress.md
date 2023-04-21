@@ -1,4 +1,4 @@
-# ingress
+# Ingress
 
 [Kubernetes Documentation](https://kubernetes.io/ko/docs/concepts/services-networking/ingress/)
 
