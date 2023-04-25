@@ -151,7 +151,7 @@
 
     You can see examples in [HERE](https://github.com/kubernetes-sigs/aws-efs-csi-driver/tree/master/examples/kubernetes/static_provisioning).
 
-``` yaml title="persistent-volume.yaml"
+``` yaml linenums="1" title="persistent-volume.yaml"
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -169,7 +169,7 @@ spec:
     volumeHandle: fs-XXXXXXXXXXXXXXXXX
 ```
 
-``` yaml title="persistent-volume-claim.yaml"
+``` yaml linenums="1" title="persistent-volume-claim.yaml"
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -184,7 +184,7 @@ spec:
       storage: 5Gi
 ```
 
-``` yaml title="pod.yaml"
+``` yaml linenums="1" title="pod.yaml"
 apiVersion: apps/v1
 kind: Pod
 metadata:
@@ -211,7 +211,7 @@ spec:
 
     You can see examples in [HERE](https://github.com/kubernetes-sigs/aws-efs-csi-driver/tree/master/examples/kubernetes/dynamic_provisioning).
 
-``` yaml title="storage-class.yaml"
+``` yaml linenums="1" title="storage-class.yaml"
 kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:
@@ -226,7 +226,7 @@ parameters:
   basePath: "/nginx" # optional
 ```
 
-``` yaml title="persistent-volume-claim.yaml"
+``` yaml linenums="1" title="persistent-volume-claim.yaml"
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -241,7 +241,7 @@ spec:
       storage: 5Gi
 ```
 
-``` yaml title="deployment.yaml"
+``` yaml linenums="1" title="pod.yaml"
 apiVersion: apps/v1
 kind: Pod
 metadata:
