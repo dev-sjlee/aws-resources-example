@@ -43,9 +43,9 @@ spec:
   podSelector:
     matchLabels:
       app: app1 # app-label
-  types:
-    - ingress
-    - egress
+  policyTypes:
+    - Ingress
+    - Egress
   ingress:
     - from:
         - ipBlock:

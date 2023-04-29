@@ -16,7 +16,7 @@ kubectl create ns argocd
 === ":simple-linux: Linux"
 
     ``` bash
-    curl -O https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/argocd-values.yaml
+    curl -LO https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/argocd-values.yaml
     
     helm repo add argo https://argoproj.github.io/argo-helm
     helm install argocd argo/argo-cd \
@@ -155,7 +155,7 @@ argocd account generate-token --account image-updater --id image-updater
 
     ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
 
-    curl -O https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/argocd-image-updater-values.yaml
+    curl -LO https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/argocd-image-updater-values.yaml
 
     sed -i "s|ARGOCD_TOKEN|$TOKEN|g" argocd-image-updater-values.yaml
     sed -i "s|ACCOUNT_ID|$ACCOUNT_ID|g" argocd-image-updater-values.yaml
