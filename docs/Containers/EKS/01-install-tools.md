@@ -32,7 +32,7 @@
 === "Linux (x86_64)"
     
     ``` bash
-    curl -LO https://s3.us-west-2.amazonaws.com/amazon-eks/1.23.7/2022-06-29/bin/linux/amd64/kubectl
+    curl -LO https://s3.us-west-2.amazonaws.com/amazon-eks/1.26.2/2023-03-17/bin/linux/amd64/kubectl
     sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
     sudo install -o root -g root -m 0755 kubectl /usr/bin/kubectl
     kubectl version --short --client
@@ -43,7 +43,7 @@
 === "Linux (ARM64)"
     
     ``` bash
-    curl -LO https://s3.us-west-2.amazonaws.com/amazon-eks/1.23.7/2022-06-29/bin/linux/arm64/kubectl
+    curl -LO https://s3.us-west-2.amazonaws.com/amazon-eks/1.26.2/2023-03-17/bin/linux/arm64/kubectl
     sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
     sudo install -o root -g root -m 0755 kubectl /usr/bin/kubectl
     kubectl version --short --client
@@ -60,7 +60,7 @@
 === "Windows (Executable)"
     
     ``` powershell
-    curl.exe -LO "https://dl.k8s.io/release/v1.26.0/bin/windows/amd64/kubectl.exe"
+    curl.exe -LO "https://dl.k8s.io/release/v1.26.2/bin/windows/amd64/kubectl.exe"
     ```
 
 
@@ -97,7 +97,7 @@
 === "Windows (Executable)"
     
     ``` powershell
-    curl.exe -LO https://github.com/weaveworks/eksctl/releases/download/v0.132.0/eksctl_Windows_amd64.zip
+    curl.exe -LO https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_Windows_amd64.zip
     Expand-Archive ./eksctl_Windows_amd64.zip -DestinationPath ./
     ```
 
@@ -168,7 +168,7 @@
 === "Linux (x86_64)"
     
     ``` bash
-    curl --silent --location "https://github.com/derailed/k9s/releases/download/v0.27.2/k9s_Linux_amd64.tar.gz" | tar xz -C /tmp
+    curl --silent --location "https://github.com/derailed/k9s/releases/download/v0.27.3/k9s_Linux_amd64.tar.gz" | tar xz -C /tmp
     sudo cp /tmp/k9s /usr/local/bin
     sudo cp /tmp/k9s /usr/bin
     k9s version
@@ -178,7 +178,7 @@
 === "Linux (ARM64)"
     
     ``` bash
-    curl --silent --location "https://github.com/derailed/k9s/releases/download/v0.27.2/k9s_Linux_arm64.tar.gz" | tar xz -C /tmp
+    curl --silent --location "https://github.com/derailed/k9s/releases/download/v0.27.3/k9s_Linux_arm64.tar.gz" | tar xz -C /tmp
     sudo cp /tmp/k9s /usr/local/bin
     sudo cp /tmp/k9s /usr/bin
     k9s version
@@ -257,7 +257,7 @@
 === "Linux (x86_64)"
     
     ``` bash
-    curl -O https://github.com/argoproj/argo-cd/releases/download/v2.6.5/argocd-linux-amd64
+    curl -O https://github.com/argoproj/argo-cd/releases/download/v2.6.7/argocd-linux-amd64
     sudo install -o root -g root -m 0755 argocd-linux-amd64 /usr/local/bin/argocd
     sudo install -o root -g root -m 0755 argocd-linux-amd64 /usr/bin/argocd
     rm argocd-linux-amd64
@@ -267,7 +267,7 @@
 === "Linux (ARM64)"
     
     ``` bash
-    curl -O https://github.com/argoproj/argo-cd/releases/download/v2.6.5/argocd-linux-arm64
+    curl -O https://github.com/argoproj/argo-cd/releases/download/v2.6.7/argocd-linux-arm64
     sudo install -o root -g root -m 0755 argocd-linux-arm64 /usr/local/bin/argocd
     sudo install -o root -g root -m 0755 argocd-linux-arm64 /usr/bin/argocd
     rm argocd-linux-amd64
@@ -283,7 +283,7 @@
 === "Windows (Executable)"
     
     ``` powershell
-    curl.exe -L https://github.com/argoproj/argo-cd/releases/download/v2.6.5/argocd-windows-amd64.exe -o argocd.exe
+    curl.exe -L https://github.com/argoproj/argo-cd/releases/download/v2.6.7/argocd-windows-amd64.exe -o argocd.exe
     ```
 
 ## Install `aws-iam-authenticator` (Optional)

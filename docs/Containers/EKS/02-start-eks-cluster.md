@@ -241,6 +241,104 @@ aws sts get-caller-identity
 
 [Blogs](https://support.bespinglobal.com/ko/support/solutions/articles/73000544787--aws-%EB%8B%A4%EB%A5%B8-%EA%B3%84%EC%A0%95%EC%9D%98-role%EC%9D%84-%EC%82%AC%EC%9A%A9%ED%95%98%EC%97%AC-kubectl%EC%97%90-%EC%A0%91%EC%86%8D%ED%95%98%EA%B8%B0)
 
+## Create IRSAs for Addons
+
+``` yaml title="irsa.yaml" linenums="1"
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: <cluster name>
+  region: <region code>
+
+iam:
+  withOIDC: true
+  serviceAccounts:
+    - metadata: # aws load balancer controller
+        name: aws-load-balancer-controller
+        namespace: kube-system
+      wellKnownPolicies:
+        awsLoadBalancerController: true
+      roleName: <eks elb controller role name>
+      tags:
+        Name: <eks elb controller role name>
+        project: <project name>
+
+    - metadata: # cluster autoscaler
+        name: cluster-autoscaler
+        namespace: kube-system
+      wellKnownPolicies:
+        autoScaler: true
+      roleName: <cluster autoscaler role name>
+      tags:
+        Name: <cluster autoscaler role name>
+        project: <project name>
+
+    - metadata: # external dns
+        name: external-dns
+        namespace: kube-system
+      wellKnownPolicies:
+        externalDNS: true
+      roleName: <external dns role name>
+      tags:
+        Name: <external dns role name>
+        project: <project name>
+    
+    - metadata: # ebs csi controller
+        name: ebs-csi-controller-sa
+        namespace: kube-system
+      wellKnownPolicies:
+        ebsCSIController: true
+      roleName: <ebs csi controller role name>
+      tags:
+        Name: <ebs csi controller role name>
+        project: <project name>
+
+    - metadata: # efs csi controller
+        name: efs-csi-controller-sa
+        namespace: kube-system
+      wellKnownPolicies:
+        efsCSIController: true
+      roleName: <efs csi controller role name>
+      tags:
+        Name: <efs csi controller role name>
+        project: <project name>
+    
+    - metadata: # prometheus server
+        name: prometheus-server
+        namespace: prometheus
+      attachPolicyARNS:
+        - "<prometheus policy arn (https://marcus16-kang.github.io/aws-resources-example/Containers/EKS/09-install-amp/#create-prometheus-iam-role-for-service-account)>"
+      roleName: <prometheus server role name>
+      tags:
+        Name: <prometheus server role name>
+        project: <project name>
+    
+    - metadata: # cloudwatch agent
+        name: cloudwatch-agent
+        namespace: amazon-cloudwatch
+      attachPolicyARNS:
+        - "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+      roleName: <cloudwatch agent role name>
+      tags:
+        Name: <cloudwatch agent role name>
+        project: <project name>
+  
+    - metadata: # fluent bit
+        name: fluent-bit
+        namespace: amazon-cloudwatch
+      attachPolicyARNS:
+        - "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+      roleName: <fluent bit role name>
+      tags:
+        Name: <fluent bit role name>
+        project: <project name>
+```
+
+``` shell
+eksctl create iamserviceaccount -f irsa.yaml
+```
+
 ## Encrypt secrets using KMS
 
 ### Create CMK

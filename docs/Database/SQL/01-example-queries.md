@@ -75,7 +75,7 @@ description: Example SQL queries for MySQL, PostgreSQL.
 
 === "MySQL"
     ``` sql hl_lines="1"
-    CREATE USER `USER_NAME`@`%` IDENTIFIED BY `USER_PASSWORD`;
+    CREATE USER `USER_NAME`@`%` IDENTIFIED BY 'USER_PASSWORD';
     ```
 
 === "PostgreSQL"
