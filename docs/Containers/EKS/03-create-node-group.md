@@ -266,6 +266,7 @@ aws iam add-role-to-instance-profile \
 
     ### If you want to add labels to nodegroup, using this command.
     # Add-Content -Path eks-nodegroup.yaml -Value @"
+    #
     #       Labels:
     #         key1: value1
     #         key2: value2
@@ -273,6 +274,7 @@ aws iam add-role-to-instance-profile \
 
     ### If you want to add taints to nodegroup, using this command.
     # Add-Content -Path eks-nodegroup.yaml -Value @"
+    #
     #       Taints:
     #         - Effect: # `NO_SCHEDULE` | `NO_EXECUTE` | `PREFER_NO_SCHEDULE`
     #           Key:

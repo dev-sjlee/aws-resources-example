@@ -276,7 +276,7 @@ iam:
 
     - metadata: # external dns
         name: external-dns
-        namespace: kube-system
+        namespace: external-dhs
       wellKnownPolicies:
         externalDNS: true
       roleName: <external dns role name>
@@ -307,7 +307,7 @@ iam:
     - metadata: # prometheus server
         name: prometheus-server
         namespace: prometheus
-      attachPolicyARNS:
+      attachPolicyARNs:
         - "<prometheus policy arn (https://marcus16-kang.github.io/aws-resources-example/Containers/EKS/09-install-amp/#create-prometheus-iam-role-for-service-account)>"
       roleName: <prometheus server role name>
       tags:
@@ -317,7 +317,7 @@ iam:
     - metadata: # cloudwatch agent
         name: cloudwatch-agent
         namespace: amazon-cloudwatch
-      attachPolicyARNS:
+      attachPolicyARNs:
         - "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
       roleName: <cloudwatch agent role name>
       tags:
@@ -327,7 +327,7 @@ iam:
     - metadata: # fluent bit
         name: fluent-bit
         namespace: amazon-cloudwatch
-      attachPolicyARNS:
+      attachPolicyARNs:
         - "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
       roleName: <fluent bit role name>
       tags:
@@ -337,7 +337,7 @@ iam:
     - metadata: # argocd image updater
         name: argocd-image-updater
         namespace: argocd
-      attachPolicyARNS:
+      attachPolicyARNs:
         - "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
       roleName: <argocd image updater role name>
       tags:
@@ -347,7 +347,7 @@ iam:
     - metadata: # appmesh controller
         name: appmesh-controller
         namespace: appmesh-system
-      attachPolicyARNS:
+      attachPolicyARNs:
         - "arn:aws:iam::aws:policy/AWSCloudMapFullAccess"
         - "arn:aws:iam::aws:policy/AWSAppMeshFullAccess"
       roleName: <appmesh system role name>
@@ -358,8 +358,8 @@ iam:
     - metadata: # fsx csi controller
         name: fsx-csi-controller-sa
         namespace: kube-system
-      attachPolicyARNS:
-        - "arn:aws:iam::aws:policy/AmazonFSxFullAccess "
+      attachPolicyARNs:
+        - "arn:aws:iam::aws:policy/AmazonFSxFullAccess"
       roleName: <fsx csi controller role name>
       tags:
         Name: <fsx csi controller role name>
@@ -367,7 +367,7 @@ iam:
 ```
 
 ``` shell
-eksctl create iamserviceaccount -f irsa.yaml
+eksctl create iamserviceaccount -f irsa.yaml --approve
 ```
 
 ## Encrypt secrets using KMS

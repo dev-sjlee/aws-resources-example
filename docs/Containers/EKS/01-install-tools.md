@@ -99,6 +99,7 @@
     ``` powershell
     curl.exe -LO https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_Windows_amd64.zip
     Expand-Archive ./eksctl_Windows_amd64.zip -DestinationPath ./
+    rm eksctl_Windows_amd64.zip
     ```
 
 [AWS Documentation](https://docs.aws.amazon.com/eks/latest/userguide/eksctl.html)
@@ -129,8 +130,10 @@
     
     ``` powershell
     curl.exe -LO https://get.helm.sh/helm-v3.11.3-windows-amd64.zip
-    Expand-Archive ./helm-v3.11.2-windows-amd64.zip -DestinationPath ./
+    Expand-Archive ./helm-v3.11.3-windows-amd64.zip -DestinationPath ./
     cp windows-amd64/helm.exe ./helm.exe
+    rm helm-v3.11.3-windows-amd64.zip
+    rm -r windows-amd64
     ```
 
 [AWS Documentation](https://docs.aws.amazon.com/eks/latest/userguide/helm.html)
@@ -140,21 +143,21 @@
 === "Linux (x86_64)"
     ``` bash
     export DOCKER_BUILDKIT=1
-    wget https://github.com/docker/buildx/releases/download/v0.10.2/buildx-v0.10.2.linux-amd64
+    wget https://github.com/docker/buildx/releases/download/v0.10.4/buildx-v0.10.4.linux-amd64
     mkdir -p ~/.docker/cli-plugins
-    mv buildx-v0.10.2.linux-amd64 ~/.docker/cli-plugins/docker-buildx
+    mv buildx-v0.10.4.linux-amd64 ~/.docker/cli-plugins/docker-buildx
     chmod a+x ~/.docker/cli-plugins/docker-buildx
-    docker run --privileged --rm tonistiigi/binfmt --install all
+    docker run --privileged --rm public.ecr.aws/eks-distro-build-tooling/binfmt-misc:qemu-v6.1.0 --install all
     ```
 
 === "Linux (ARM64)"
     ``` bash
     export DOCKER_BUILDKIT=1
-    wget https://github.com/docker/buildx/releases/download/v0.10.2/buildx-v0.10.2.linux-arm64
+    wget https://github.com/docker/buildx/releases/download/v0.10.4/buildx-v0.10.4.linux-arm64
     mkdir -p ~/.docker/cli-plugins
-    mv buildx-v0.10.2.linux-arm64 ~/.docker/cli-plugins/docker-buildx
+    mv buildx-v0.10.4.linux-arm64 ~/.docker/cli-plugins/docker-buildx
     chmod a+x ~/.docker/cli-plugins/docker-buildx
-    docker run --privileged --rm tonistiigi/binfmt --install all
+    docker run --privileged --rm public.ecr.aws/eks-distro-build-tooling/binfmt-misc:qemu-v6.1.0 --install all
     ```
 
 
@@ -203,6 +206,9 @@
     ``` powershell
     curl.exe -LO https://github.com/derailed/k9s/releases/download/v0.27.3/k9s_Windows_amd64.tar.gz
     tar -xvzf k9s_Windows_amd64.tar.gz
+    rm LICENSE
+    rm README.md
+    rm k9s_Windows_amd64.tar.gz
     ```
 
 [K9s Documentation](https://github.com/derailed/k9s)
@@ -237,6 +243,8 @@
     ``` powershell
     curl.exe -LO https://github.com/ahmetb/kubectx/releases/download/v0.9.4/kubectx_v0.9.4_windows_x86_64.zip
     Expand-Archive ./kubectx_v0.9.4_windows_x86_64.zip -DestinationPath ./
+    rm kubectx_v0.9.4_windows_x86_64.zip
+    rm LICENSE
     ```
 
 [kubectx Documentations](https://github.com/ahmetb/kubectx)
@@ -274,6 +282,8 @@
     ``` powershell
     curl.exe -LO https://github.com/ahmetb/kubectx/releases/download/v0.9.4/kubens_v0.9.4_windows_x86_64.zip
     Expand-Archive ./kubens_v0.9.4_windows_x86_64.zip -DestinationPath ./
+    rm kubens_v0.9.4_windows_x86_64.zip
+    rm LICENSE
     ```
 
 [kubens Documentations](https://github.com/ahmetb/kubectx)
