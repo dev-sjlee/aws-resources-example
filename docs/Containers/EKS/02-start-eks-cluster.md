@@ -333,6 +333,37 @@ iam:
       tags:
         Name: <fluent bit role name>
         project: <project name>
+    
+    - metadata: # argocd image updater
+        name: argocd-image-updater
+        namespace: argocd
+      attachPolicyARNS:
+        - "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+      roleName: <argocd image updater role name>
+      tags:
+        Name: <argocd image updater role name>
+        project: <project name>
+    
+    - metadata: # appmesh controller
+        name: appmesh-controller
+        namespace: appmesh-system
+      attachPolicyARNS:
+        - "arn:aws:iam::aws:policy/AWSCloudMapFullAccess"
+        - "arn:aws:iam::aws:policy/AWSAppMeshFullAccess"
+      roleName: <appmesh system role name>
+      tags:
+        Name: <appmesh system role name>
+        project: <project name>
+    
+    - metadata: # fsx csi controller
+        name: fsx-csi-controller-sa
+        namespace: kube-system
+      attachPolicyARNS:
+        - "arn:aws:iam::aws:policy/AmazonFSxFullAccess "
+      roleName: <fsx csi controller role name>
+      tags:
+        Name: <fsx csi controller role name>
+        project: <project name>
 ```
 
 ``` shell

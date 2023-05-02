@@ -172,7 +172,7 @@ aws iam add-role-to-instance-profile \
     ``` bash
     STACK_NAME=""
     PROJECT_NAME=""
-    REGION_CODE=""
+    REGION=""
 
     ### Launch Template Configuration
     LaunchTemplateName=""   # [REQUIRED] he name of this launch template.
@@ -240,7 +240,7 @@ aws iam add-role-to-instance-profile \
     ``` powershell
     $STACK_NAME=""
     $PROJECT_NAME=""
-    $REGION_CODE=""
+    $REGION=""
 
     ### Launch Template Configuration
     $LaunchTemplateName=""   # [REQUIRED] he name of this launch template.

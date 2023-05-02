@@ -105,10 +105,17 @@
 
 ## Install `helm`
 
-=== "Linux"
+=== "Linux (x86_64)"
     
     ``` bash
-    curl -L https://git.io/get_helm.sh | bash -s -- --version v3.8.2
+    curl -L https://git.io/get_helm.sh | bash -s -- --version v3.11.3
+    helm version --short
+    ```
+
+=== "Linux (ARM64)"
+    
+    ``` bash
+    curl -L https://git.io/get_helm.sh | bash -s -- --version v3.11.3
     helm version --short
     ```
 
@@ -121,7 +128,7 @@
 === "Windows (Executable)"
     
     ``` powershell
-    curl.exe -LO https://get.helm.sh/helm-v3.11.2-windows-amd64.zip
+    curl.exe -LO https://get.helm.sh/helm-v3.11.3-windows-amd64.zip
     Expand-Archive ./helm-v3.11.2-windows-amd64.zip -DestinationPath ./
     cp windows-amd64/helm.exe ./helm.exe
     ```
@@ -202,7 +209,16 @@
 
 ## Install `kubectx`
 
-=== "Linux"
+=== "Linux (x86_64)"
+    ``` bash
+    wget https://github.com/ahmetb/kubectx/releases/download/v0.9.4/kubectx
+    sudo install -o root -g root -m 0755 kubectx /usr/local/bin/kubectx
+    sudo install -o root -g root -m 0755 kubectx /usr/bin/kubectx
+    kubectx -h
+    rm ./kubectx
+    ```
+
+=== "Linux (ARM64)"
     ``` bash
     wget https://github.com/ahmetb/kubectx/releases/download/v0.9.4/kubectx
     sudo install -o root -g root -m 0755 kubectx /usr/local/bin/kubectx
@@ -227,7 +243,17 @@
 
 ## Install `kubens`
 
-=== "Linux"
+=== "Linux (x86_64)"
+    
+    ``` bash
+    wget https://github.com/ahmetb/kubectx/releases/download/v0.9.4/kubens
+    sudo install -o root -g root -m 0755 kubens /usr/local/bin/kubens
+    sudo install -o root -g root -m 0755 kubens /usr/bin/kubens
+    kubens -h
+    rm ./kubens
+    ```
+
+=== "Linux (ARM64)"
     
     ``` bash
     wget https://github.com/ahmetb/kubectx/releases/download/v0.9.4/kubens
