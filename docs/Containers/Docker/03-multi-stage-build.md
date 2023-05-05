@@ -47,7 +47,7 @@ ENTRYPOINT [ "/sbin/tini", "--", "./main" ]
     mv buildx-v0.10.4.linux-amd64 ~/.docker/cli-plugins/docker-buildx
     chmod a+x ~/.docker/cli-plugins/docker-buildx
     docker run --privileged --rm public.ecr.aws/eks-distro-build-tooling/binfmt-misc:qemu-v6.1.0 --install all
-    docker buildx create --use --driver-opt image=quay.io/domino/buildkit:v0.10.6-rootless-20230418170258
+    docker buildx create --use --driver-opt public.ecr.aws/z8o9m4l5/system-components/mirrors/moby/buildkit:buildx-stable-1
     docker buildx build --platform linux/amd64,linux/arm64 --tag <REPO>:<TAG> --push .
     ```
 
@@ -59,6 +59,6 @@ ENTRYPOINT [ "/sbin/tini", "--", "./main" ]
     mv buildx-v0.10.4.linux-arm64 ~/.docker/cli-plugins/docker-buildx
     chmod a+x ~/.docker/cli-plugins/docker-buildx
     docker run --privileged --rm public.ecr.aws/eks-distro-build-tooling/binfmt-misc:qemu-v6.1.0 --install all
-    docker buildx create --use --driver-opt image=quay.io/domino/buildkit:v0.10.6-rootless-20230418170258
+    docker buildx create --use --driver-opt public.ecr.aws/z8o9m4l5/system-components/mirrors/moby/buildkit:buildx-stable-1
     docker buildx build --platform linux/amd64,linux/arm64 --tag <REPO>:<TAG> --push .
     ```

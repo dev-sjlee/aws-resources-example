@@ -2,7 +2,11 @@
 
 ## Using CloudWatch Agent on EC2
 
-### Create a namespace for CloudWatch
+### Using helm chart
+
+### Using manifests
+
+**Create a namespace for CloudWatch**
 
 ``` shell
 kubectl apply -f https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/daemonset/container-insights-monitoring/cloudwatch-namespace.yaml
@@ -22,7 +26,7 @@ kubectl apply -f https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch
 
 [AWS Documentation](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-setup-metrics.html#create-namespace-metrics)
 
-### Create a service account for CloudWatch Agent
+**Create a service account for CloudWatch Agent**
 
 ``` shell
 kubectl apply -f https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/daemonset/container-insights-monitoring/cwagent/cwagent-serviceaccount.yaml
@@ -81,7 +85,7 @@ kubectl apply -f https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch
 
 [AWS Documentation](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-setup-metrics.html#create-service-account)
 
-### Create an IAM role for CloudWatch Agent service account
+**Create an IAM role for CloudWatch Agent service account**
 
 === ":simple-linux: Linux"
 
@@ -123,7 +127,7 @@ kubectl apply -f https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch
         --approve
     ```
 
-### Create a ConfigMap for the CloudWatch agent
+**Create a ConfigMap for the CloudWatch agent**
 
 === ":simple-linux: Linux"
 
@@ -177,7 +181,7 @@ kubectl apply -f https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch
 
 [AWS Documentation](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-setup-metrics.html#create-configmap)
 
-### Deploy the CloudWatch agent as a DaemonSet
+**Deploy the CloudWatch agent as a DaemonSet**
 
 ``` shell
 kubectl apply -f https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/daemonset/container-insights-monitoring/cwagent/cwagent-daemonset.yaml

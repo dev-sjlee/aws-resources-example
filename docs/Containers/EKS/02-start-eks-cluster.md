@@ -276,7 +276,7 @@ iam:
 
     - metadata: # external dns
         name: external-dns
-        namespace: external-dhs
+        namespace: external-dns
       wellKnownPolicies:
         externalDNS: true
       roleName: <external dns role name>
