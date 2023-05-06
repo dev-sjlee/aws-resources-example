@@ -1,10 +1,105 @@
-# Enable container insights on EKS
+---
+title: Enable Container Insights on EKS
+description: Enable Container Insights on EKS using CloudWatch Agent and ADOT.
+---
+
+# Enable Container Insights on EKS
 
 ## Using CloudWatch Agent on EC2
 
-### Using helm chart
+### Create a service account for CloudWatch Agent
 
-### Using manifests
+=== ":simple-linux: Linux"
+
+    ``` bash hl_lines="1 2 3 4"
+    CLUSTER_NAME="<cluster name>"
+    ROLE_NAME="<role_name>"
+    PROJECT_NAME="<project name>"
+    REGION="<region code>"
+
+    eksctl create iamserviceaccount \
+        --cluster $CLUSTER_NAME \
+        --name cloudwatch-agent \
+        --namespace amazon-cloudwatch \
+        --attach-policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy \
+        --role-name $ROLE_NAME \
+        --tags project=$PROJECT_NAME \
+        --region $REGION \
+        --override-existing-serviceaccounts \
+        --approve
+    ```
+
+=== ":simple-windows: Windows"
+
+    ``` powershell hl_lines="1 2 3 4"
+    $CLUSTER_NAME="<cluster name>"
+    $ROLE_NAME="<role_name>"
+    $PROJECT_NAME="<project name>"
+    $REGION="<region code>"
+
+    eksctl create iamserviceaccount `
+        --cluster $CLUSTER_NAME `
+        --name cloudwatch-agent `
+        --namespace amazon-cloudwatch `
+        --attach-policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy `
+        --role-name $ROLE_NAME `
+        --tags project=$PROJECT_NAME `
+        --region $REGION `
+        --override-existing-serviceaccounts `
+        --approve
+    ```
+
+### Deploy CloudWatch Agent using `helm`
+
+=== ":simple-linux: Linux"
+
+    ``` bash hl_lines="1"
+    CLUSTER_NAME="<cluster name>"
+
+    helm repo add container-insights https://marcus16-kang.github.io/aws-container-insights-chart/
+    helm install cloudwatch-agent container-insights/cloudwatch-agent \
+        --namespace amazon-cloudwatch \
+        --set clusterName=$CLUSTER_NAME \
+        --set serviceAccount.create=false
+    ```
+
+=== ":simple-windows: Windows"
+
+    ``` powershell hl_lines="1"
+    $CLUSTER_NAME="<cluster name>"
+
+    helm repo add container-insights https://marcus16-kang.github.io/aws-container-insights-chart/
+    helm install cloudwatch-agent container-insights/cloudwatch-agent `
+        --namespace amazon-cloudwatch `
+        --set clusterName=$CLUSTER_NAME `
+        --set serviceAccount.create=false
+    ```
+
+!!! note
+
+    If you want to use tolerations, using this parameter.
+
+    === ":simple-linux: Linux"
+
+        ``` bash
+        --set tolerations[0].key=key1 \
+        --set tolerations[0].value=value1 \
+        --set tolerations[0].operator=Equal \
+        --set tolerations[0].effect=NoSchedule
+        ```
+
+    === ":simple-windows: Windows"
+
+        ``` powershell
+        --set tolerations[0].key=key1 `
+        --set tolerations[0].value=value1 `
+        --set tolerations[0].operator=Equal `
+        --set tolerations[0].effect=NoSchedule
+        ```
+
+[Github Documentation](https://github.com/marcus16-kang/aws-container-insights-chart/tree/main/cloudwatch-agent)
+
+### Deploy CloudWatch Agent using `kubectl`
 
 **Create a namespace for CloudWatch**
 
@@ -84,48 +179,6 @@ kubectl apply -f https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch
     ```
 
 [AWS Documentation](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-setup-metrics.html#create-service-account)
-
-**Create an IAM role for CloudWatch Agent service account**
-
-=== ":simple-linux: Linux"
-
-    ``` bash hl_lines="1 2 3 4"
-    CLUSTER_NAME="<cluster name>"
-    ROLE_NAME="<role_name>"
-    PROJECT_NAME="<project name>"
-    REGION="<region code>"
-
-    eksctl create iamserviceaccount \
-        --cluster $CLUSTER_NAME \
-        --name cloudwatch-agent \
-        --namespace amazon-cloudwatch \
-        --attach-policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy \
-        --role-name $ROLE_NAME \
-        --tags project=$PROJECT_NAME \
-        --region $REGION \
-        --override-existing-serviceaccounts \
-        --approve
-    ```
-
-=== ":simple-windows: Windows"
-
-    ``` powershell hl_lines="1 2 3 4"
-    $CLUSTER_NAME="<cluster name>"
-    $ROLE_NAME="<role_name>"
-    $PROJECT_NAME="<project name>"
-    $REGION="<region code>"
-
-    eksctl create iamserviceaccount `
-        --cluster $CLUSTER_NAME `
-        --name cloudwatch-agent `
-        --namespace amazon-cloudwatch `
-        --attach-policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy `
-        --role-name $ROLE_NAME `
-        --tags project=$PROJECT_NAME `
-        --region $REGION `
-        --override-existing-serviceaccounts `
-        --approve
-    ```
 
 **Create a ConfigMap for the CloudWatch agent**
 
@@ -287,19 +340,21 @@ kubectl get pods -n amazon-cloudwatch
           serviceAccountName: cloudwatch-agent
     ```
 
-### Create a service account for Fluent Bit
+## Using ADOT on EC2
+
+### Create a service account for ADOT on EC2
 
 === ":simple-linux: Linux"
 
     ``` bash hl_lines="1 2 3 4"
     CLUSTER_NAME="<cluster name>"
-    ROLE_NAME="<role_name>"
+    ROLE_NAME="<role name>"
     PROJECT_NAME="<project name>"
     REGION="<region code>"
 
     eksctl create iamserviceaccount \
         --cluster $CLUSTER_NAME \
-        --name fluent-bit \
+        --name aws-otel-sa \
         --namespace amazon-cloudwatch \
         --attach-policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy \
         --role-name $ROLE_NAME \
@@ -312,505 +367,76 @@ kubectl get pods -n amazon-cloudwatch
 === ":simple-windows: Windows"
 
     ``` powershell hl_lines="1 2 3 4"
-    $CLUSTER_NAME="<cluster name>" 
-    $ROLE_NAME="<role_name>"
+    $CLUSTER_NAME="<cluster name>"
+    $ROLE_NAME="<role name>"
     $PROJECT_NAME="<project name>"
     $REGION="<region code>"
 
-    eksctl create iamserviceaccount `
-        --cluster $CLUSTER_NAME `
-        --name fluent-bit `
-        --namespace amazon-cloudwatch `
-        --attach-policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy `
-        --role-name $ROLE_NAME `
-        --tags project=$PROJECT_NAME `
+    eksctl create iamserviceaccount ` 
+        --cluster $CLUSTER_NAME ` 
+        --name aws-otel-sa ` 
+        --namespace amazon-cloudwatch ` 
+        --attach-policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy ` 
+        --role-name $ROLE_NAME ` 
+        --tags project=$PROJECT_NAME ` 
         --region $REGION `
-        --override-existing-serviceaccounts `
+        --override-existing-serviceaccounts ` 
         --approve
     ```
 
-### Deploy a Fluent Bit as a DaemonSet
+### Deploy ADOT on EC2 using `helm`
 
 === ":simple-linux: Linux"
 
-    ``` bash hl_lines="1 2"
-    CLUSTER_NAME="<cluster name>"
-    REGION="<region code>"
-    FluentBitHttpPort='2020'
-    FluentBitReadFromHead='Off'
-    [[ ${FluentBitReadFromHead} = 'On' ]] && FluentBitReadFromTail='Off'|| FluentBitReadFromTail='On'
-    [[ -z ${FluentBitHttpPort} ]] && FluentBitHttpServer='Off' || FluentBitHttpServer='On'
-    kubectl create configmap fluent-bit-cluster-info \
-        --from-literal=cluster.name=${CLUSTER_NAME} \
-        --from-literal=http.server=${FluentBitHttpServer} \
-        --from-literal=http.port=${FluentBitHttpPort} \
-        --from-literal=read.head=${FluentBitReadFromHead} \
-        --from-literal=read.tail=${FluentBitReadFromTail} \
-        --from-literal=logs.region=${REGION} -n amazon-cloudwatch
-
-    kubectl apply -f https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/fluent-bit.yaml
-
-    kubectl get pods -n amazon-cloudwatch
+    ``` bash
+    helm repo add container-insights https://marcus16-kang.github.io/aws-container-insights-chart/
+    helm install adot-ec2 container-insights/adot-ec2 \
+        --namespace amazon-cloudwatch \
+        --set serviceAccount.create=false
     ```
 
 === ":simple-windows: Windows"
 
-    ``` powershell hl_lines="1 2"
-    $CLUSTER_NAME="<cluster name>"
-    $REGION="<region code>"
-    $FluentBitHttpPort="2020"
-    $FluentBitReadFromHead="Off"
-    
-    if ($FluentBitReadFromHead -eq 'On') {
-        $FluentBitReadFromTail = 'Off'
-    } else {
-        $FluentBitReadFromTail = 'On'
-    }
-    if (-not $FluentBitHttpPort) {
-        $FluentBitHttpServer = 'Off'
-    } else {
-        $FluentBitHttpServer = 'On'
-    }
-
-    kubectl create configmap fluent-bit-cluster-info `
-        --from-literal=cluster.name=${CLUSTER_NAME} `
-        --from-literal=http.server=${FluentBitHttpServer} `
-        --from-literal=http.port=${FluentBitHttpPort} `
-        --from-literal=read.head=${FluentBitReadFromHead} `
-        --from-literal=read.tail=${FluentBitReadFromTail} `
-        --from-literal=logs.region=${REGION} -n amazon-cloudwatch
-
-    kubectl apply -f https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/fluent-bit.yaml
-
-    kubectl get pods -n amazon-cloudwatch
+    ``` powershell
+    helm repo add container-insights https://marcus16-kang.github.io/aws-container-insights-chart/
+    helm install adot-ec2 container-insights/adot-ec2 `
+        --namespace amazon-cloudwatch `
+        --set serviceAccount.create=false
     ```
 
-??? note "fluent-bit.yaml"
+!!! note
 
-    ``` yaml linenums="1"
-    # apiVersion: v1
-    # kind: ServiceAccount
-    # metadata:
-    #   name: fluent-bit
-    #   namespace: amazon-cloudwatch
-    ---
-    apiVersion: rbac.authorization.k8s.io/v1
-    kind: ClusterRole
-    metadata:
-      name: fluent-bit-role
-    rules:
-      - nonResourceURLs:
-          - /metrics
-        verbs:
-          - get
-      - apiGroups: [""]
-        resources:
-          - namespaces
-          - pods
-          - pods/logs
-          - nodes
-          - nodes/proxy
-        verbs: ["get", "list", "watch"]
-    ---
-    apiVersion: rbac.authorization.k8s.io/v1
-    kind: ClusterRoleBinding
-    metadata:
-      name: fluent-bit-role-binding
-    roleRef:
-      apiGroup: rbac.authorization.k8s.io
-      kind: ClusterRole
-      name: fluent-bit-role
-    subjects:
-      - kind: ServiceAccount
-        name: fluent-bit
-        namespace: amazon-cloudwatch
-    ---
-    apiVersion: v1
-    kind: ConfigMap
-    metadata:
-      name: fluent-bit-config
-      namespace: amazon-cloudwatch
-      labels:
-        k8s-app: fluent-bit
-    data:
-      fluent-bit.conf: |
-        [SERVICE]
-            Flush                     5
-            Grace                     30
-            Log_Level                 info
-            Daemon                    off
-            Parsers_File              parsers.conf
-            HTTP_Server               ${HTTP_SERVER}
-            HTTP_Listen               0.0.0.0
-            HTTP_Port                 ${HTTP_PORT}
-            storage.path              /var/fluent-bit/state/flb-storage/
-            storage.sync              normal
-            storage.checksum          off
-            storage.backlog.mem_limit 5M
-            
-        @INCLUDE application-log.conf
-        @INCLUDE dataplane-log.conf
-        @INCLUDE host-log.conf
-      
-      application-log.conf: |
-        [INPUT]
-            Name                tail
-            Tag                 application.*
-            Exclude_Path        /var/log/containers/cloudwatch-agent*, /var/log/containers/fluent-bit*, /var/log/containers/aws-node*, /var/log/containers/kube-proxy*
-            Path                /var/log/containers/*.log
-            multiline.parser    docker, cri
-            DB                  /var/fluent-bit/state/flb_container.db
-            Mem_Buf_Limit       50MB
-            Skip_Long_Lines     On
-            Refresh_Interval    10
-            Rotate_Wait         30
-            storage.type        filesystem
-            Read_from_Head      ${READ_FROM_HEAD}
+    If you want to use tolerations, using this parameter.
 
-        [INPUT]
-            Name                tail
-            Tag                 application.*
-            Path                /var/log/containers/fluent-bit*
-            multiline.parser    docker, cri
-            DB                  /var/fluent-bit/state/flb_log.db
-            Mem_Buf_Limit       5MB
-            Skip_Long_Lines     On
-            Refresh_Interval    10
-            Read_from_Head      ${READ_FROM_HEAD}
+    === ":simple-linux: Linux"
 
-        [INPUT]
-            Name                tail
-            Tag                 application.*
-            Path                /var/log/containers/cloudwatch-agent*
-            multiline.parser    docker, cri
-            DB                  /var/fluent-bit/state/flb_cwagent.db
-            Mem_Buf_Limit       5MB
-            Skip_Long_Lines     On
-            Refresh_Interval    10
-            Read_from_Head      ${READ_FROM_HEAD}
+        ``` bash
+        --set tolerations[0].key=key1 \
+        --set tolerations[0].value=value1 \
+        --set tolerations[0].operator=Equal \
+        --set tolerations[0].effect=NoSchedule
+        ```
 
-        [FILTER]
-            Name                kubernetes
-            Match               application.*
-            Kube_URL            https://kubernetes.default.svc:443
-            Kube_Tag_Prefix     application.var.log.containers.
-            Merge_Log           On
-            Merge_Log_Key       log_processed
-            K8S-Logging.Parser  On
-            K8S-Logging.Exclude Off
-            Labels              Off
-            Annotations         Off
-            Use_Kubelet         On
-            Kubelet_Port        10250
-            Buffer_Size         0
+    === ":simple-windows: Windows"
 
-        [OUTPUT]
-            Name                cloudwatch_logs
-            Match               application.*
-            region              ${AWS_REGION}
-            log_group_name      /aws/containerinsights/${CLUSTER_NAME}/application
-            log_stream_prefix   ${HOST_NAME}-
-            auto_create_group   true
-            extra_user_agent    container-insights
+        ``` powershell
+        --set tolerations[0].key=key1 `
+        --set tolerations[0].value=value1 `
+        --set tolerations[0].operator=Equal `
+        --set tolerations[0].effect=NoSchedule
+        ```
 
-      dataplane-log.conf: |
-        [INPUT]
-            Name                systemd
-            Tag                 dataplane.systemd.*
-            Systemd_Filter      _SYSTEMD_UNIT=docker.service
-            Systemd_Filter      _SYSTEMD_UNIT=kubelet.service
-            DB                  /var/fluent-bit/state/systemd.db
-            Path                /var/log/journal
-            Read_From_Tail      ${READ_FROM_TAIL}
-
-        [INPUT]
-            Name                tail
-            Tag                 dataplane.tail.*
-            Path                /var/log/containers/aws-node*, /var/log/containers/kube-proxy*
-            multiline.parser    docker, cri
-            DB                  /var/fluent-bit/state/flb_dataplane_tail.db
-            Mem_Buf_Limit       50MB
-            Skip_Long_Lines     On
-            Refresh_Interval    10
-            Rotate_Wait         30
-            storage.type        filesystem
-            Read_from_Head      ${READ_FROM_HEAD}
-
-        [FILTER]
-            Name                modify
-            Match               dataplane.systemd.*
-            Rename              _HOSTNAME                   hostname
-            Rename              _SYSTEMD_UNIT               systemd_unit
-            Rename              MESSAGE                     message
-            Remove_regex        ^((?!hostname|systemd_unit|message).)*$
-
-        [FILTER]
-            Name                aws
-            Match               dataplane.*
-            imds_version        v2
-
-        [OUTPUT]
-            Name                cloudwatch_logs
-            Match               dataplane.*
-            region              ${AWS_REGION}
-            log_group_name      /aws/containerinsights/${CLUSTER_NAME}/dataplane
-            log_stream_prefix   ${HOST_NAME}-
-            auto_create_group   true
-            extra_user_agent    container-insights
-
-      host-log.conf: |
-        [INPUT]
-            Name                tail
-            Tag                 host.dmesg
-            Path                /var/log/dmesg
-            Key                 message
-            DB                  /var/fluent-bit/state/flb_dmesg.db
-            Mem_Buf_Limit       5MB
-            Skip_Long_Lines     On
-            Refresh_Interval    10
-            Read_from_Head      ${READ_FROM_HEAD}
-
-        [INPUT]
-            Name                tail
-            Tag                 host.messages
-            Path                /var/log/messages
-            Parser              syslog
-            DB                  /var/fluent-bit/state/flb_messages.db
-            Mem_Buf_Limit       5MB
-            Skip_Long_Lines     On
-            Refresh_Interval    10
-            Read_from_Head      ${READ_FROM_HEAD}
-
-        [INPUT]
-            Name                tail
-            Tag                 host.secure
-            Path                /var/log/secure
-            Parser              syslog
-            DB                  /var/fluent-bit/state/flb_secure.db
-            Mem_Buf_Limit       5MB
-            Skip_Long_Lines     On
-            Refresh_Interval    10
-            Read_from_Head      ${READ_FROM_HEAD}
-
-        [FILTER]
-            Name                aws
-            Match               host.*
-            imds_version        v2
-
-        [OUTPUT]
-            Name                cloudwatch_logs
-            Match               host.*
-            region              ${AWS_REGION}
-            log_group_name      /aws/containerinsights/${CLUSTER_NAME}/host
-            log_stream_prefix   ${HOST_NAME}.
-            auto_create_group   true
-            extra_user_agent    container-insights
-
-      parsers.conf: |
-        [PARSER]
-            Name                syslog
-            Format              regex
-            Regex               ^(?<time>[^ ]* {1,2}[^ ]* [^ ]*) (?<host>[^ ]*) (?<ident>[a-zA-Z0-9_\/\.\-]*)(?:\[(?<pid>[0-9]+)\])?(?:[^\:]*\:)? *(?<message>.*)$
-            Time_Key            time
-            Time_Format         %b %d %H:%M:%S
-
-        [PARSER]
-            Name                container_firstline
-            Format              regex
-            Regex               (?<log>(?<="log":")\S(?!\.).*?)(?<!\\)".*(?<stream>(?<="stream":").*?)".*(?<time>\d{4}-\d{1,2}-\d{1,2}T\d{2}:\d{2}:\d{2}\.\w*).*(?=})
-            Time_Key            time
-            Time_Format         %Y-%m-%dT%H:%M:%S.%LZ
-
-        [PARSER]
-            Name                cwagent_firstline
-            Format              regex
-            Regex               (?<log>(?<="log":")\d{4}[\/-]\d{1,2}[\/-]\d{1,2}[ T]\d{2}:\d{2}:\d{2}(?!\.).*?)(?<!\\)".*(?<stream>(?<="stream":").*?)".*(?<time>\d{4}-\d{1,2}-\d{1,2}T\d{2}:\d{2}:\d{2}\.\w*).*(?=})
-            Time_Key            time
-            Time_Format         %Y-%m-%dT%H:%M:%S.%LZ
-    ---
-    apiVersion: apps/v1
-    kind: DaemonSet
-    metadata:
-      name: fluent-bit
-      namespace: amazon-cloudwatch
-      labels:
-        k8s-app: fluent-bit
-        version: v1
-        kubernetes.io/cluster-service: "true"
-    spec:
-      selector:
-        matchLabels:
-          k8s-app: fluent-bit
-      template:
-        metadata:
-          labels:
-            k8s-app: fluent-bit
-            version: v1
-            kubernetes.io/cluster-service: "true"
-        spec:
-          containers:
-          - name: fluent-bit
-            image: public.ecr.aws/aws-observability/aws-for-fluent-bit:stable
-            imagePullPolicy: Always
-            env:
-                - name: AWS_REGION
-                  valueFrom:
-                    configMapKeyRef:
-                      name: fluent-bit-cluster-info
-                      key: logs.region
-                - name: CLUSTER_NAME
-                  valueFrom:
-                    configMapKeyRef:
-                      name: fluent-bit-cluster-info
-                      key: cluster.name
-                - name: HTTP_SERVER
-                  valueFrom:
-                    configMapKeyRef:
-                      name: fluent-bit-cluster-info
-                      key: http.server
-                - name: HTTP_PORT
-                  valueFrom:
-                    configMapKeyRef:
-                      name: fluent-bit-cluster-info
-                      key: http.port
-                - name: READ_FROM_HEAD
-                  valueFrom:
-                    configMapKeyRef:
-                      name: fluent-bit-cluster-info
-                      key: read.head
-                - name: READ_FROM_TAIL
-                  valueFrom:
-                    configMapKeyRef:
-                      name: fluent-bit-cluster-info
-                      key: read.tail
-                - name: HOST_NAME
-                  valueFrom:
-                    fieldRef:
-                      fieldPath: spec.nodeName
-                - name: HOSTNAME
-                  valueFrom:
-                    fieldRef:
-                      apiVersion: v1
-                      fieldPath: metadata.name
-                - name: CI_VERSION
-                  value: "k8s/1.3.13"
-            resources:
-                limits:
-                  memory: 200Mi
-                requests:
-                  cpu: 500m
-                  memory: 100Mi
-            volumeMounts:
-            # Please don't change below read-only permissions
-            - name: fluentbitstate
-              mountPath: /var/fluent-bit/state
-            - name: varlog
-              mountPath: /var/log
-              readOnly: true
-            - name: varlibdockercontainers
-              mountPath: /var/lib/docker/containers
-              readOnly: true
-            - name: fluent-bit-config
-              mountPath: /fluent-bit/etc/
-            - name: runlogjournal
-              mountPath: /run/log/journal
-              readOnly: true
-            - name: dmesg
-              mountPath: /var/log/dmesg
-              readOnly: true
-          terminationGracePeriodSeconds: 10
-          hostNetwork: true
-          dnsPolicy: ClusterFirstWithHostNet
-          volumes:
-          - name: fluentbitstate
-            hostPath:
-              path: /var/fluent-bit/state
-          - name: varlog
-            hostPath:
-              path: /var/log
-          - name: varlibdockercontainers
-            hostPath:
-              path: /var/lib/docker/containers
-          - name: fluent-bit-config
-            configMap:
-              name: fluent-bit-config
-          - name: runlogjournal
-            hostPath:
-              path: /run/log/journal
-          - name: dmesg
-            hostPath:
-              path: /var/log/dmesg
-          serviceAccountName: fluent-bit
-          tolerations:
-          - key: node-role.kubernetes.io/master
-            operator: Exists
-            effect: NoSchedule
-          - operator: "Exists"
-            effect: "NoExecute"
-          - operator: "Exists"
-            effect: "NoSchedule"
-    ```
-
-!!! tip
-
-    Do you want to log with custom cloudwatch log group, please add some config like this in `fluent-bit-config` configmap.
-
-    ``` conf
-    [INPUT]
-        Name                tail
-        Tag                 application.app_name
-        Path                /var/log/containers/app_name-*
-        multiline.parser    docker, cri
-        DB                  /var/fluent-bit/state/flb_app_name.db
-        Mem_Buf_Limit       50MB
-        Skip_Long_Lines     On
-        Refresh_Interval    10
-        Rotate_Wait         30
-        storage.type        filesystem
-        Read_from_Head      ${READ_FROM_HEAD}
-    
-    [OUTPUT]
-        Name                cloudwatch_logs
-        Match               application.app_name
-        region              ${AWS_REGION}
-        log_group_name      /aws/${AWS_REGION}/app_name
-        log_stream_prefix   ${HOST_NAME}-
-        auto_create_group   true
-        extra_user_agent    container-insights
-    ```
-
-[AWS Documentation](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-setup-logs-FluentBit.html#Container-Insights-FluentBit-setup)
-
-## Using ADOT on EC2
-
-### Deploy a ADOT as a DaemonSet with other resources
+### Deploy ADOT on EC2 using `kubectl`
 
 ``` shell
-kubectl apply -f https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/deployment-template/eks/otel-container-insights-infra.yaml
+kubectl apply -f https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/otel-container-insights-infra.yaml
 
-kubectl get pods -l name=aws-otel-eks-ci -n aws-otel-eks
+kubectl get pods -l name=aws-otel-eks-ci -n amazon-cloudwatch
 ```
 
 ??? note "otel-container-insights-infra.yaml"
 
     ``` yaml linenums="1"
-    # create namespace
-    apiVersion: v1
-    kind: Namespace
-    metadata:
-      name: aws-otel-eks
-      labels:
-        name: aws-otel-eks
-
-    ---
-    # create cwagent service account and role binding
-    apiVersion: v1
-    kind: ServiceAccount
-    metadata:
-      name: aws-otel-sa
-      namespace: aws-otel-eks
-
-    ---
     kind: ClusterRole
     apiVersion: rbac.authorization.k8s.io/v1
     metadata:
@@ -854,7 +480,7 @@ kubectl get pods -l name=aws-otel-eks-ci -n aws-otel-eks
     subjects:
       - kind: ServiceAccount
         name: aws-otel-sa
-        namespace: aws-otel-eks
+        namespace: amazon-cloudwatch
     roleRef:
       kind: ClusterRole
       name: aoc-agent-role
@@ -865,7 +491,7 @@ kubectl get pods -l name=aws-otel-eks-ci -n aws-otel-eks
     kind: ConfigMap
     metadata:
       name: otel-agent-conf
-      namespace: aws-otel-eks
+      namespace: amazon-cloudwatch
       labels:
         app: opentelemetry
         component: otel-agent-conf
@@ -969,7 +595,7 @@ kubectl get pods -l name=aws-otel-eks-ci -n aws-otel-eks
     kind: DaemonSet
     metadata:
       name: aws-otel-eks-ci
-      namespace: aws-otel-eks
+      namespace: amazon-cloudwatch
     spec:
       selector:
         matchLabels:
@@ -981,7 +607,7 @@ kubectl get pods -l name=aws-otel-eks-ci -n aws-otel-eks
         spec:
           containers:
             - name: aws-otel-collector
-              image: amazon/aws-otel-collector:latest
+              image: public.ecr.aws/aws-observability/aws-otel-collector:latest
               env:
                 - name: K8S_NODE_NAME
                   valueFrom:
@@ -1060,101 +686,11 @@ kubectl get pods -l name=aws-otel-eks-ci -n aws-otel-eks
 
 [AWS Knowledge Center](https://aws.amazon.com/ko/premiumsupport/knowledge-center/cloudwatch-container-insights-eks-fargate/#Set_up_Container_Insights_metrics_on_your_EKS_EC2_cluster_using_ADOT)
 
-### Update service account to put logs using IAM role
-
-=== ":simple-linux: Linux"
-
-    ``` bash hl_lines="1 2 3 4"
-    CLUSTER_NAME="<cluster name>"
-    ROLE_NAME="<role name>"
-    PROJECT_NAME="<project name>"
-    REGION="<region code>"
-
-    eksctl create iamserviceaccount \
-        --cluster $CLUSTER_NAME \
-        --name aws-otel-sa \
-        --namespace aws-otel-eks \
-        --attach-policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy \
-        --role-name $ROLE_NAME \
-        --tags project=$PROJECT_NAME \
-        --region $REGION \
-        --override-existing-serviceaccounts \
-        --approve
-
-    kubectl rollout restart ds/aws-otel-eks-ci -n aws-otel-eks
-    ```
-
-=== ":simple-windows: Windows"
-
-    ``` powershell hl_lines="1 2 3 4"
-    $CLUSTER_NAME="<cluster name>"
-    $ROLE_NAME="<role name>"
-    $PROJECT_NAME="<project name>"
-    $REGION="<region code>"
-
-    eksctl create iamserviceaccount ` 
-        --cluster $CLUSTER_NAME ` 
-        --name aws-otel-sa ` 
-        --namespace aws-otel-eks ` 
-        --attach-policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy ` 
-        --role-name $ROLE_NAME ` 
-        --tags project=$PROJECT_NAME ` 
-        --region $REGION `
-        --override-existing-serviceaccounts ` 
-        --approve
-
-    kubectl rollout restart ds/aws-otel-eks-ci -n aws-otel-eks
-    ```
-
 ## Using ADOT on Fargate
 
 > If you want to use Container Insights from Fargate pod, you can only use ADOT.
 
-### Create the namespace for ADOT
-
-=== ":simple-linux: Linux"
-    ``` bash
-    cat << EOF >> otel-fargate-namespace.yaml
-    apiVersion: v1
-    kind: Namespace
-    metadata:
-      name: fargate-container-insights
-      labels:
-        name: fargate-container-insights
-    EOF
-
-    kubectl apply -f otel-fargate-namespace.yaml
-    ```
-
-=== ":simple-windows: Windows"
-
-    ``` powershell
-    @"
-    apiVersion: v1
-    kind: Namespace
-    metadata:
-      name: fargate-container-insights
-      labels:
-        name: fargate-container-insights
-    "@ | Add-Content -Path otel-fargate-namespace.yaml
-
-    kubectl apply -f otel-fargate-namespace.yaml
-    ```
-
-??? note "otel-fargate-namespace.yaml"
-    
-    ``` yaml linenums="1"
-    apiVersion: v1
-    kind: Namespace
-    metadata:
-      name: fargate-container-insights
-      labels:
-        name: fargate-container-insights
-    ```
-
-[AWS Knowledge Center](https://aws.amazon.com/ko/premiumsupport/knowledge-center/cloudwatch-container-insights-eks-fargate/#Set_up_Container_Insights_metrics_on_an_EKS_Fargate_cluster_using_ADOT)
-
-### Create the service account for ADOT
+### Create a service account for ADOT on Fargate
 
 === ":simple-linux: Linux"
     
@@ -1167,7 +703,7 @@ kubectl get pods -l name=aws-otel-eks-ci -n aws-otel-eks
     eksctl create iamserviceaccount \
         --cluster=$CLUSTER_NAME \
         --name=adot-collector \
-        --namespace=fargate-container-insights \
+        --namespace=amazon-cloudwatch \
         --role-name=$ROLE_NAME \
         --attach-policy-arn=arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy \
         --tags project=$PROJECT_NAME \
@@ -1186,7 +722,7 @@ kubectl get pods -l name=aws-otel-eks-ci -n aws-otel-eks
     eksctl create iamserviceaccount `
         --cluster=$CLUSTER_NAME `
         --name=adot-collector `
-        --namespace=fargate-container-insights `
+        --namespace=amazon-cloudwatch `
         --role-name=$ROLE_NAME `
         --attach-policy-arn=arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy `
         --tags project=$PROJECT_NAME `
@@ -1196,7 +732,37 @@ kubectl get pods -l name=aws-otel-eks-ci -n aws-otel-eks
 
 [AWS Knowledge Center](https://aws.amazon.com/ko/premiumsupport/knowledge-center/cloudwatch-container-insights-eks-fargate/#Set_up_Container_Insights_metrics_on_an_EKS_Fargate_cluster_using_ADOT)
 
-### Deploy a ADOT as a StatefulSet
+### Deploy ADOT on Fargate using `helm`
+
+=== ":simple-linux: Linux"
+
+    ``` bash hl_lines="1 2"
+    CLUSTER_NAME="<cluster name>"
+    REGION="<region code>"
+
+    helm repo add container-insights https://marcus16-kang.github.io/aws-container-insights-chart/
+    helm install adot-fargate container-insights/adot-fargate \
+        --namespace amazon-cloudwatch \
+        --set clusterName=$CLUSTER_NAME \
+        --set region=$REGION \
+        --set serviceAccount.create=false
+    ```
+
+=== ":simple-windows: Windows"
+
+    ``` powershell hl_lines="1 2"
+    $CLUSTER_NAME="<cluster name>"
+    $REGION="<region code>"
+
+    helm repo add container-insights https://marcus16-kang.github.io/aws-container-insights-chart/
+    helm install adot-fargate container-insights/adot-fargate `
+        --namespace amazon-cloudwatch `
+        --set clusterName=$CLUSTER_NAME `
+        --set region=$REGION `
+        --set serviceAccount.create=false
+    ```
+
+### Deploy ADOT on Fargate using `kubecetl`
 
 === ":simple-linux: Linux"
     
@@ -1204,7 +770,7 @@ kubectl get pods -l name=aws-otel-eks-ci -n aws-otel-eks
     CLUSTER_NAME="<cluster name>"
     REGION="<region code>"
 
-    curl -LO https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/deployment-template/eks/otel-fargate-container-insights.yaml
+    curl -LO https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/otel-fargate-container-insights.yaml
     sed -i "s|YOUR-EKS-CLUSTER-NAME|$CLUSTER_NAME|g" otel-fargate-container-insights.yaml
     sed -i "s|us-east-1|$REGION|g" otel-fargate-container-insights.yaml
 
@@ -1217,7 +783,7 @@ kubectl get pods -l name=aws-otel-eks-ci -n aws-otel-eks
     $CLUSTER_NAME="<cluster name>"
     $REGION="<region code>"
 
-    curl.exe -LO https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/deployment-template/eks/otel-fargate-container-insights.yaml
+    curl.exe -LO https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/otel-fargate-container-insights.yaml
     $content = Get-Content otel-fargate-container-insights.yaml
     $content = $content -replace "YOUR-EKS-CLUSTER-NAME", $CLUSTER_NAME
     $content = $content -replace "us-east-1", $REGION
@@ -1256,7 +822,7 @@ kubectl get pods -l name=aws-otel-eks-ci -n aws-otel-eks
     subjects:
       - kind: ServiceAccount
         name: adot-collector
-        namespace: fargate-container-insights
+        namespace: amazon-cloudwatch
     roleRef:
       kind: ClusterRole
       name: adotcol-admin-role
@@ -1270,7 +836,7 @@ kubectl get pods -l name=aws-otel-eks-ci -n aws-otel-eks
     kind: ConfigMap
     metadata:
       name: adot-collector-config
-      namespace: fargate-container-insights
+      namespace: amazon-cloudwatch
       labels:
         app: aws-adot
         component: adot-collector-config
@@ -1716,7 +1282,7 @@ kubectl get pods -l name=aws-otel-eks-ci -n aws-otel-eks
     kind: Service
     metadata:
       name: adot-collector-service
-      namespace: fargate-container-insights
+      namespace: amazon-cloudwatch
       labels:
         app: aws-adot
         component: adot-collector
@@ -1733,7 +1299,7 @@ kubectl get pods -l name=aws-otel-eks-ci -n aws-otel-eks
     kind: StatefulSet
     metadata:
       name: adot-collector
-      namespace: fargate-container-insights
+      namespace: amazon-cloudwatch
       labels:
         app: aws-adot
         component: adot-collector
@@ -1783,3 +1349,57 @@ kubectl get pods -l name=aws-otel-eks-ci -n aws-otel-eks
     ```
 
 [AWS Knowledge Center](https://aws.amazon.com/ko/premiumsupport/knowledge-center/cloudwatch-container-insights-eks-fargate/#Set_up_Container_Insights_metrics_on_an_EKS_Fargate_cluster_using_ADOT)
+
+## Get metrics
+
+### Pod's CPU Utilization from Fargate
+
+``` json hl_lines="3 6"
+{
+    "metrics": [
+        [ { "expression": "SEARCH('{ContainerInsights,PodName,ClusterName,Namespace,LaunchType} MetricName=\"pod_cpu_usage_total\" ClusterName=\"CLUSTER_NAME\" Namespace=\"NAMESPACE_NAME\" LaunchType=\"fargate\"', 'Average', 60)", "label": "", "id": "e1" } ]
+    ],
+    "timezone": "UTC",
+    "region": "us-east-1",
+    "view": "timeSeries",
+    "stacked": false,
+    "stat": "Average",
+    "period": 60,
+    "yAxis": {
+        "left": {
+            "label": "Percent",
+            "showUnits": false
+        },
+        "right": {
+            "showUnits": false
+        }
+    },
+    "title": "pod_cpu_usage_total"
+}
+```
+
+### Pod's memory Utilization from Fargate
+
+``` json hl_lines="3 6"
+  {
+      "metrics": [
+          [ { "expression": "SEARCH('{ContainerInsights,PodName,ClusterName,Namespace,LaunchType} MetricName=\"pod_cpu_usage_total\" ClusterName=\"CLUSTER_NAME\" Namespace=\"NAMESPACE_NAME\" LaunchType=\"fargate\"', 'Average', 60)", "label": "", "id": "e1" } ]
+      ],
+      "timezone": "UTC",
+      "region": "us-east-1",
+      "view": "timeSeries",
+      "stacked": false,
+      "stat": "Average",
+      "period": 60,
+      "yAxis": {
+          "left": {
+              "label": "Percent",
+              "showUnits": false
+          },
+          "right": {
+              "showUnits": false
+          }
+      },
+      "title": "pod_cpu_usage_total"
+  }
+```

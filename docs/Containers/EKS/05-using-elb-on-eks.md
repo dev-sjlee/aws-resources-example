@@ -49,7 +49,7 @@
         --policy-document file://aws-load-balancer-controller-iam-policy.json `
         --query 'Policy.Arn' `
         --output text `
-        --tags Key=project,Value=$PROJECT_NAME `
+        --tags Key=project,Value=$PROJECT_NAME
 
     eksctl create iamserviceaccount `
         --cluster=$CLUSTER_NAME `

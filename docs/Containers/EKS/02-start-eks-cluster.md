@@ -334,6 +334,26 @@ iam:
         Name: <fluent bit role name>
         project: <project name>
     
+    - metadata: # adot on ec2
+        name: aws-otel-sa
+        namespace: amazon-cloudwatch
+      attachPolicyARNs:
+        - "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+      roleName: <adot ec2 role name>
+      tags:
+        Name: <adot ec2 role name>
+        project: <project name>
+    
+    - metadata: # adot on fargate
+        name: adot-collector
+        namespace: amazon-cloudwatch
+      attachPolicyARNs:
+        - "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+      roleName: <adot fargate role name>
+      tags:
+        Name: <adot fargate role name>
+        project: <project name>
+    
     - metadata: # argocd image updater
         name: argocd-image-updater
         namespace: argocd
