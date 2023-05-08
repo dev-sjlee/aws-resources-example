@@ -138,6 +138,15 @@
 
 [AWS Documentation](https://docs.aws.amazon.com/eks/latest/userguide/helm.html)
 
+## Install `docker`
+
+``` bash
+sudo amazon-linux-extras install -y docker
+sudo systemctl start docker
+sudo systemctl enable docker
+sudo usermod -a -G docker ec2-user
+```
+
 ## Install `docker buildx`
 
 === "Linux (x86_64)"
@@ -178,7 +187,7 @@
 === "Linux (x86_64)"
     
     ``` bash
-    curl --silent --location "https://github.com/derailed/k9s/releases/download/v0.27.3/k9s_Linux_amd64.tar.gz" | tar xz -C /tmp
+    curl --silent --location "https://github.com/derailed/k9s/releases/download/v0.27.4/k9s_Linux_amd64.tar.gz" | tar xz -C /tmp
     sudo cp /tmp/k9s /usr/local/bin
     sudo cp /tmp/k9s /usr/bin
     k9s version
@@ -188,7 +197,7 @@
 === "Linux (ARM64)"
     
     ``` bash
-    curl --silent --location "https://github.com/derailed/k9s/releases/download/v0.27.3/k9s_Linux_arm64.tar.gz" | tar xz -C /tmp
+    curl --silent --location "https://github.com/derailed/k9s/releases/download/v0.27.4/k9s_Linux_arm64.tar.gz" | tar xz -C /tmp
     sudo cp /tmp/k9s /usr/local/bin
     sudo cp /tmp/k9s /usr/bin
     k9s version
@@ -204,11 +213,12 @@
 === "Windows (Executable)"
     
     ``` powershell
-    curl.exe -LO https://github.com/derailed/k9s/releases/download/v0.27.3/k9s_Windows_amd64.tar.gz
-    tar -xvzf k9s_Windows_amd64.tar.gz
+    curl.exe -LO https://github.com/derailed/k9s/releases/download/v0.27.4/k9s_Windows_amd64.zip
+    Expand-Archive ./k9s_Windows_amd64.zip -DestinationPath ./
+    rm k9s_Windows_amd64.zip
     rm LICENSE
     rm README.md
-    rm k9s_Windows_amd64.tar.gz
+    ./k9s.exe version
     ```
 
 [K9s Documentation](https://github.com/derailed/k9s)

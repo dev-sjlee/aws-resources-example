@@ -12,6 +12,8 @@ kubectl get deployment metrics-server -n kube-system
 
 ## Using HPA
 
+### `autoscaling/v2`
+
 ``` yaml title="hpa.yaml" hl_lines="4 5 7 9 10 14 17 18 19 20 21" linenums="1"
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
@@ -30,6 +32,26 @@ spec:
         target:
           type: Utilization
           averageUtilization: <cpu utilization percentage number (ex. 50)>
+  scaleTargetRef:
+    apiVersion: <target object api version (ex. apps/v1)>
+    kind: <target object type (ex. Deployment)>
+    name: <target object name>
+```
+
+### `autoscaling/v1`
+
+``` yaml title="hpa.yaml" hl_lines="4 5 7 9 10 11 13 14 15" linenums="1"
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: <hpa name>
+  namespace: <hpa namespace>
+  labels:
+    app: <hpa app name>
+spec:
+  minReplicas: <min replica number (ex. 1)>
+  maxReplicas: <max replica number (ex. 10)>
+  targetCPUUtilizationPercentage: <cpu utilization percentage number (ex. 50)>
   scaleTargetRef:
     apiVersion: <target object api version (ex. apps/v1)>
     kind: <target object type (ex. Deployment)>
