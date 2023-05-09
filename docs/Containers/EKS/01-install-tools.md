@@ -102,6 +102,181 @@
     rm eksctl_Windows_amd64.zip
     ```
 
+??? note "Minimum IAM policies for `eksctl`"
+
+    ``` json title="AmazonEC2FullAccess (AWS Managed Policy)" linenums="1"
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Action": "ec2:*",
+                "Effect": "Allow",
+                "Resource": "*"
+            },
+            {
+                "Effect": "Allow",
+                "Action": "elasticloadbalancing:*",
+                "Resource": "*"
+            },
+            {
+                "Effect": "Allow",
+                "Action": "cloudwatch:*",
+                "Resource": "*"
+            },
+            {
+                "Effect": "Allow",
+                "Action": "autoscaling:*",
+                "Resource": "*"
+            },
+            {
+                "Effect": "Allow",
+                "Action": "iam:CreateServiceLinkedRole",
+                "Resource": "*",
+                "Condition": {
+                    "StringEquals": {
+                        "iam:AWSServiceName": [
+                            "autoscaling.amazonaws.com",
+                            "ec2scheduled.amazonaws.com",
+                            "elasticloadbalancing.amazonaws.com",
+                            "spot.amazonaws.com",
+                            "spotfleet.amazonaws.com",
+                            "transitgateway.amazonaws.com"
+                        ]
+                    }
+                }
+            }
+        ]
+    }
+    ```
+
+    ``` json title="AWSCloudFormationFullAccess (AWS Managed Policy)" linenums="1"
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Effect": "Allow",
+                "Action": [
+                    "cloudformation:*"
+                ],
+                "Resource": "*"
+            }
+        ]
+    }
+    ```
+
+    ``` json title="EksAllAccess" linenums="1" hl_lines="15"
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Effect": "Allow",
+                "Action": "eks:*",
+                "Resource": "*"
+            },
+            {
+                "Action": [
+                    "ssm:GetParameter",
+                    "ssm:GetParameters"
+                ],
+                "Resource": [
+                    "arn:aws:ssm:*:<account_id>:parameter/aws/*",
+                    "arn:aws:ssm:*::parameter/aws/*"
+                ],
+                "Effect": "Allow"
+            },
+            {
+                "Action": [
+                "kms:CreateGrant",
+                "kms:DescribeKey"
+                ],
+                "Resource": "*",
+                "Effect": "Allow"
+            },
+            {
+                "Action": [
+                "logs:PutRetentionPolicy"
+                ],
+                "Resource": "*",
+                "Effect": "Allow"
+            }        
+        ]
+    }
+    ```
+
+    ``` json title="IamLimitedAccess" linenums="1" hl_lines="35 36 37 38 39 40 49"
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Effect": "Allow",
+                "Action": [
+                    "iam:CreateInstanceProfile",
+                    "iam:DeleteInstanceProfile",
+                    "iam:GetInstanceProfile",
+                    "iam:RemoveRoleFromInstanceProfile",
+                    "iam:GetRole",
+                    "iam:CreateRole",
+                    "iam:DeleteRole",
+                    "iam:AttachRolePolicy",
+                    "iam:PutRolePolicy",
+                    "iam:ListInstanceProfiles",
+                    "iam:AddRoleToInstanceProfile",
+                    "iam:ListInstanceProfilesForRole",
+                    "iam:PassRole",
+                    "iam:DetachRolePolicy",
+                    "iam:DeleteRolePolicy",
+                    "iam:GetRolePolicy",
+                    "iam:GetOpenIDConnectProvider",
+                    "iam:CreateOpenIDConnectProvider",
+                    "iam:DeleteOpenIDConnectProvider",
+                    "iam:TagOpenIDConnectProvider",
+                    "iam:ListAttachedRolePolicies",
+                    "iam:TagRole",
+                    "iam:GetPolicy",
+                    "iam:CreatePolicy",
+                    "iam:DeletePolicy",
+                    "iam:ListPolicyVersions"
+                ],
+                "Resource": [
+                    "arn:aws:iam::<account_id>:instance-profile/eksctl-*",
+                    "arn:aws:iam::<account_id>:role/eksctl-*",
+                    "arn:aws:iam::<account_id>:policy/eksctl-*",
+                    "arn:aws:iam::<account_id>:oidc-provider/*",
+                    "arn:aws:iam::<account_id>:role/aws-service-role/eks-nodegroup.amazonaws.com/AWSServiceRoleForAmazonEKSNodegroup",
+                    "arn:aws:iam::<account_id>:role/eksctl-managed-*"
+                ]
+            },
+            {
+                "Effect": "Allow",
+                "Action": [
+                    "iam:GetRole"
+                ],
+                "Resource": [
+                    "arn:aws:iam::<account_id>:role/*"
+                ]
+            },
+            {
+                "Effect": "Allow",
+                "Action": [
+                    "iam:CreateServiceLinkedRole"
+                ],
+                "Resource": "*",
+                "Condition": {
+                    "StringEquals": {
+                        "iam:AWSServiceName": [
+                            "eks.amazonaws.com",
+                            "eks-nodegroup.amazonaws.com",
+                            "eks-fargate.amazonaws.com"
+                        ]
+                    }
+                }
+            }
+        ]
+    }
+    ```
+
+    [eksctl Documentation](https://eksctl.io/usage/minimum-iam-policies/)
+
 [AWS Documentation](https://docs.aws.amazon.com/eks/latest/userguide/eksctl.html)
 
 ## Install `helm`

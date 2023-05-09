@@ -328,6 +328,20 @@ description: Install and config CloudWatch agent for EC2.
         }
         ```
 
+## Enable CloudWatch Agent
+
+=== "ec2-user"
+
+    ``` bash
+    sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c file:/opt/aws/amazon-cloudwatch-agent/bin/config.json
+    ```
+
+=== "root"
+
+    ``` bash
+    /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c file:/opt/aws/amazon-cloudwatch-agent/bin/config.json
+    ```
+
 ## CloudWatch Metrics for ECS Infra-Level Monitoring
 
 ### CPU Utilization

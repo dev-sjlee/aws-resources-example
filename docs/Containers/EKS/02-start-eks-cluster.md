@@ -241,6 +241,42 @@ aws sts get-caller-identity
 
 [Blogs](https://support.bespinglobal.com/ko/support/solutions/articles/73000544787--aws-%EB%8B%A4%EB%A5%B8-%EA%B3%84%EC%A0%95%EC%9D%98-role%EC%9D%84-%EC%82%AC%EC%9A%A9%ED%95%98%EC%97%AC-kubectl%EC%97%90-%EC%A0%91%EC%86%8D%ED%95%98%EA%B8%B0)
 
+## Create IAM Identity Mapping
+
+=== ":simple-linux: Linux"
+
+    ``` bash
+    CLUSTER_NAME="<cluster name>"
+    ROLE_ARN="<role arn>"
+    GROUP="system:masters"
+    USERNAME="<user name>"
+    REGION="<region code>"
+
+    eksctl create iamidentitymapping \
+        --cluster $CLUSTER_NAME \
+        --arn $ROLE_ARN \
+        --group $GROUP \
+        --username $USERNAME \
+        --region $REGION
+    ```
+
+=== ":simple-windows: Windows"
+
+    ``` powershell
+    $CLUSTER_NAME="<cluster name>"
+    $ROLE_ARN="<role arn>"
+    $GROUP="system:masters"
+    $USERNAME="<user name>"
+    $REGION="<region code>"
+
+    eksctl create iamidentitymapping `
+        --cluster $CLUSTER_NAME `
+        --arn $ROLE_ARN `
+        --group $GROUP `
+        --username $USERNAME `
+        --region $REGION
+    ```
+
 ## Create IRSAs for Addons
 
 ``` yaml title="irsa.yaml" linenums="1"
@@ -447,5 +483,95 @@ eksctl create iamserviceaccount -f irsa.yaml --approve
 
 === "Using AWS CLI"
     ``` shell
-    
+    ```
+
+## Limit IAM role to access kubernetes resource by namespace
+
+### Create a role
+
+``` role.yaml hl_lines="4 5"
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: <role name>
+  namespace: <namespace name>
+rules:
+  - apiGroups:
+      - ""
+      - "apps"
+      - "batch"
+      - "extensions"
+#      - "autoscaling"
+    resources:
+      - "configmaps"
+      - "cronjobs"
+      - "deployments"
+      - "events"
+      - "ingresses"
+      - "jobs"
+      - "pods"
+      - "pods/attach"
+      - "pods/exec"
+      - "pods/log"
+      - "pods/portforward"
+      - "secrets"
+      - "services"
+#      - "horizontalpodautoscalers"
+    verbs:
+      - "create"
+      - "delete"
+      - "describe"
+      - "get"
+      - "list"
+      - "patch"
+      - "update"
+```
+
+### Create a role binding
+
+``` rolebinding.yaml hl_lines="4 5 8 12"
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: <role binding name>
+  namespace: <namespace name>
+subjects:
+- kind: User
+  name: <user name>
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: <role name>
+  apiGroup: rbac.authorization.k8s.io
+```
+
+### Create an identity mapping
+=== ":simple-linux: Linux"
+
+    ``` bash
+    CLUSTER_NAME="<cluster name>"
+    ROLE_ARN="<role arn>"
+    USERNAME="<user name>"
+    REGION="<region code>"
+
+    eksctl create iamidentitymapping \
+        --cluster $CLUSTER_NAME \
+        --arn $ROLE_ARN \
+        --username $USERNAME \
+        --region $REGION
+    ```
+
+=== ":simple-windows: Windows"
+
+    ``` powershell
+    $CLUSTER_NAME="<cluster name>"
+    $ROLE_ARN="<role arn>"
+    $USERNAME="<user name>"
+    $REGION="<region code>"
+
+    eksctl create iamidentitymapping `
+        --cluster $CLUSTER_NAME `
+        --arn $ROLE_ARN `
+        --username $USERNAME `
+        --region $REGION
     ```

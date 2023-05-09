@@ -2,6 +2,8 @@
 
 ## Analytics
 
+- [Athena](Analytics/Athena/01-query-alb-logs/)
+- [Kinesis Data Firehose](Analytics/Kinesis%20Data%20Firehose/01-transform-records-using-lambda/)
 - [MSK](Analytics/MSK/01-enable-prometheus-monitoring.md)
 
 ## Containers
@@ -16,12 +18,18 @@
 
 ## Developer Tools
 
+- [Cloud9](Developer%20Tools/Cloud9/01-cloud9-on-existed-instance/)
 - [CodeBuild](Developer%20Tools/CodeBuild/01-build-with-custom-image.md)
+- [CodeCommit](Developer%20Tools/CodeCommit/01-using-git/)
+- [CodeDeploy](Developer%20Tools/CodeDeploy/01-install-codedeploy-agent/)
 
 ## General
 
 - [Install AWS CLI v2](General/01-install-awscli-v2.md)
 - [Install Python 3.10](General/02-install-python-310.md)
+- [URL Test with cURL and Wget](General/03-url-test-with-curl-and-wget/)
+- [Get EC2 Metadata](General/04-get-ec2-metadata/)
+- [Run Scripts using SystemD](General/05-run-scripts-using-systemd/)
 
 ## Management & Governance
 
@@ -30,6 +38,8 @@
 ## Networking & Content Delivery
 
 - [CloudFront](Networking%20&%20Content%20Delivery/CloudFront/01-serving-sse-kms-encrypted-content-from-s3-using-cloudfront.md)
+- [ELB](Networking%20%26%20Content%20Delivery/ELB/01-create-access-logs-bucket/)
+- [VPC](Networking%20%26%20Content%20Delivery/VPC/01-create-vpc-endpoints/)
 - [VPN](Networking%20&%20Content%20Delivery/VPN/01-create-client-vpn.md)
 
 ## Security, Identity & Compliance

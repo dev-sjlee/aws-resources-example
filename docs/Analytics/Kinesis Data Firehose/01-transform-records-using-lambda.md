@@ -5,7 +5,7 @@ description: A description of lambda function of kinesis firehose transform.
 
 # Transform Records Using Lambda
 
-## Input data
+## Example input data
 
 ``` json
 {
@@ -42,7 +42,7 @@ description: A description of lambda function of kinesis firehose transform.
 }
 ```
 
-## Output data
+## Example output data
 
 ``` json
 {
@@ -82,7 +82,7 @@ The possible result values are:
 - `Dropped`
 - `ProcessingFailed`
 
-## Function example
+## Example function (transform timezone)
 
 ``` python title="lambda_function.py" linenums="1"
 import json
@@ -113,3 +113,36 @@ def lambda_handler(event, context):
 ```
 
 > This function transform datetime from UTC to CEST.
+
+## Example function (transform GZIP to JSON)
+
+``` python title="lambda_function.py" linenums="1"
+import json
+import base64
+import gzip
+
+def lambda_handler(event, context):
+    # print(json.dumps(event, default=str))
+    records = event['records']
+    new_records = []
+
+    for record in records:
+        data = record['data'] # (1)
+        decompressed = gzip.decompress(base64.b64decode(data))  # (2)
+        result = json.dumps(json.loads(decompressed.decode()))  # (3)
+        # print(result)
+        new_records.append({
+            'recordId': record['recordId'],
+            'result': 'Ok',
+            'data': base64.b64encode(result.encode())
+        })
+
+    # print(new_records)
+    return {
+        'records': new_records
+    }
+```
+
+1. H4sIAAAAAAAAA1WNyw6DIBBFf8Ww7jQDDI/yI10aC9gQ09Yompim/17ElXd5ck/Otyljy5ICcw3TD0HCeIQejQTqYwAbUAOXgltPdNPKs0tVQlyTj22ed0+gkIAKkBrkDpWTdFVWnK81Ic1Zj6+xUMKD5qnzw3HkvKICO5/TmvLW5m2Me+3+mYb0frLfH7rzCPC9AAAA
+2. b'{ "uuid": "6b2427c0-f073-4fed-8d06-13218c44965c", "device_ts": "2023-05-04 01:05:34.582", "device_id": 37, "device_temp": 40, "track_id": 11, "activity_type": "Working"}'
+3. {"uuid": "6b2427c0-f073-4fed-8d06-13218c44965c", "device_ts": "2023-05-04 01:05:34.582", "device_id": 37, "device_temp": 40, "track_id": 11, "activity_type": "Working"}
