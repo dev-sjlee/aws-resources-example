@@ -9,7 +9,7 @@ Description: Base Dockerfile templates.
 
 === "General"
     ``` Dockerfile linenums="1" hl_lines="3 4 6 7 9 27"
-    FROM public.ecr.aws/docker/library/alpine:3.17.3
+    FROM public.ecr.aws/docker/library/alpine:3.18.0
 
     ENV USER_NAME <USER NAME>
     ENV USER_UID <UID NUMBER>
@@ -42,7 +42,7 @@ Description: Base Dockerfile templates.
 
 === "AMD64"
     ``` Dockerfile linenums="1" hl_lines="3 4 6 7 9 27"
-    FROM amd64/alpine:3.17.3
+    FROM amd64/alpine:3.18.0
 
     ENV USER_NAME <USER NAME>
     ENV USER_UID <UID NUMBER>
@@ -75,7 +75,7 @@ Description: Base Dockerfile templates.
 
 === "ARM64"
     ``` Dockerfile linenums="1" hl_lines="3 4 6 7 9 27"
-    FROM arm64v8/alpine:3.17.3
+    FROM arm64v8/alpine:3.18.0
 
     ENV USER_NAME <USER NAME>
     ENV USER_UID <UID NUMBER>
@@ -110,7 +110,7 @@ Description: Base Dockerfile templates.
 
 === "General"
     ``` Dockerfile linenums="1" hl_lines="5 6 8 9 11 31"
-    FROM public.ecr.aws/docker/library/amazonlinux:2.0.20230320.0
+    FROM public.ecr.aws/docker/library/amazonlinux:2.0.20230418.0
 
     ENV TINI_VERSION v0.19.0
 
@@ -147,7 +147,7 @@ Description: Base Dockerfile templates.
 
 === "AMD64"
     ``` Dockerfile linenums="1" hl_lines="5 6 8 9 11 31"
-    FROM amd64/amazonlinux:2.0.20230320.0
+    FROM amd64/amazonlinux:2.0.20230418.0
 
     ENV TINI_VERSION v0.19.0
 
@@ -184,7 +184,7 @@ Description: Base Dockerfile templates.
 
 === "ARM64"
     ``` Dockerfile linenums="1" hl_lines="5 6 8 9 11 31"
-    FROM arm64v8/amazonlinux:2.0.20230320.0
+    FROM arm64v8/amazonlinux:2.0.20230418.0
 
     ENV TINI_VERSION v0.19.0
 
