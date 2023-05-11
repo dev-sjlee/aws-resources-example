@@ -123,7 +123,7 @@ kubectl create namespace prometheus
     $content = $content -replace "AMP_WORKSPACE_ARN", $AMP_WORKSPACE_ARN
     $content | Set-Content ./prometheus-policy.json
 
-    POLICY_ARN = aws iam create-policy `
+    $POLICY_ARN = aws iam create-policy `
         --policy-name $POLICY_NAME `
         --policy-document file://prometheus-policy.json `
         --query 'Policy.Arn' `

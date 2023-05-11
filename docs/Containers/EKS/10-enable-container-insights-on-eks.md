@@ -762,7 +762,7 @@ kubectl get pods -l name=aws-otel-eks-ci -n amazon-cloudwatch
         --set serviceAccount.create=false
     ```
 
-### Deploy ADOT on Fargate using `kubecetl`
+### Deploy ADOT on Fargate using `kubectl`
 
 === ":simple-linux: Linux"
     

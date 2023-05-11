@@ -1,6 +1,6 @@
 # Service
 
-``` yaml title="nodeport_service.yaml"
+``` yaml title="service.yaml"
 apiVersion: v1
 kind: Service
 metadata:

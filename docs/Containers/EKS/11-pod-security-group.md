@@ -67,7 +67,7 @@ metadata:
 spec:
   podSelector: 
     matchLabels:
-      role: my-role # labels
+      app: nginx # labels
   securityGroups:
     groupIds:
       - sg-abc123   # security groups id

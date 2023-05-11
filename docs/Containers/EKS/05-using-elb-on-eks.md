@@ -121,8 +121,8 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  namespace: <namespace>
   name: <ingress name>
+  namespace: <namespace>
   annotations:
     kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
@@ -156,8 +156,8 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: <namespace>
   name: <ingress name>
+  namespace: <namespace>
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-type: external
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
