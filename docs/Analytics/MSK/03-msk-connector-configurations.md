@@ -1,4 +1,20 @@
-# MSK Connector and AWS OpenSearch Service
+---
+title: MSK Connector Configurations
+description: The MSK Connector configurations with diagrams.
+---
+
+# MSK Connector Configurations
+
+## MySQL (Source)
+
+### Diagram
+
+<p align="center">
+    <img src="../../../assets/images/msk/msk-connector-configurations/msk-connector-MySQL-Light.svg#only-light">
+    <img src="../../../assets/images/msk/msk-connector-configurations/msk-connector-MySQL-Dark.svg#only-dark">
+</p>
+
+### Connector Configuration
 
 ## ElasticSearch 7.10
 

@@ -725,7 +725,7 @@ kubectl apply -f https://raw.githubusercontent.com/marcus16-kang/aws-resources-e
     data:
       output.conf: |
         [OUTPUT]
-            Name kinesis
+            Name kinesis_streams
             Match *
             region region-code
             stream my-stream

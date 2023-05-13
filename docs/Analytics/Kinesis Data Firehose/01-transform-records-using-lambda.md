@@ -112,6 +112,25 @@ def lambda_handler(event, context):
     }
 ```
 
+!!! note
+
+    If you want to use dynamic partitioning, you should define partition key like this.
+
+    ``` python
+    new_records.append({
+        'recordId': record['recordId'],
+        'result': 'Ok',
+        'data': base64.b64encode((json.dumps(data, default=str) + '\n').encode()),
+        'metadata': {
+            'partitionKeys': {
+                'year': str(data.year)
+            }
+        }
+    })
+    ```
+
+    ![Dynamic Partitioning Configuration](../../assets/images/firehose/transform-records-using-lambda/1.png)
+
 > This function transform datetime from UTC to CEST.
 
 ## Example function (transform GZIP to JSON)

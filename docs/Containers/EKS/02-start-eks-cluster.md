@@ -146,8 +146,8 @@ eksctl create cluster -f cluster.yaml
 === ":simple-linux: Linux"
 
     ``` bash hl_lines="1 2"
-    CLUSTER_NAME="cluster name"
-    REGION="region"
+    CLUSTER_NAME="<cluster name>"
+    REGION="<region code>"
 
     eksctl utils associate-iam-oidc-provider \
         --cluster $CLUSTER_NAME \
@@ -158,8 +158,8 @@ eksctl create cluster -f cluster.yaml
 === ":simple-windows: Windows"
 
     ``` powershell hl_lines="1 2"
-    $CLUSTER_NAME="cluster name"
-    $REGION="region"
+    $CLUSTER_NAME="<cluster name>"
+    $REGION="<region code>"
 
     eksctl utils associate-iam-oidc-provider `
         --cluster $CLUSTER_NAME `
