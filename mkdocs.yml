@@ -68,7 +68,8 @@ extra:
 plugins:
   - social:
       cards: true
-      cards_font: Noto Sans KR
+      cards_layout_options:
+        font_family: Noto Sans KR
   - rss
   
   - search:
