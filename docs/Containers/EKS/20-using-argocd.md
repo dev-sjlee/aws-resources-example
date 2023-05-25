@@ -255,7 +255,7 @@ kubectl port-forward service/argo-rollouts-dashboard -n argocd 31000:3100
 === ":simple-linux: Linux (x86_64)"
 
     ``` bash
-    curl -LO https://github.com/argoproj/argo-rollouts/releases/download/v1.4.1/kubectl-argo-rollouts-linux-amd64
+    curl -LO https://github.com/argoproj/argo-rollouts/releases/download/v1.5.1/kubectl-argo-rollouts-linux-amd64
     sudo install -o root -g root -m 0755 kubectl-argo-rollouts-linux-amd64 /usr/local/bin/kubectl-argo-rollouts
     sudo install -o root -g root -m 0755 kubectl-argo-rollouts-linux-amd64 /usr/bin/kubectl-argo-rollouts
     rm kubectl-argo-rollouts-linux-amd64
@@ -265,7 +265,7 @@ kubectl port-forward service/argo-rollouts-dashboard -n argocd 31000:3100
 === ":simple-linux: Linux (x86_64)"
 
     ``` bash
-    curl -LO https://github.com/argoproj/argo-rollouts/releases/download/v1.4.1/kubectl-argo-rollouts-linux-arm64
+    curl -LO https://github.com/argoproj/argo-rollouts/releases/download/v1.5.1/kubectl-argo-rollouts-linux-arm64
     sudo install -o root -g root -m 0755 kubectl-argo-rollouts-linux-arm64 /usr/local/bin/kubectl-argo-rollouts
     sudo install -o root -g root -m 0755 kubectl-argo-rollouts-linux-arm64 /usr/bin/kubectl-argo-rollouts
     rm kubectl-argo-rollouts-linux-arm64
@@ -275,7 +275,7 @@ kubectl port-forward service/argo-rollouts-dashboard -n argocd 31000:3100
 === ":simple-windows: Windows"
 
     ``` powershell
-    curl.exe -LO https://github.com/argoproj/argo-rollouts/releases/download/v1.4.1/kubectl-argo-rollouts-windows-amd64
+    curl.exe -LO https://github.com/argoproj/argo-rollouts/releases/download/v1.5.1/kubectl-argo-rollouts-windows-amd64
     mv kubectl-argo-rollouts-windows-amd64 kubectl-argo-rollouts.exe
     kubectl argo rollouts version
     ```

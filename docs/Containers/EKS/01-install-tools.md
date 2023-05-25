@@ -30,26 +30,140 @@
 ## Install `kubectl`
 
 === "Linux (x86_64)"
+
+    ??? note "Kubernetes `1.27`"
     
-    ``` bash
-    curl -LO https://s3.us-west-2.amazonaws.com/amazon-eks/1.26.2/2023-03-17/bin/linux/amd64/kubectl
-    sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-    sudo install -o root -g root -m 0755 kubectl /usr/bin/kubectl
-    kubectl version --short --client
-    sudo kubectl version --short --client
-    rm kubectl
-    ```
+        ``` bash
+        curl -LO https://s3.us-west-2.amazonaws.com/amazon-eks/1.27.1/2023-04-19/bin/linux/amd64/kubectl
+        sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+        sudo install -o root -g root -m 0755 kubectl /usr/bin/kubectl
+        kubectl version --short --client
+        sudo kubectl version --short --client
+        rm kubectl
+        ```
+
+    ??? note "Kubernetes `1.26`"
+    
+        ``` bash
+        curl -LO https://s3.us-west-2.amazonaws.com/amazon-eks/1.26.4/2023-05-11/bin/linux/amd64/kubectl
+        sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+        sudo install -o root -g root -m 0755 kubectl /usr/bin/kubectl
+        kubectl version --short --client
+        sudo kubectl version --short --client
+        rm kubectl
+        ```
+
+    ??? note "Kubernetes `1.25`"
+    
+        ``` bash
+        curl -LO https://s3.us-west-2.amazonaws.com/amazon-eks/1.25.9/2023-05-11/bin/linux/amd64/kubectl
+        sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+        sudo install -o root -g root -m 0755 kubectl /usr/bin/kubectl
+        kubectl version --short --client
+        sudo kubectl version --short --client
+        rm kubectl
+        ```
+
+    ??? note "Kubernetes `1.24`"
+    
+        ``` bash
+        curl -LO https://s3.us-west-2.amazonaws.com/amazon-eks/1.24.13/2023-05-11/bin/linux/amd64/kubectl
+        sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+        sudo install -o root -g root -m 0755 kubectl /usr/bin/kubectl
+        kubectl version --short --client
+        sudo kubectl version --short --client
+        rm kubectl
+        ```
+
+    ??? note "Kubernetes `1.23`"
+    
+        ``` bash
+        curl -LO https://s3.us-west-2.amazonaws.com/amazon-eks/1.23.17/2023-05-11/bin/linux/amd64/kubectl
+        sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+        sudo install -o root -g root -m 0755 kubectl /usr/bin/kubectl
+        kubectl version --short --client
+        sudo kubectl version --short --client
+        rm kubectl
+        ```
+
+    ??? note "Kubernetes `1.22`"
+    
+        ``` bash
+        curl -LO https://s3.us-west-2.amazonaws.com/amazon-eks/1.22.17/2023-05-11/bin/linux/amd64/kubectl
+        sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+        sudo install -o root -g root -m 0755 kubectl /usr/bin/kubectl
+        kubectl version --short --client
+        sudo kubectl version --short --client
+        rm kubectl
+        ```
 
 === "Linux (ARM64)"
     
-    ``` bash
-    curl -LO https://s3.us-west-2.amazonaws.com/amazon-eks/1.26.2/2023-03-17/bin/linux/arm64/kubectl
-    sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-    sudo install -o root -g root -m 0755 kubectl /usr/bin/kubectl
-    kubectl version --short --client
-    sudo kubectl version --short --client
-    rm kubectl
-    ```
+    ??? note "Kubernetes `1.27`"
+    
+        ``` bash
+        curl -LO https://s3.us-west-2.amazonaws.com/amazon-eks/1.27.1/2023-04-19/bin/linux/arm64/kubectl
+        sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+        sudo install -o root -g root -m 0755 kubectl /usr/bin/kubectl
+        kubectl version --short --client
+        sudo kubectl version --short --client
+        rm kubectl
+        ```
+
+    ??? note "Kubernetes `1.26`"
+    
+        ``` bash
+        curl -LO https://s3.us-west-2.amazonaws.com/amazon-eks/1.26.4/2023-05-11/bin/linux/arm64/kubectl
+        sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+        sudo install -o root -g root -m 0755 kubectl /usr/bin/kubectl
+        kubectl version --short --client
+        sudo kubectl version --short --client
+        rm kubectl
+        ```
+
+    ??? note "Kubernetes `1.25`"
+    
+        ``` bash
+        curl -LO https://s3.us-west-2.amazonaws.com/amazon-eks/1.25.9/2023-05-11/bin/linux/arm64/kubectl
+        sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+        sudo install -o root -g root -m 0755 kubectl /usr/bin/kubectl
+        kubectl version --short --client
+        sudo kubectl version --short --client
+        rm kubectl
+        ```
+
+    ??? note "Kubernetes `1.24`"
+    
+        ``` bash
+        curl -LO https://s3.us-west-2.amazonaws.com/amazon-eks/1.24.13/2023-05-11/bin/linux/arm64/kubectl
+        sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+        sudo install -o root -g root -m 0755 kubectl /usr/bin/kubectl
+        kubectl version --short --client
+        sudo kubectl version --short --client
+        rm kubectl
+        ```
+
+    ??? note "Kubernetes `1.23`"
+    
+        ``` bash
+        curl -LO https://s3.us-west-2.amazonaws.com/amazon-eks/1.23.17/2023-05-11/bin/linux/arm64/kubectl
+        sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+        sudo install -o root -g root -m 0755 kubectl /usr/bin/kubectl
+        kubectl version --short --client
+        sudo kubectl version --short --client
+        rm kubectl
+        ```
+
+    ??? note "Kubernetes `1.22`"
+    
+        ``` bash
+        curl -LO https://s3.us-west-2.amazonaws.com/amazon-eks/1.22.17/2023-05-11/bin/linux/arm64/kubectl
+        sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+        sudo install -o root -g root -m 0755 kubectl /usr/bin/kubectl
+        kubectl version --short --client
+        sudo kubectl version --short --client
+        rm kubectl
+        ```
 
 === "Windows (Chocolatey)"
     
@@ -58,10 +172,42 @@
     ```
 
 === "Windows (Executable)"
+
+    ??? note "Kubernetes `1.27`"
     
-    ``` powershell
-    curl.exe -LO "https://dl.k8s.io/release/v1.26.2/bin/windows/amd64/kubectl.exe"
-    ```
+        ``` powershell
+        curl.exe -LO "https://s3.us-west-2.amazonaws.com/amazon-eks/1.27.1/2023-04-19/bin/windows/amd64/kubectl.exe"
+        ```
+    
+    ??? note "Kubernetes `1.26`"
+    
+        ``` powershell
+        curl.exe -LO "https://s3.us-west-2.amazonaws.com/amazon-eks/1.26.4/2023-05-11/bin/windows/amd64/kubectl.exe"
+        ```
+    
+    ??? note "Kubernetes `1.25`"
+    
+        ``` powershell
+        curl.exe -LO "https://s3.us-west-2.amazonaws.com/amazon-eks/1.25.9/2023-05-11/bin/windows/amd64/kubectl.exe"
+        ```
+    
+    ??? note "Kubernetes `1.24`"
+    
+        ``` powershell
+        curl.exe -LO "https://s3.us-west-2.amazonaws.com/amazon-eks/1.24.13/2023-05-11/bin/windows/amd64/kubectl.exe"
+        ```
+
+    ??? note "Kubernetes `1.23`"
+    
+        ``` powershell
+        curl.exe -LO "https://s3.us-west-2.amazonaws.com/amazon-eks/1.23.17/2023-05-11/bin/windows/amd64/kubectl.exe"
+        ```
+    
+    ??? note "Kubernetes `1.22`"
+    
+        ``` powershell
+        curl.exe -LO "https://s3.us-west-2.amazonaws.com/amazon-eks/1.22.17/2023-05-11/bin/windows/amd64/kubectl.exe"
+        ```
 
 
 [AWS Documentation](https://docs.aws.amazon.com/eks/latest/userguide/install-kubectl.html)
@@ -284,15 +430,25 @@
 === "Linux (x86_64)"
     
     ``` bash
-    curl -L https://git.io/get_helm.sh | bash -s -- --version v3.11.3
-    helm version --short
+    curl -LO https://get.helm.sh/helm-v3.12.0-linux-amd64.tar.gz
+    tar -xvzf helm-v3.12.0-linux-amd64.tar.gz
+    sudo install -o root -g root -m 0755 linux-amd64/helm /usr/local/bin/helm
+    sudo install -o root -g root -m 0755 linux-amd64/helm /usr/bin/helm
+    helm version
+    sudo helm version
+    rm -rf linux-amd64
     ```
 
 === "Linux (ARM64)"
     
     ``` bash
-    curl -L https://git.io/get_helm.sh | bash -s -- --version v3.11.3
-    helm version --short
+    curl -LO https://get.helm.sh/helm-v3.12.0-linux-arm64.tar.gz
+    tar -xvzf helm-v3.12.0-linux-arm64.tar.gz
+    sudo install -o root -g root -m 0755 linux-arm64/helm /usr/local/bin/helm
+    sudo install -o root -g root -m 0755 linux-arm64/helm /usr/bin/helm
+    helm version
+    sudo helm version
+    rm -rf linux-arm64
     ```
 
 === "Windows (Chocolatey)"
@@ -304,10 +460,10 @@
 === "Windows (Executable)"
     
     ``` powershell
-    curl.exe -LO https://get.helm.sh/helm-v3.11.3-windows-amd64.zip
-    Expand-Archive ./helm-v3.11.3-windows-amd64.zip -DestinationPath ./
+    curl.exe -LO https://get.helm.sh/helm-v3.12.0-windows-amd64.zip
+    Expand-Archive ./helm-v3.12.0-windows-amd64.zip -DestinationPath ./
     cp windows-amd64/helm.exe ./helm.exe
-    rm helm-v3.11.3-windows-amd64.zip
+    rm helm-v3.12.0-windows-amd64.zip
     rm -r windows-amd64
     ```
 
@@ -478,7 +634,7 @@ sudo usermod -a -G docker ec2-user
 === "Linux (x86_64)"
     
     ``` bash
-    curl -O https://github.com/argoproj/argo-cd/releases/download/v2.6.7/argocd-linux-amd64
+    curl -O https://github.com/argoproj/argo-cd/releases/download/v2.7.3/argocd-linux-amd64
     sudo install -o root -g root -m 0755 argocd-linux-amd64 /usr/local/bin/argocd
     sudo install -o root -g root -m 0755 argocd-linux-amd64 /usr/bin/argocd
     rm argocd-linux-amd64
@@ -488,7 +644,7 @@ sudo usermod -a -G docker ec2-user
 === "Linux (ARM64)"
     
     ``` bash
-    curl -O https://github.com/argoproj/argo-cd/releases/download/v2.6.7/argocd-linux-arm64
+    curl -O https://github.com/argoproj/argo-cd/releases/download/v2.7.3/argocd-linux-arm64
     sudo install -o root -g root -m 0755 argocd-linux-arm64 /usr/local/bin/argocd
     sudo install -o root -g root -m 0755 argocd-linux-arm64 /usr/bin/argocd
     rm argocd-linux-amd64
@@ -504,7 +660,7 @@ sudo usermod -a -G docker ec2-user
 === "Windows (Executable)"
     
     ``` powershell
-    curl.exe -L https://github.com/argoproj/argo-cd/releases/download/v2.6.7/argocd-windows-amd64.exe -o argocd.exe
+    curl.exe -L https://github.com/argoproj/argo-cd/releases/download/v2.7.3/argocd-windows-amd64.exe -o argocd.exe
     ```
 
 ## Install `aws-iam-authenticator` (Optional)
