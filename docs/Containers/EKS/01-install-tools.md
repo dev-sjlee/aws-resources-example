@@ -483,9 +483,9 @@ sudo usermod -a -G docker ec2-user
 === "Linux (x86_64)"
     ``` bash
     export DOCKER_BUILDKIT=1
-    wget https://github.com/docker/buildx/releases/download/v0.10.4/buildx-v0.10.4.linux-amd64
+    wget https://github.com/docker/buildx/releases/download/v0.10.5/buildx-v0.10.5.linux-amd64
     mkdir -p ~/.docker/cli-plugins
-    mv buildx-v0.10.4.linux-amd64 ~/.docker/cli-plugins/docker-buildx
+    mv buildx-v0.10.5.linux-amd64 ~/.docker/cli-plugins/docker-buildx
     chmod a+x ~/.docker/cli-plugins/docker-buildx
     docker run --privileged --rm public.ecr.aws/eks-distro-build-tooling/binfmt-misc:qemu-v6.1.0 --install all
     ```
@@ -493,9 +493,9 @@ sudo usermod -a -G docker ec2-user
 === "Linux (ARM64)"
     ``` bash
     export DOCKER_BUILDKIT=1
-    wget https://github.com/docker/buildx/releases/download/v0.10.4/buildx-v0.10.4.linux-arm64
+    wget https://github.com/docker/buildx/releases/download/v0.10.5/buildx-v0.10.5.linux-arm64
     mkdir -p ~/.docker/cli-plugins
-    mv buildx-v0.10.4.linux-arm64 ~/.docker/cli-plugins/docker-buildx
+    mv buildx-v0.10.5.linux-arm64 ~/.docker/cli-plugins/docker-buildx
     chmod a+x ~/.docker/cli-plugins/docker-buildx
     docker run --privileged --rm public.ecr.aws/eks-distro-build-tooling/binfmt-misc:qemu-v6.1.0 --install all
     ```
