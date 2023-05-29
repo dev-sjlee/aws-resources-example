@@ -81,7 +81,7 @@ description: Create Aurora global database using CloudFormation.
     ``` bash
     STACK_NAME=""
     PROJECT_NAME=""
-    REGION_CODE=""
+    REGION=""
 
     ### Subnet Group Configuration
     SubnetGroupName=""              # [REQUIRED] he name of this launch template.
@@ -147,7 +147,7 @@ description: Create Aurora global database using CloudFormation.
         --disable-rollback \
         --tags project=$PROJECT_NAME \
         --capabilities CAPABILITY_NAMED_IAM \
-        --region $REGION_CODE
+        --region $REGION
     ```
 
 === ":simple-windows: Windows"
@@ -155,7 +155,7 @@ description: Create Aurora global database using CloudFormation.
     ``` powershell
     $STACK_NAME=""
     $PROJECT_NAME=""
-    $REGION_CODE=""
+    $REGION=""
 
     ### Subnet Group Configuration
     $SubnetGroupName=""             # [REQUIRED] he name of this launch template.
@@ -221,7 +221,7 @@ description: Create Aurora global database using CloudFormation.
         --disable-rollback `
         --tags project=$PROJECT_NAME `
         --capabilities CAPABILITY_NAMED_IAM `
-        --region $REGION_CODE
+        --region $REGION
     ```
 
 ### Replica
@@ -231,7 +231,7 @@ description: Create Aurora global database using CloudFormation.
     ``` bash
     STACK_NAME=""
     PROJECT_NAME=""
-    REGION_CODE=""
+    REGION=""
 
     ### Subnet Group Configuration
     SubnetGroupName=""              # [REQUIRED] he name of this launch template.
@@ -291,7 +291,7 @@ description: Create Aurora global database using CloudFormation.
         --disable-rollback \
         --tags project=$PROJECT_NAME \
         --capabilities CAPABILITY_NAMED_IAM \
-        --region $REGION_CODE
+        --region $REGION
     ```
 
 === ":simple-windows: Windows"
@@ -299,7 +299,7 @@ description: Create Aurora global database using CloudFormation.
     ``` powershell
     $STACK_NAME=""
     $PROJECT_NAME=""
-    $REGION_CODE=""
+    $REGION=""
 
     ### Subnet Group Configuration
     $SubnetGroupName=""             # [REQUIRED] he name of this launch template.
@@ -359,7 +359,7 @@ description: Create Aurora global database using CloudFormation.
         --disable-rollback `
         --tags project=$PROJECT_NAME `
         --capabilities CAPABILITY_NAMED_IAM `
-        --region $REGION_CODE
+        --region $REGION
     ```
 
 ## MySQL 8.0
@@ -417,7 +417,7 @@ description: Create Aurora global database using CloudFormation.
     ``` bash
     STACK_NAME=""
     PROJECT_NAME=""
-    REGION_CODE=""
+    REGION=""
 
     ### Subnet Group Configuration
     SubnetGroupName=""              # [REQUIRED] he name of this launch template.
@@ -483,7 +483,7 @@ description: Create Aurora global database using CloudFormation.
         --disable-rollback \
         --tags project=$PROJECT_NAME \
         --capabilities CAPABILITY_NAMED_IAM \
-        --region $REGION_CODE
+        --region $REGION
     ```
 
 === ":simple-windows: Windows"
@@ -491,7 +491,7 @@ description: Create Aurora global database using CloudFormation.
     ``` powershell
     $STACK_NAME=""
     $PROJECT_NAME=""
-    $REGION_CODE=""
+    $REGION=""
 
     ### Subnet Group Configuration
     $SubnetGroupName=""             # [REQUIRED] he name of this launch template.
@@ -557,7 +557,7 @@ description: Create Aurora global database using CloudFormation.
         --disable-rollback `
         --tags project=$PROJECT_NAME `
         --capabilities CAPABILITY_NAMED_IAM `
-        --region $REGION_CODE
+        --region $REGION
     ```
 
 ### Replica
@@ -567,7 +567,7 @@ description: Create Aurora global database using CloudFormation.
     ``` bash
     STACK_NAME=""
     PROJECT_NAME=""
-    REGION_CODE=""
+    REGION=""
 
     ### Subnet Group Configuration
     SubnetGroupName=""              # [REQUIRED] he name of this launch template.
@@ -627,7 +627,7 @@ description: Create Aurora global database using CloudFormation.
         --disable-rollback \
         --tags project=$PROJECT_NAME \
         --capabilities CAPABILITY_NAMED_IAM \
-        --region $REGION_CODE
+        --region $REGION
     ```
 
 === ":simple-windows: Windows"
@@ -635,7 +635,7 @@ description: Create Aurora global database using CloudFormation.
     ``` powershell
     $STACK_NAME=""
     $PROJECT_NAME=""
-    $REGION_CODE=""
+    $REGION=""
 
     ### Subnet Group Configuration
     $SubnetGroupName=""             # [REQUIRED] he name of this launch template.
@@ -695,7 +695,7 @@ description: Create Aurora global database using CloudFormation.
         --disable-rollback `
         --tags project=$PROJECT_NAME `
         --capabilities CAPABILITY_NAMED_IAM `
-        --region $REGION_CODE
+        --region $REGION
     ```
 
 ## MySQL 8.0 Serverless
@@ -716,7 +716,7 @@ description: Create Aurora global database using CloudFormation.
     ``` bash
     STACK_NAME=""
     PROJECT_NAME=""
-    REGION_CODE=""
+    REGION=""
 
     ### Subnet Group Configuration
     SubnetGroupName=""              # [REQUIRED] he name of this launch template.
@@ -786,7 +786,7 @@ description: Create Aurora global database using CloudFormation.
         --disable-rollback \
         --tags project=$PROJECT_NAME \
         --capabilities CAPABILITY_NAMED_IAM \
-        --region $REGION_CODE
+        --region $REGION
     ```
 
 === ":simple-windows: Windows"
@@ -794,7 +794,7 @@ description: Create Aurora global database using CloudFormation.
     ``` powershell
     $STACK_NAME=""
     $PROJECT_NAME=""
-    $REGION_CODE=""
+    $REGION=""
 
     ### Subnet Group Configuration
     $SubnetGroupName=""             # [REQUIRED] he name of this launch template.
@@ -864,7 +864,7 @@ description: Create Aurora global database using CloudFormation.
         --disable-rollback `
         --tags project=$PROJECT_NAME `
         --capabilities CAPABILITY_NAMED_IAM `
-        --region $REGION_CODE
+        --region $REGION
     ```
 
 ### Replica
@@ -874,7 +874,7 @@ description: Create Aurora global database using CloudFormation.
     ``` bash
     STACK_NAME=""
     PROJECT_NAME=""
-    REGION_CODE=""
+    REGION=""
 
     ### Subnet Group Configuration
     SubnetGroupName=""              # [REQUIRED] he name of this launch template.
@@ -938,7 +938,7 @@ description: Create Aurora global database using CloudFormation.
         --disable-rollback \
         --tags project=$PROJECT_NAME \
         --capabilities CAPABILITY_NAMED_IAM \
-        --region $REGION_CODE
+        --region $REGION
     ```
 
 === ":simple-windows: Windows"
@@ -946,7 +946,7 @@ description: Create Aurora global database using CloudFormation.
     ``` powershell
     $STACK_NAME=""
     $PROJECT_NAME=""
-    $REGION_CODE=""
+    $REGION=""
 
     ### Subnet Group Configuration
     $SubnetGroupName=""             # [REQUIRED] he name of this launch template.
@@ -1010,7 +1010,7 @@ description: Create Aurora global database using CloudFormation.
         --disable-rollback `
         --tags project=$PROJECT_NAME `
         --capabilities CAPABILITY_NAMED_IAM `
-        --region $REGION_CODE
+        --region $REGION
     ```
 
 ## PostgreSQL
@@ -1119,7 +1119,7 @@ description: Create Aurora global database using CloudFormation.
     ``` bash
     STACK_NAME=""
     PROJECT_NAME=""
-    REGION_CODE=""
+    REGION=""
 
     ### Subnet Group Configuration
     SubnetGroupName=""              # [REQUIRED] he name of this launch template.
@@ -1187,7 +1187,7 @@ description: Create Aurora global database using CloudFormation.
         --disable-rollback \
         --tags project=$PROJECT_NAME \
         --capabilities CAPABILITY_NAMED_IAM \
-        --region $REGION_CODE
+        --region $REGION
     ```
 
 === ":simple-windows: Windows"
@@ -1195,7 +1195,7 @@ description: Create Aurora global database using CloudFormation.
     ``` powershell
     $STACK_NAME=""
     $PROJECT_NAME=""
-    $REGION_CODE=""
+    $REGION=""
 
     ### Subnet Group Configuration
     $SubnetGroupName=""             # [REQUIRED] he name of this launch template.
@@ -1263,7 +1263,7 @@ description: Create Aurora global database using CloudFormation.
         --disable-rollback `
         --tags project=$PROJECT_NAME `
         --capabilities CAPABILITY_NAMED_IAM `
-        --region $REGION_CODE
+        --region $REGION
     ```
 
 ### Replica
@@ -1273,7 +1273,7 @@ description: Create Aurora global database using CloudFormation.
     ``` bash
     STACK_NAME=""
     PROJECT_NAME=""
-    REGION_CODE=""
+    REGION=""
 
     ### Subnet Group Configuration
     SubnetGroupName=""              # [REQUIRED] he name of this launch template.
@@ -1335,7 +1335,7 @@ description: Create Aurora global database using CloudFormation.
         --disable-rollback \
         --tags project=$PROJECT_NAME \
         --capabilities CAPABILITY_NAMED_IAM \
-        --region $REGION_CODE
+        --region $REGION
     ```
 
 === ":simple-windows: Windows"
@@ -1343,7 +1343,7 @@ description: Create Aurora global database using CloudFormation.
     ``` powershell
     $STACK_NAME=""
     $PROJECT_NAME=""
-    $REGION_CODE=""
+    $REGION=""
 
     ### Subnet Group Configuration
     $SubnetGroupName=""             # [REQUIRED] he name of this launch template.
@@ -1405,7 +1405,7 @@ description: Create Aurora global database using CloudFormation.
         --disable-rollback `
         --tags project=$PROJECT_NAME `
         --capabilities CAPABILITY_NAMED_IAM `
-        --region $REGION_CODE
+        --region $REGION
     ```
 
 ## PostgreSQL Serverless
@@ -1445,7 +1445,7 @@ description: Create Aurora global database using CloudFormation.
     ``` bash
     STACK_NAME=""
     PROJECT_NAME=""
-    REGION_CODE=""
+    REGION=""
 
     ### Subnet Group Configuration
     SubnetGroupName=""              # [REQUIRED] he name of this launch template.
@@ -1513,7 +1513,7 @@ description: Create Aurora global database using CloudFormation.
         --disable-rollback \
         --tags project=$PROJECT_NAME \
         --capabilities CAPABILITY_NAMED_IAM \
-        --region $REGION_CODE
+        --region $REGION
     ```
 
 === ":simple-windows: Windows"
@@ -1521,7 +1521,7 @@ description: Create Aurora global database using CloudFormation.
     ``` powershell
     $STACK_NAME=""
     $PROJECT_NAME=""
-    $REGION_CODE=""
+    $REGION=""
 
     ### Subnet Group Configuration
     $SubnetGroupName=""             # [REQUIRED] he name of this launch template.
@@ -1589,7 +1589,7 @@ description: Create Aurora global database using CloudFormation.
         --disable-rollback `
         --tags project=$PROJECT_NAME `
         --capabilities CAPABILITY_NAMED_IAM `
-        --region $REGION_CODE
+        --region $REGION
     ```
 
 ### Replica
@@ -1599,7 +1599,7 @@ description: Create Aurora global database using CloudFormation.
     ``` bash
     STACK_NAME=""
     PROJECT_NAME=""
-    REGION_CODE=""
+    REGION=""
 
     ### Subnet Group Configuration
     SubnetGroupName=""              # [REQUIRED] he name of this launch template.
@@ -1661,7 +1661,7 @@ description: Create Aurora global database using CloudFormation.
         --disable-rollback \
         --tags project=$PROJECT_NAME \
         --capabilities CAPABILITY_NAMED_IAM \
-        --region $REGION_CODE
+        --region $REGION
     ```
 
 === ":simple-windows: Windows"
@@ -1669,7 +1669,7 @@ description: Create Aurora global database using CloudFormation.
     ``` powershell
     $STACK_NAME=""
     $PROJECT_NAME=""
-    $REGION_CODE=""
+    $REGION=""
 
     ### Subnet Group Configuration
     $SubnetGroupName=""             # [REQUIRED] he name of this launch template.
@@ -1731,7 +1731,7 @@ description: Create Aurora global database using CloudFormation.
         --disable-rollback `
         --tags project=$PROJECT_NAME `
         --capabilities CAPABILITY_NAMED_IAM `
-        --region $REGION_CODE
+        --region $REGION
     ```
 
 ## Failover and Recovery
@@ -1741,7 +1741,7 @@ description: Create Aurora global database using CloudFormation.
     ``` bash
     STACK_NAME=""
     PROJECT_NAME=""
-    REGION_CODE=""
+    REGION=""
 
     ### Failover Configuration
     RdsGlobalClusterName=""     # [REQUIRED] The name of RDS global cluster.
@@ -1770,7 +1770,7 @@ description: Create Aurora global database using CloudFormation.
         --disable-rollback \
         --tags project=$PROJECT_NAME \
         --capabilities CAPABILITY_NAMED_IAM \
-        --region $REGION_CODE
+        --region $REGION
     ```
 
 === ":simple-windows: Windows"
@@ -1778,7 +1778,7 @@ description: Create Aurora global database using CloudFormation.
     ``` powershell
     $STACK_NAME=""
     $PROJECT_NAME=""
-    $REGION_CODE=""
+    $REGION=""
 
     ### Failover Configuration
     $RdsGlobalClusterName=""    # [REQUIRED] The name of RDS global cluster.
@@ -1807,5 +1807,5 @@ description: Create Aurora global database using CloudFormation.
         --disable-rollback `
         --tags project=$PROJECT_NAME `
         --capabilities CAPABILITY_NAMED_IAM `
-        --region $REGION_CODE
+        --region $REGION
     ```

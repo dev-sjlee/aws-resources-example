@@ -98,7 +98,7 @@ description: Create Multi-AZ RDS cluster using CloudFormation.
     ``` bash
     STACK_NAME=""
     PROJECT_NAME=""
-    REGION_CODE=""
+    REGION=""
 
     ### Subnet Group Configuration
     SubnetGroupName=""              # [REQUIRED] he name of this launch template.
@@ -160,7 +160,7 @@ description: Create Multi-AZ RDS cluster using CloudFormation.
         --disable-rollback \
         --tags project=$PROJECT_NAME \
         --capabilities CAPABILITY_NAMED_IAM \
-        --region $REGION_CODE
+        --region $REGION
     ```
 
 === ":simple-windows: Windows"
@@ -168,7 +168,7 @@ description: Create Multi-AZ RDS cluster using CloudFormation.
     ``` powershell
     $STACK_NAME=""
     $PROJECT_NAME=""
-    $REGION_CODE=""
+    $REGION=""
 
     ### Subnet Group Configuration
     $SubnetGroupName=""             # [REQUIRED] he name of this launch template.
@@ -231,7 +231,7 @@ description: Create Multi-AZ RDS cluster using CloudFormation.
         --disable-rollback `
         --tags project=$PROJECT_NAME `
         --capabilities CAPABILITY_NAMED_IAM `
-        --region $REGION_CODE
+        --region $REGION
     ```
 
 ## Aurora MySQL 8.0
@@ -299,7 +299,7 @@ description: Create Multi-AZ RDS cluster using CloudFormation.
     ``` bash
     STACK_NAME=""
     PROJECT_NAME=""
-    REGION_CODE=""
+    REGION=""
 
     ### Subnet Group Configuration
     SubnetGroupName=""              # [REQUIRED] he name of this launch template.
@@ -360,7 +360,7 @@ description: Create Multi-AZ RDS cluster using CloudFormation.
         --disable-rollback \
         --tags project=$PROJECT_NAME \
         --capabilities CAPABILITY_NAMED_IAM \
-        --region $REGION_CODE
+        --region $REGION
     ```
 
 === ":simple-windows: Windows"
@@ -368,7 +368,7 @@ description: Create Multi-AZ RDS cluster using CloudFormation.
     ``` powershell
     $STACK_NAME=""
     $PROJECT_NAME=""
-    $REGION_CODE=""
+    $REGION=""
 
     ### Subnet Group Configuration
     $SubnetGroupName=""             # [REQUIRED] he name of this launch template.
@@ -430,7 +430,7 @@ description: Create Multi-AZ RDS cluster using CloudFormation.
         --disable-rollback `
         --tags project=$PROJECT_NAME `
         --capabilities CAPABILITY_NAMED_IAM `
-        --region $REGION_CODE
+        --region $REGION
     ```
 
 ## Aurora MySQL 8.0 Serverless
@@ -451,7 +451,7 @@ description: Create Multi-AZ RDS cluster using CloudFormation.
     ``` bash
     STACK_NAME=""
     PROJECT_NAME=""
-    REGION_CODE=""
+    REGION=""
 
     ### Subnet Group Configuration
     SubnetGroupName=""              # [REQUIRED] he name of this launch template.
@@ -517,7 +517,7 @@ description: Create Multi-AZ RDS cluster using CloudFormation.
         --disable-rollback \
         --tags project=$PROJECT_NAME \
         --capabilities CAPABILITY_NAMED_IAM \
-        --region $REGION_CODE
+        --region $REGION
     ```
 
 === ":simple-windows: Windows"
@@ -525,7 +525,7 @@ description: Create Multi-AZ RDS cluster using CloudFormation.
     ``` powershell
     $STACK_NAME=""
     $PROJECT_NAME=""
-    $REGION_CODE=""
+    $REGION=""
 
     ### Subnet Group Configuration
     $SubnetGroupName=""             # [REQUIRED] he name of this launch template.
@@ -591,7 +591,7 @@ description: Create Multi-AZ RDS cluster using CloudFormation.
         --disable-rollback `
         --tags project=$PROJECT_NAME `
         --capabilities CAPABILITY_NAMED_IAM `
-        --region $REGION_CODE
+        --region $REGION
     ```
 
 ## Aurora PostgreSQL
@@ -710,7 +710,7 @@ description: Create Multi-AZ RDS cluster using CloudFormation.
     ``` bash
     STACK_NAME=""
     PROJECT_NAME=""
-    REGION_CODE=""
+    REGION=""
 
     ### Subnet Group Configuration
     SubnetGroupName=""              # [REQUIRED] he name of this launch template.
@@ -774,7 +774,7 @@ description: Create Multi-AZ RDS cluster using CloudFormation.
         --disable-rollback \
         --tags project=$PROJECT_NAME \
         --capabilities CAPABILITY_NAMED_IAM \
-        --region $REGION_CODE
+        --region $REGION
     ```
 
 === ":simple-windows: Windows"
@@ -782,7 +782,7 @@ description: Create Multi-AZ RDS cluster using CloudFormation.
     ``` powershell
     $STACK_NAME=""
     $PROJECT_NAME=""
-    $REGION_CODE=""
+    $REGION=""
 
     ### Subnet Group Configuration
     $SubnetGroupName=""             # [REQUIRED] he name of this launch template.
@@ -846,7 +846,7 @@ description: Create Multi-AZ RDS cluster using CloudFormation.
         --disable-rollback `
         --tags project=$PROJECT_NAME `
         --capabilities CAPABILITY_NAMED_IAM `
-        --region $REGION_CODE
+        --region $REGION
     ```
 
 ## Aurora PostgreSQL Serverless
@@ -886,7 +886,7 @@ description: Create Multi-AZ RDS cluster using CloudFormation.
     ``` bash
     STACK_NAME=""
     PROJECT_NAME=""
-    REGION_CODE=""
+    REGION=""
 
     ### Subnet Group Configuration
     SubnetGroupName=""              # [REQUIRED] he name of this launch template.
@@ -954,7 +954,7 @@ description: Create Multi-AZ RDS cluster using CloudFormation.
         --disable-rollback \
         --tags project=$PROJECT_NAME \
         --capabilities CAPABILITY_NAMED_IAM \
-        --region $REGION_CODE
+        --region $REGION
     ```
 
 === ":simple-windows: Windows"
@@ -962,7 +962,7 @@ description: Create Multi-AZ RDS cluster using CloudFormation.
     ``` powershell
     $STACK_NAME=""
     $PROJECT_NAME=""
-    $REGION_CODE=""
+    $REGION=""
 
     ### Subnet Group Configuration
     $SubnetGroupName=""             # [REQUIRED] he name of this launch template.
@@ -1030,5 +1030,5 @@ description: Create Multi-AZ RDS cluster using CloudFormation.
         --disable-rollback `
         --tags project=$PROJECT_NAME `
         --capabilities CAPABILITY_NAMED_IAM `
-        --region $REGION_CODE
+        --region $REGION
     ```

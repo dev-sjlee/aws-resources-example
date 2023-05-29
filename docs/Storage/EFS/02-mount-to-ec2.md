@@ -1,8 +1,9 @@
 ---
+title: Mount EFS to EC2 instances
 description: Mount EFS file system to EC2 instances.
 ---
 
-# Mount EFS to EC2 instances.
+# Mount EFS to EC2 instances
 
 ## Using `amazon-efs-utils`
 

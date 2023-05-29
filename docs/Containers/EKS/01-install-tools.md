@@ -86,17 +86,6 @@
         rm kubectl
         ```
 
-    ??? note "Kubernetes `1.22`"
-    
-        ``` bash
-        curl -LO https://s3.us-west-2.amazonaws.com/amazon-eks/1.22.17/2023-05-11/bin/linux/amd64/kubectl
-        sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-        sudo install -o root -g root -m 0755 kubectl /usr/bin/kubectl
-        kubectl version --short --client
-        sudo kubectl version --short --client
-        rm kubectl
-        ```
-
 === "Linux (ARM64)"
     
     ??? note "Kubernetes `1.27`"
@@ -154,17 +143,6 @@
         rm kubectl
         ```
 
-    ??? note "Kubernetes `1.22`"
-    
-        ``` bash
-        curl -LO https://s3.us-west-2.amazonaws.com/amazon-eks/1.22.17/2023-05-11/bin/linux/arm64/kubectl
-        sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-        sudo install -o root -g root -m 0755 kubectl /usr/bin/kubectl
-        kubectl version --short --client
-        sudo kubectl version --short --client
-        rm kubectl
-        ```
-
 === "Windows (Chocolatey)"
     
     ``` powershell
@@ -201,12 +179,6 @@
     
         ``` powershell
         curl.exe -LO "https://s3.us-west-2.amazonaws.com/amazon-eks/1.23.17/2023-05-11/bin/windows/amd64/kubectl.exe"
-        ```
-    
-    ??? note "Kubernetes `1.22`"
-    
-        ``` powershell
-        curl.exe -LO "https://s3.us-west-2.amazonaws.com/amazon-eks/1.22.17/2023-05-11/bin/windows/amd64/kubectl.exe"
         ```
 
 

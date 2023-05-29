@@ -59,7 +59,7 @@ exit
 ## Get Cloud9 IP Range
 
 ``` bash hl_lines="1"
-REGION="<REGION_CODE>"
+REGION="<region code>"
 
 curl -L --silent https://ip-ranges.amazonaws.com/ip-ranges.json | jq '.prefixes[] | select((.service=="CLOUD9") and (.region=='\"$REGION\"'))'
 ```
