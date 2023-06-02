@@ -28,61 +28,123 @@ kubectl create ns appmesh-system
 
 ### Create the Service Account
 
-``` bash hl_lines="1 2 3 4"
-CLUSTER_NAME="<cluster name>"
-ROLE_NAME="<role name>"
-PROJECT_NAME="<project name>"
-REGION="<region code>"
+=== ":simple-linux: Linux"
 
-eksctl create iamserviceaccount \
-    --cluster $CLUSTER_NAME \
-    --namespace appmesh-system \
-    --name appmesh-controller \
-    --attach-policy-arn arn:aws:iam::aws:policy/AWSCloudMapFullAccess,arn:aws:iam::aws:policy/AWSAppMeshFullAccess \
-    --role-name $ROLE_NAME \
-    --tags project=$PROJECT_NAME \
-    --region $REGION \
-    --override-existing-serviceaccounts \
-    --approve
-```
+    ``` bash hl_lines="1 2 3 4"
+    CLUSTER_NAME="<cluster name>"
+    ROLE_NAME="<role name>"
+    PROJECT_NAME="<project name>"
+    REGION="<region code>"
+
+    eksctl create iamserviceaccount \
+        --cluster $CLUSTER_NAME \
+        --namespace appmesh-system \
+        --name appmesh-controller \
+        --attach-policy-arn arn:aws:iam::aws:policy/AWSCloudMapFullAccess,arn:aws:iam::aws:policy/AWSAppMeshFullAccess \
+        --role-name $ROLE_NAME \
+        --tags project=$PROJECT_NAME \
+        --region $REGION \
+        --override-existing-serviceaccounts \
+        --approve
+    ```
+
+=== ":simple-windows: Windows"
+
+    ``` powershell hl_lines="1 2 3 4"
+    $CLUSTER_NAME="<cluster name>"
+    $ROLE_NAME="<role name>"
+    $PROJECT_NAME="<project name>"
+    $REGION="<region code>"
+
+    eksctl create iamserviceaccount `
+        --cluster $CLUSTER_NAME `
+        --namespace appmesh-system `
+        --name appmesh-controller `
+        --attach-policy-arn arn:aws:iam::aws:policy/AWSCloudMapFullAccess,arn:aws:iam::aws:policy/AWSAppMeshFullAccess `
+        --role-name $ROLE_NAME `
+        --tags project=$PROJECT_NAME `
+        --region $REGION `
+        --override-existing-serviceaccounts `
+        --approve
+    ```
 
 ## Deploy using `helm`
 
-=== "x86_64"
+=== ":simple-linux: Linux"
 
-    ``` bash
-    REGION="<region code>"
+    === "x86_64"
 
-    helm repo add eks https://aws.github.io/eks-charts
-    helm upgrade -i appmesh-controller eks/appmesh-controller \
-        --namespace appmesh-system \
-        --set region=$REGION \
-        --set serviceAccount.create=false \
-        --set serviceAccount.name=appmesh-controller
-    ```
+        ``` bash hl_lines="1"
+        REGION="<region code>"
 
-=== "ARM64"
+        helm repo add eks https://aws.github.io/eks-charts
+        helm upgrade -i appmesh-controller eks/appmesh-controller \
+            --namespace appmesh-system \
+            --set region=$REGION \
+            --set serviceAccount.create=false \
+            --set serviceAccount.name=appmesh-controller
+        ```
 
-    ``` bash
-    REGION="<region code>"
+    === "ARM64"
 
-    helm repo add eks https://aws.github.io/eks-charts
-    helm upgrade -i appmesh-controller eks/appmesh-controller \
-        --namespace appmesh-system \
-        --set region=$REGION \
-        --set serviceAccount.create=false \
-        --set serviceAccount.name=appmesh-controller \
-        --set image.tag=v1.11.0-linux_arm64
-    ```
+        ``` bash hl_lines="1"
+        REGION="<region code>"
 
-!!! note
+        helm repo add eks https://aws.github.io/eks-charts
+        helm upgrade -i appmesh-controller eks/appmesh-controller \
+            --namespace appmesh-system \
+            --set region=$REGION \
+            --set serviceAccount.create=false \
+            --set serviceAccount.name=appmesh-controller \
+            --set image.tag=v1.11.0-linux_arm64
+        ```
 
-    Do you want to tracing, use these options.
+    !!! note
 
-    ``` bash
-    --set tracing.enabled=true \
-    --set tracing.provider=x-ray
-    ```
+        Do you want to tracing, use these options.
+
+        ``` bash
+        --set tracing.enabled=true \
+        --set tracing.provider=x-ray
+        ```
+
+=== ":simple-windows: Windows"
+
+    === "x86_64"
+
+        ``` powershell hl_lines="1"
+        $REGION="<region code>"
+
+        helm repo add eks https://aws.github.io/eks-charts
+        helm upgrade -i appmesh-controller eks/appmesh-controller `
+            --namespace appmesh-system `
+            --set region=$REGION `
+            --set serviceAccount.create=false `
+            --set serviceAccount.name=appmesh-controller
+        ```
+
+    === "ARM64"
+
+        ``` powershell hl_lines="1"
+        $REGION="<region code>"
+
+        helm repo add eks https://aws.github.io/eks-charts
+        helm upgrade -i appmesh-controller eks/appmesh-controller `
+            --namespace appmesh-system `
+            --set region=$REGION `
+            --set serviceAccount.create=false `
+            --set serviceAccount.name=appmesh-controller `
+            --set image.tag=v1.11.0-linux_arm64
+        ```
+
+    !!! note
+
+        Do you want to tracing, use these options.
+
+        ``` powershell
+        --set tracing.enabled=true `
+        --set tracing.provider=x-ray
+        ```
 
 [AWS Documentation](https://docs.aws.amazon.com/app-mesh/latest/userguide/getting-started-kubernetes.html#install-controller)
 
@@ -252,4 +314,40 @@ aws appmesh describe-route \
     --route-name my-service-a-route \
     --virtual-router-name my-service-a-virtual-router_my-apps \
     --mesh-name my-mesh
+```
+
+### App Mesh virtual service
+
+**Virtual router manifest**
+
+``` yaml title="virtual-service.yaml" linenums="1" hl_lines="4 5 7 11"
+apiVersion: appmesh.k8s.aws/v1beta2
+kind: VirtualService
+metadata:
+  name: my-service-a
+  namespace: my-apps
+spec:
+  awsName: my-service-a.my-apps.svc.cluster.local
+  provider:
+    virtualRouter:
+      virtualRouterRef:
+        name: my-service-a-virtual-router
+```
+
+**See virtual service spec**
+
+``` bash
+aws appmesh create-virtual-service --generate-cli-skeleton yaml-input
+```
+
+**Depyloy virtual service resource**
+
+``` bash
+kubectl apply -f virtual-service.yaml
+```
+
+**Show kubernetes virtual service resource**
+
+``` bash
+kubectl describe virtualservice my-service-a -n my-apps
 ```

@@ -19,7 +19,7 @@ spec:
       labels:
         app: nginx
     spec:
-      serviceAccountName: nginx-sa
+      serviceAccountName: nginx
       containers:
         - name: nginx
           image: nginx:1.14.2
@@ -31,8 +31,10 @@ spec:
           resources:
             requests:
               cpu: "250m"
+              memory: "500Mi"
             limits:
               cpu: "500m"
+              memory: "1000Mi"
           # command:  # override Dockerfile `ENTRYPOINT`
           #   - ""
           #   - ""

@@ -309,6 +309,16 @@ iam:
       tags:
         Name: <cluster autoscaler role name>
         project: <project name>
+    
+    - metadata: # karpenter
+        name: karpenter
+        namespace: karpenter
+      attachPolicyARNs:
+        - "<karpenter policy arn (https://marcus16-kang.github.io/aws-resources-example/Containers/EKS/08-cluster-autoscaling/#create-the-karpenter-controller-policy)>"
+      roleName: <karpenter role name>
+      tags:
+        Name: <karpenter role name>
+        project: <project name>
 
     - metadata: # external dns
         name: external-dns
@@ -388,6 +398,16 @@ iam:
       roleName: <adot fargate role name>
       tags:
         Name: <adot fargate role name>
+        project: <project name>
+    
+    - metadata: # aws node termination handler (nth)
+        name: aws-node-termination-handler
+        namespace: kube-system
+      attachPolicyARNs:
+        - "<nth policy arn (https://marcus16-kang.github.io/aws-resources-example/Containers/EKS/18-install-aws-nth/#create-an-iam-policy-for-serviceaccount)>"
+      roleName: <nth role name>
+      tags:
+        Name: <nth role name>
         project: <project name>
     
     - metadata: # argocd image updater

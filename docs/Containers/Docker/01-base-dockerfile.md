@@ -26,7 +26,7 @@ Description: Base Dockerfile templates.
         adduser -D -u $USER_UID -G $GROUP_NAME $USER_NAME && \
         chown -R $USER_NAME:$GROUP_NAME .
     
-    # RUN apk add --no-cache curl=~8.0.1 && \
+    # RUN apk add --no-cache curl=~8.1.1 && \
     #     curl --version
     
     USER $USER_NAME
@@ -59,7 +59,7 @@ Description: Base Dockerfile templates.
         adduser -D -u $USER_UID -G $GROUP_NAME $USER_NAME && \
         chown -R $USER_NAME:$GROUP_NAME .
     
-    # RUN apk add --no-cache curl=~8.0.1 && \
+    # RUN apk add --no-cache curl=~8.1.1 && \
     #     curl --version
     
     USER $USER_NAME
@@ -92,7 +92,7 @@ Description: Base Dockerfile templates.
         adduser -D -u $USER_UID -G $GROUP_NAME $USER_NAME && \
         chown -R $USER_NAME:$GROUP_NAME .
     
-    # RUN apk add --no-cache curl=~8.0.1 && \
+    # RUN apk add --no-cache curl=~8.1.1 && \
     #     curl --version
     
     USER $USER_NAME

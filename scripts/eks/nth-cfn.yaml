@@ -1,10 +1,12 @@
 AWSTemplateFormatVersion: "2010-09-09"
 
 Parameters:
+  ### Stack Configuration
   ProjectName:
     Type: String
     Description: "[REQUIRED] The name of this project."
   
+  ### SQS Configuration
   QueueName:
     Type: String
     Description: "[optional] The name of SQS queue."
@@ -15,29 +17,39 @@ Parameters:
     Description: "[optional] The KMS key id for SQS queue encryption."
     Default: ""
   
+  ### EventBridge Configuration
   EventRulesBaseName:
     Type: String
     Description: "[optional] The base name of EvnetBridge event rules."
     Default: ""
+  
+  IamPolicyName:
+    Type: String
+    Description: "[REQUIRED] The name of service account's IAM policy."
 
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
       - Label:
-          default: "Stack Configuration - General"
+          default: "Stack Configuration"
         Parameters:
           - ProjectName
 
       - Label:
-          default: "SQS Configuration - General"
+          default: "SQS Configuration"
         Parameters:
           - QueueName
           - KmsKeyId
       
       - Label:
-          default: "EventBridge Configuration - General"
+          default: "EventBridge Configuration"
         Parameters:
           - EventRulesBaseName
+      
+      - Label:
+          default: "IAM Policy Configuration"
+        Parameters:
+          - IamPolicyName
 
 Conditions:
   UseQueueName: !Not [!Equals [!Ref QueueName, ""]]
@@ -46,23 +58,27 @@ Conditions:
 
 Resources:
   Queue:
-    Type: 'AWS::SQS::Queue'
+    Type: AWS::SQS::Queue
     Properties:
       KmsMasterKeyId: !If
         - UseKms
         - !Ref KmsKeyId
-        - "alias/aws/sqs"
+        - !Ref AWS::NoValue
       MessageRetentionPeriod: 300
       QueueName: !If
         - UseQueueName
         - !Ref QueueName
         - !Ref AWS::NoValue
+      SqsManagedSseEnabled: !If
+        - UseKms
+        - !Ref AWS::NoValue
+        - true
       Tags:
         - Key: project
           Value: !Ref ProjectName
   
   QueuePolicy:
-    Type: 'AWS::SQS::QueuePolicy'
+    Type: AWS::SQS::QueuePolicy
     Properties:
       Queues:
         - !Ref Queue
@@ -73,11 +89,11 @@ Resources:
               Service:
                 - events.amazonaws.com
                 - sqs.amazonaws.com
-            Action: 'sqs:SendMessage'
+            Action: "sqs:SendMessage"
             Resource: !GetAtt Queue.Arn
   
   ASGTermRule:
-    Type: 'AWS::Events::Rule'
+    Type: AWS::Events::Rule
     Properties:
       EventPattern:
         source:
@@ -93,7 +109,7 @@ Resources:
           Arn: !GetAtt Queue.Arn
   
   ScheduledChangeRule:
-    Type: 'AWS::Events::Rule'
+    Type: AWS::Events::Rule
     Properties:
       EventPattern:
         source:
@@ -114,7 +130,7 @@ Resources:
           Arn: !GetAtt Queue.Arn
   
   SpotTermRule:
-    Type: 'AWS::Events::Rule'
+    Type: AWS::Events::Rule
     Properties:
       EventPattern:
         source:
@@ -130,7 +146,7 @@ Resources:
           Arn: !GetAtt Queue.Arn
   
   RebalanceRule:
-    Type: 'AWS::Events::Rule'
+    Type: AWS::Events::Rule
     Properties:
       EventPattern:
         source:
@@ -146,7 +162,7 @@ Resources:
           Arn: !GetAtt Queue.Arn
   
   InstanceStateChangeRule:
-    Type: 'AWS::Events::Rule'
+    Type: AWS::Events::Rule
     Properties:
       EventPattern:
         source:
@@ -160,8 +176,31 @@ Resources:
       Targets:
         - Id: 1
           Arn: !GetAtt Queue.Arn
+  
+  IamPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Description: !Ref IamPolicyName
+      ManagedPolicyName: !Ref IamPolicyName
+      Path: /
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - autoscaling:CompleteLifecycleAction
+              - autoscaling:DescribeAutoScalingInstances
+              - autoscaling:DescribeTags
+              - ec2:DescribeInstances
+              - sqs:DeleteMessage
+              - sqs:ReceiveMessage
+            Resource: "*"
 
 Outputs:
   QueueURL:
     Description: Queue url for AWS NTH controller
     Value: !Ref Queue
+
+  IamPolicyArn:
+    Description: Arn for IAM Policy
+    Value: !Ref IamPolicy

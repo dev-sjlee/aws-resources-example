@@ -123,139 +123,383 @@
 
 | Kubernetes | CA     | Default |
 |------------|--------|---------|
-| 1.27       | 1.27.1 |         |
-| 1.26       | 1.26.2 | default |
-| 1.25       | 1.25.1 |         |
-| 1.24       | 1.24.1 |         |
+| 1.27       | 1.27.2 |         |
+| 1.26       | 1.26.3 | default |
+| 1.25       | 1.25.2 |         |
+| 1.24       | 1.24.2 |         |
 | 1.23       | 1.23   |         |
 | 1.22       | 1.22.2 |         |
 
-> Go to [here](https://github.com/kubernetes/autoscaler/releases) and please check the new version of your kubernetes version. (2023-05-25)
+> Go to [here](https://github.com/kubernetes/autoscaler/releases) and please check the new version of your kubernetes version. (2023-05-31)
 
 [AWS Documentation](https://docs.aws.amazon.com/ko_kr/eks/latest/userguide/autoscaling.html#ca-deploy)
 
 ## Using Karpenter (WIP)
 
-### Create the Karpenter namespace
+### Add tags to subnets
 
-```shell
-cat << EOF >> karpenter-namespace.yaml
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: karpenter
-  labels:
-    name: karpenter
-EOF
+=== ":simple-linux: Linux"
 
-kubectl apply -f karpenter-namespace.yaml
-```
+    ``` bash hl_lines="1 3 4"
+    REGION=""
 
-### Create the KarpenterNode IAM role
+    CLUSTER_NAME=""
+    SUBNET_LIST=(
+        "subnet-xxxxxxxxxxxxxxxxx"
+        "subnet-xxxxxxxxxxxxxxxxx"
+    )
 
-```shell
-eksctl create iamidentitymapping \
-    --username system:node:{{EC2PrivateDNSName}} \
-    --cluster "<cluster name>" \
-    --arn "<node IAM role arn>" \
-    --group system:bootstrappers \
-    --group system:nodes
-```
+    for subnet in "${SUBNET_LIST[@]}"
+    do
+        aws ec2 create-tags \
+            --tags "Key=karpenter.sh/discovery,Value=${CLUSTER_NAME}" \
+            --resources ${subnet} \
+            --region $REGION \
+            --no-cli-pager
+    done
+    ```
 
-[Karpenter Documentation](https://karpenter.sh/v0.13.2/getting-started/getting-started-with-eksctl/#create-the-karpenternode-iam-role)
+=== ":simple-windows: Windows"
 
-### Create the service account for KarPenTerController
+    ``` powershell hl_lines="1 3 4"
+    $REGION=""
 
-```shell
-cat << EOF >> karpenter-controller-policy.json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Resource": "*",
-      "Action": [
-        "ec2:CreateLaunchTemplate",
-        "ec2:CreateFleet",
-        "ec2:RunInstances",
-        "ec2:CreateTags",
-        "iam:PassRole",
-        "ec2:TerminateInstances",
-        "ec2:DeleteLaunchTemplate",
-        "ec2:DescribeLaunchTemplates",
-        "ec2:DescribeInstances",
-        "ec2:DescribeSecurityGroups",
-        "ec2:DescribeSubnets",
-        "ec2:DescribeInstanceTypes",
-        "ec2:DescribeInstanceTypeOfferings",
-        "ec2:DescribeAvailabilityZones",
-        "ec2:DescribeSpotPriceHistory",
-        "ssm:GetParameter",
-        "pricing:GetProducts"
-      ]
+    $CLUSTER_NAME=""
+    $SUBNET_LIST  = @(
+        "subnet-xxxxxxxxxxxxxxxxx",
+        "subnet-xxxxxxxxxxxxxxxxx"
+    )
+
+    foreach ($subnet in $SUBNET_LIST) {
+        aws ec2 create-tags `
+            --tags "Key=karpenter.sh/discovery,Value=${CLUSTER_NAME}" `
+            --resources ${subnet} `
+            --region $REGION `
+            --no-cli-pager
     }
-  ]
-}
-EOF
+    ```
 
-aws iam create-policy \
-    --policy-name <policy name> \
-    --policy-document file://karpenter-controller-policy.json
+### Add tags to security groups
 
-eksctl create iamserviceaccount \
-    --cluster <cluster name> \
-    --name karpenter \
-    --namespace karpenter \
-    --role-name <role name> \
-    --attach-policy-arn <karpenter controller policy arn> \
-    --approve
-```
-https://karpenter.sh/v0.13.2/getting-started/getting-started-with-eksctl/#create-the-karpentercontroller-iam-role
+=== ":simple-linux: Linux"
+
+    ``` bash hl_lines="1 3 4"
+    REGION=""
+
+    CLUSTER_NAME=""
+    SG_LIST=(
+        "sg-xxxxxxxxxxxxxxxxx"
+        "sg-xxxxxxxxxxxxxxxxx"
+    )
+
+    for sg in "${SG_LIST[@]}"
+    do
+        aws ec2 create-tags \
+            --tags "Key=karpenter.sh/discovery,Value=${CLUSTER_NAME}" \
+            --resources ${sg} \
+            --region $REGION \
+            --no-cli-pager
+    done
+    ```
+
+=== ":simple-windows: Windows"
+
+    ``` powershell hl_lines="1 3 4"
+    $REGION=""
+
+    $CLUSTER_NAME=""
+    $SG_LIST  = @(
+        "sg-xxxxxxxxxxxxxxxxx",
+        "sg-xxxxxxxxxxxxxxxxx"
+    )
+
+    foreach ($sg in $SG_LIST) {
+        aws ec2 create-tags `
+            --tags "Key=karpenter.sh/discovery,Value=${CLUSTER_NAME}" `
+            --resources ${sg} `
+            --region $REGION `
+            --no-cli-pager
+    }
+    ```
+
+### Create the Karpenter Controller policy
+
+=== ":simple-linux: Linux"
+
+    ``` bash hl_lines="1 2 3 6 9 10 13"
+    STACK_NAME=""
+    PROJECT_NAME=""
+    REGION=""
+
+    ### Policy Configuration
+    PolicyName=""     # [REQUIRED] The name of service account's IAM policy.
+
+    ### EKS Configuration
+    ClusterName=""    # [REQUIRED] The name of EKS cluster.
+    NodeRoleName=""   # [REQUIRED] The name of EKS node's role.
+
+    ### SQS Configuration
+    QueueName=""      # [REQUIRED] The name of SQS queue for NTH.
+
+    curl -LO https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/karpenter-controller-policy.yaml
+
+    aws cloudformation deploy \
+        --template-file ./karpenter-controller-policy.yaml \
+        --stack-name $STACK_NAME \
+        --parameter-overrides \
+            PolicyName=$PolicyName \
+            ClusterName=$ClusterName \
+            NodeRoleName=$NodeRoleName \
+            QueueName=$QueueName \
+        --tags project=$PROJECT_NAME \
+        --capabilities CAPABILITY_NAMED_IAM \
+        --disable-rollback \
+        --region $REGION
+    ```
+
+=== ":simple-windows: Windows"
+
+    ``` powershell hl_lines="1 2 3 6 9 10 13"
+    $STACK_NAME=""
+    $PROJECT_NAME=""
+    $REGION=""
+
+    ### Policy Configuration
+    $PolicyName=""    # [REQUIRED] The name of service account's IAM policy.
+
+    ### EKS Configuration
+    $ClusterName=""   # [REQUIRED] The name of EKS cluster.
+    $NodeRoleName=""  # [REQUIRED] The name of EKS node's role.
+
+    ### SQS Configuration
+    $QueueName=""      # [REQUIRED] The name of SQS queue for NTH
+
+    curl.exe -LO https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/karpenter-controller-policy.yaml
+
+    aws cloudformation deploy `
+    --template-file ./karpenter-controller-policy.yaml `
+    --stack-name $STACK_NAME `
+    --parameter-overrides `
+        PolicyName=$PolicyName `
+        ClusterName=$ClusterName `
+        NodeRoleName=$NodeRoleName `
+        QueueName=$QueueName `
+    --tags project=$PROJECT_NAME `
+    --capabilities CAPABILITY_NAMED_IAM `
+    --disable-rollback `
+    --region $REGION
+    ```
+
+[Karpenter Documentation](https://karpenter.sh/preview/getting-started/migrating-from-cas/#create-iam-roles)
+
+### Create the service account
+
+=== ":simple-linux: Linux"
+
+    ``` bash hl_lines="1 2 3 4 5"
+    POLICY_NAME="<policy name>"
+    ROLE_NAME="<role name>"
+    CLUSTER_NAME="<cluster name>"
+    PROJECT_NAME="<project name>"
+    REGION="<region code>"
+
+    POLICY_ARN=$(aws iam list-policies \
+        --query "Policies[?PolicyName=='$POLICY_NAME'].Arn" --output text)
+
+    eksctl create iamserviceaccount \
+        --cluster=$CLUSTER_NAME \
+        --namespace=karpenter \
+        --name=karpenter \
+        --role-name=$ROLE_NAME \
+        --attach-policy-arn=$POLICY_ARN \
+        --region $REGION \
+        --approve
+    ```
+
+=== ":simple-windows: Windows"
+
+    ``` powershell hl_lines="1 2 3 4 5"
+    $POLICY_NAME="<policy name>"
+    $ROLE_NAME="<role name>"
+    $CLUSTER_NAME="<cluster name>"
+    $PROJECT_NAME="<project name>"
+    $REGION="<region code>"
+
+    $POLICY_ARN = aws iam list-policies `
+        --query "Policies[?PolicyName=='$POLICY_NAME'].Arn" --output text
+
+    eksctl create iamserviceaccount `
+        --cluster=$CLUSTER_NAME `
+        --namespace=karpenter `
+        --name=karpenter `
+        --role-name=$ROLE_NAME `
+        --attach-policy-arn=$POLICY_ARN `
+        --region $REGION `
+        --approve
+    ```
+
+!!! note
+
+    If you use CMK in SQS queue, you should add below policy.
+
+    ``` json title="KMS Key Policy" hl_lines="6"
+    {
+        "Sid": "AllowConsumersToReceiveFromTheQueue - Karpenter",
+        "Effect": "Allow",
+        "Principal": {
+            "AWS": [
+                "<KARPENTER SERVICE ACCOUNT ROLE ARN>"
+            ]
+        },
+        "Action": [
+            "kms:Decrypt"
+        ],
+        "Resource": "*"
+    }
+    ```
 
 ### Install Karpenter using `helm`
 
-> Please check version in [here](https://karpenter.sh/v0.13.2/getting-started/getting-started-with-eksctl/#environment-variables).
+=== ":simple-linux: Linux"
 
-```shell
-helm repo add karpenter https://charts.karpenter.sh/
-helm repo update
+    ``` bash hl_lines="1 2 3"
+    CLUSTER_NAME=""
+    NODEGROUP_ROLE_NAME=""
+    QUEUE_NAME=""
 
-helm upgrade \
-    --install \
-    --namespace karpenter \
-    karpenter karpenter/karpenter \
-    --version <karpenter version> \
-    --set clusterName=<cluster name> 
-    --set clusterEndpoint=<cluster endpoint> \
-    --set serviceAccount.create=false \
-    --set serviceAccount.name=karpenter \
-    --set aws.defaultInstanceProfile=<node IAM role instance profile arn> \
-    --wait
-```
+    helm repo add karpenter https://charts.karpenter.sh/
+    helm repo update
 
-### Deploy the provisioner
+    helm install karpenter oci://public.ecr.aws/karpenter/karpenter \
+        --create-namespace \
+        --namespace karpenter \
+        --version v0.27.5 \
+        --set serviceAccount.create=false \
+        --set serviceAccount.name=karpenter \
+        --set settings.aws.clusterName=$CLUSTER_NAME \
+        --set settings.aws.defaultInstanceProfile=$NODEGROUP_ROLE_NAME \
+        --set settings.aws.interruptionQueueName=$QUEUE_NAME
+    ```
 
-```shell
-cat << EOF >> karpenter-provisioner.yaml
-apiVersion: karpenter.sh/v1alpha5
-kind: Provisioner
+=== ":simple-windows: Windows"
+
+    ``` bash hl_lines="1 2 3"
+    $CLUSTER_NAME=""
+    $NODEGROUP_ROLE_NAME=""
+    $QUEUE_NAME=""
+
+    helm repo add karpenter https://charts.karpenter.sh/
+    helm repo update
+
+    helm install karpenter oci://public.ecr.aws/karpenter/karpenter `
+        --create-namespace `
+        --namespace karpenter `
+        --version v0.27.5 `
+        --set serviceAccount.create=false `
+        --set serviceAccount.name=karpenter `
+        --set settings.aws.clusterName=$CLUSTER_NAME `
+        --set settings.aws.defaultInstanceProfile=$NODEGROUP_ROLE_NAME `
+        --set settings.aws.interruptionQueueName=$QUEUE_NAME
+    ```
+
+> Go to [here](https://github.com/aws/karpenter/releases) and please check the new version. (2023-06-02)
+
+### Create a node template
+
+``` yaml title="node-template.yaml" linenums="1"
+apiVersion: karpenter.k8s.aws/v1alpha1
+kind: AWSNodeTemplate
 metadata:
-  name: default
+  name: <node template name>
 spec:
-  limits:
-    resources:
-      cpu: 100
-  provider:
-    subnetSelector:
-      karpenter.sh/discovery: <cluster name>
-    securityGroupSelector:
-      karpenter.sh.discovery: <cluster name>
-EOF
-
-kubectl apply -f karpenter-provisioner.yaml
+  subnetSelector: { ... }        # required, discovers tagged subnets to attach to instances
+  securityGroupSelector: { ... } # required, discovers tagged security groups to attach to instances
+  instanceProfile: "..."         # optional, overrides the node's identity from global settings
+  amiFamily: "..."               # optional, resolves a default ami and userdata
+  amiSelector: { ... }           # optional, discovers tagged amis to override the amiFamily's default
+  userData: "..."                # optional, overrides autogenerated userdata with a merge semantic
+  tags: { ... }                  # optional, propagates tags to underlying EC2 resources
+  metadataOptions: { ... }       # optional, configures IMDS for the instance
+  blockDeviceMappings: [ ... ]   # optional, configures storage devices for the instance
+  detailedMonitoring: "..."      # optional, configures detailed monitoring for the instance
 ```
 
-https://karpenter.sh/v0.13.2/getting-started/getting-started-with-eksctl/#install-karpenter-helm-chart
+??? note "Amazon Linux 2 Example"
+
+    ``` yaml title="node-template.yaml" linenums="1"
+    apiVersion: karpenter.k8s.aws/v1alpha1
+    kind: AWSNodeTemplate
+    metadata:
+      name: <node-template-name>
+    spec:
+      subnetSelector:
+        aws-ids: "subnet-xxxxxxxxxxxxxxxxx,subnet-xxxxxxxxxxxxxxxxx"
+      securityGroupSelector:
+        aws-ids: "sg-xxxxxxxxxxxxxxxxx,sg-xxxxxxxxxxxxxxxxx"
+      instanceProfile: <instance-profile-name>
+      amiFamily: AL2
+      tags:
+        Name: <instance, volume, lt name>
+        project: <project name>
+      metadataOptions:
+        httpEndpoint: enabled
+        httpProtocolIPv6: disabled
+        httpPutResponseHopLimit: 2
+        httpTokens: required
+      blockDeviceMappings:
+        - deviceName: /dev/xvda
+          ebs:
+            volumeSize: 50Gi
+            volumeType: gp3
+            encrypted: true
+    ```
+
+??? note "Bottlerocket Example"
+
+    ``` yaml title="node-template.yaml" linenums="1"
+    apiVersion: karpenter.k8s.aws/v1alpha1
+    kind: AWSNodeTemplate
+    metadata:
+      name: <node-template-name>
+    spec:
+      subnetSelector:
+        aws-ids: "subnet-xxxxxxxxxxxxxxxxx,subnet-xxxxxxxxxxxxxxxxx"
+      securityGroupSelector:
+        aws-ids: "sg-xxxxxxxxxxxxxxxxx,sg-xxxxxxxxxxxxxxxxx"
+      instanceProfile: <instance-profile-name>
+      amiFamily: Bottlerocket
+      tags:
+        Name: <instance, volume, lt name>
+        project: <project name>
+      metadataOptions:
+        httpEndpoint: enabled
+        httpProtocolIPv6: disabled
+        httpPutResponseHopLimit: 2
+        httpTokens: required
+      blockDeviceMappings:
+        # Root device
+        - deviceName: /dev/xvda
+          ebs:
+            volumeSize: 4Gi
+            volumeType: gp3
+            encrypted: true
+        # Data device: Container resources such as images and logs
+        - deviceName: /dev/xvdb
+          ebs:
+            volumeSize: 50Gi
+            volumeType: gp3
+            encrypted: true
+    ```
+
+[Karpenter Documentation](https://karpenter.sh/v0.27.5/concepts/node-templates/)
+
+### Create a provisioner
+
+``` yaml title="provisioner" linenums="1"
+
+```
+
+[Karpenter Documentation](https://karpenter.sh/v0.27.5/concepts/provisioners/)
 
 ## Deploy Overprovisioning Pod
 

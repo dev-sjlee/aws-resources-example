@@ -11,7 +11,6 @@ metadata:
   name: <ingress name>
   namespace: <namespace>
   annotations:
-    kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/load-balancer-name: <load balancer name>
@@ -21,6 +20,7 @@ metadata:
     alb.ingress.kubernetes.io/load-balancer-attributes: access_logs.s3.enabled=true,access_logs.s3.bucket=<access log bucket>,access_logs.s3.prefix=<access log prefix>
     # Please check documentations for other annotations.
 spec:
+  ingressClassName: alb
   rules:
     - http:
         paths:
