@@ -70,6 +70,13 @@ spec:
       #     effect: "NoSchedule"
       # nodeSelector:
       #   key: value            # node label key and value
+      # topologySpreadConstraints:
+      #   - maxSkew: 1
+      #     whenUnsatisfiable: DoNotSchedule
+      #     topologyKey: topology.kubernetes.io/zone
+      #     labelSelector:
+      #       matchLabels:
+      #         app: nginx
 ```
 
 [Kubernetes Documentation](https://kubernetes.io/ko/docs/concepts/workloads/controllers/deployment/)
