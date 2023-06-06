@@ -242,15 +242,15 @@ aws iam attach-role-policy \
 === ":simple-windows: Windows"
 
     ``` powershell
-    kubectl patch deployment coredns \
-        -n kube-system \
-        --type json \
+    kubectl patch deployment coredns `
+        -n kube-system `
+        --type json `
         -p='[{"op": "remove", "path": "/spec/template/metadata/annotations/eks.amazonaws.com~1compute-type"}]'
 
-    kubectl rollout restart deployment coredns \
+    kubectl rollout restart deployment coredns `
         -n kube-system
 
-    kubectl get deployment coredns \
+    kubectl get deployment coredns `
         -n kube-system
     ```
 

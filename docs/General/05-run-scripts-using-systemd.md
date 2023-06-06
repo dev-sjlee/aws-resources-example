@@ -40,6 +40,12 @@ WantedBy=multi-user.target
 toucn /app.log
 ```
 
+## Reload SystemD
+
+``` bash
+systemctl daemon-reload
+```
+
 ## Start application
 
 ``` bash

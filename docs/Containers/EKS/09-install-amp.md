@@ -186,7 +186,7 @@ kubectl create namespace prometheus
         --query 'Stacks[0].Outputs[?OutputKey==`WorkspaceEndpoint`].OutputValue' `
         --region $REGION `
         --output text
-    $APS_ENDPOINT = "$APS_ENDPOINT/api/v1/remote_write"
+    $APS_ENDPOINT = $APS_ENDPOINT + "api/v1/remote_write"
 
     helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
     helm repo add kube-state-metrics https://kubernetes.github.io/kube-state-metrics
