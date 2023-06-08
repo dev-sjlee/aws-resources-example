@@ -25,6 +25,27 @@ create table <table name> (
 );
 ```
 
+## Create table from Kafka
+
+``` sql
+%flink.bsql
+
+create table sensor (
+    `timestamp` TIMESTAMP(3),
+    `id` VARCHAR,
+    `code` INTEGER,
+    WATERMARK FOR `timestamp` AS `timestamp` - INTERVAL '10' SECOND
+) WITH (
+    'connector' = 'kafka',
+    'topic' = 'sensor',
+    'properties.bootstrap.servers' = '<host:port>,<host:port>',
+    'properties.security.protocol' = 'SSL',
+    'format' = 'json',
+    'json.timestamp-format.standard' = 'ISO-8601',
+    'scan.startup.mode' = 'latest-offset'
+);
+```
+
 ## Get datas using sliding window
 
 ``` sql
