@@ -5,12 +5,6 @@ description: Install ArgoCD and other addons.
 
 # Using ArgoCD
 
-## Create namespace
-
-``` shell
-kubectl create ns argocd
-```
-
 ## Install ArgoCD Using `helm`
 
 === ":simple-linux: Linux"
@@ -20,6 +14,7 @@ kubectl create ns argocd
     
     helm repo add argo https://argoproj.github.io/argo-helm
     helm install argocd argo/argo-cd \
+        --create-namespace \
         --namespace argocd \
         --values ./argocd-values.yaml
     ```
@@ -31,6 +26,7 @@ kubectl create ns argocd
     
     helm repo add argo https://argoproj.github.io/argo-helm
     helm install argocd argo/argo-cd `
+        --create-namespace `
         --namespace argocd `
         --values ./argocd-values.yaml
     ```
