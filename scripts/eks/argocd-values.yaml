@@ -22,5 +22,7 @@ repoServer:
     minReplicas: 1
 applicationSet:
   replicaCount: 1
+dex:
+  enabled: false
 notifications:
   enabled: false

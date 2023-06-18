@@ -11,24 +11,24 @@ description: Kubernetes manifests for deploying horizontal pod autoscaler resour
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: <hpa name>
-  namespace: <hpa namespace>
+  name: nginx
+  namespace: nginx
   labels:
-    app: <hpa app name>
+    app: nginx
 spec:
-  minReplicas: <min replica number (ex. 1)>
-  maxReplicas: <max replica number (ex. 10)>
+  minReplicas: 2
+  maxReplicas: 10
   metrics:
     - type: Resource
       resource:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: <cpu utilization percentage number (ex. 50)>
+          averageUtilization: 40
   scaleTargetRef:
-    apiVersion: <target object api version (ex. apps/v1)>
-    kind: <target object type (ex. Deployment)>
-    name: <target object name>
+    apiVersion: apps/v1
+    kind: Deployment
+    name: nginx
 ```
 
 ## `autoscaling/v1`
@@ -37,16 +37,16 @@ spec:
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: <hpa name>
-  namespace: <hpa namespace>
+  name: nginx
+  namespace: nginx
   labels:
-    app: <hpa app name>
+    app: nginx
 spec:
-  minReplicas: <min replica number (ex. 1)>
-  maxReplicas: <max replica number (ex. 10)>
-  targetCPUUtilizationPercentage: <cpu utilization percentage number (ex. 50)>
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 40
   scaleTargetRef:
-    apiVersion: <target object api version (ex. apps/v1)>
-    kind: <target object type (ex. Deployment)>
-    name: <target object name>
+    apiVersion: apps/v1
+    kind: Deployment
+    name: nginx
 ```

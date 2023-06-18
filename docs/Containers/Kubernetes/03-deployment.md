@@ -11,6 +11,7 @@ metadata:
 spec:
   # do not include replicas in the manifests if you want replicas to be controlled by HPA
   # replicas: 2
+  revisionHistoryLimit: 10  # default value is 10
   selector:
     matchLabels:
       app: nginx

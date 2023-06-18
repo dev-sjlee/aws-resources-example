@@ -42,23 +42,25 @@ ENTRYPOINT [ "/sbin/tini", "--", "./main" ]
 === "Linux (x86_64)"
 
     ``` bash
-    wget https://github.com/docker/buildx/releases/download/v0.10.5/buildx-v0.10.5.linux-amd64
+    export DOCKER_BUILDKIT=1
+    wget https://github.com/docker/buildx/releases/download/v0.11.0/buildx-v0.11.0.linux-amd64
     mkdir -p ~/.docker/cli-plugins
-    mv buildx-v0.10.5.linux-amd64 ~/.docker/cli-plugins/docker-buildx
+    mv buildx-v0.11.0.linux-amd64 ~/.docker/cli-plugins/docker-buildx
     chmod a+x ~/.docker/cli-plugins/docker-buildx
-    docker run --privileged --rm public.ecr.aws/eks-distro-build-tooling/binfmt-misc:qemu-v6.1.0 --install all
-    docker buildx create --use --driver docker-container --driver-opt image=public.ecr.aws/z8o9m4l5/system-components/mirrors/moby/buildkit:buildx-stable-1
+    docker run --privileged --rm ghcr.io/marcus16-kang/binfmt:latest --install all
+    docker buildx create --use --driver docker-container --driver-opt image=ghcr.io/marcus16-kang/buildkit:latest
     docker buildx build --platform linux/amd64,linux/arm64 --tag <REPO>:<TAG> --push .
     ```
 
 === "Linux (ARM64)"
 
     ``` bash
-    wget https://github.com/docker/buildx/releases/download/v0.10.5/buildx-v0.10.5.linux-arm64
+    export DOCKER_BUILDKIT=1
+    wget https://github.com/docker/buildx/releases/download/v0.11.0/buildx-v0.11.0.linux-arm64
     mkdir -p ~/.docker/cli-plugins
-    mv buildx-v0.10.5.linux-arm64 ~/.docker/cli-plugins/docker-buildx
+    mv buildx-v0.11.0.linux-arm64 ~/.docker/cli-plugins/docker-buildx
     chmod a+x ~/.docker/cli-plugins/docker-buildx
-    docker run --privileged --rm public.ecr.aws/eks-distro-build-tooling/binfmt-misc:qemu-v6.1.0 --install all
-    docker buildx create --use --driver docker-container --driver-opt image=public.ecr.aws/z8o9m4l5/system-components/mirrors/moby/buildkit:buildx-stable-1
+    docker run --privileged --rm ghcr.io/marcus16-kang/binfmt:latest --install all
+    docker buildx create --use --driver docker-container --driver-opt image=ghcr.io/marcus16-kang/buildkit:latest
     docker buildx build --platform linux/amd64,linux/arm64 --tag <REPO>:<TAG> --push .
     ```

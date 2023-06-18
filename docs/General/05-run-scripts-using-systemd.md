@@ -37,7 +37,7 @@ WantedBy=multi-user.target
 ## Create a log file
 
 ``` bash
-toucn /app.log
+touch /app.log
 ```
 
 ## Reload SystemD

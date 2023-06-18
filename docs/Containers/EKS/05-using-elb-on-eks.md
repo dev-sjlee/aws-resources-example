@@ -183,4 +183,4 @@ spec:
 
 [AWS Documentation](https://docs.aws.amazon.com/eks/latest/userguide/network-load-balancing.html)
 
-[AWS Load Balancer Controller Documentation](https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.4/)
+[AWS Load Balancer Controller Documentation](https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/guide/service/nlb/)

@@ -73,7 +73,7 @@
 
     ``` bash hl_lines="1 2 3"
     CLUSTER_NAME="<cluster name>"
-    IMAGE_TAG="<image tag (ex. 1.25.1)>"
+    IMAGE_TAG="<image tag (ex. 1.27.2)>"
     REGION="<region code>"
 
     helm repo add autoscaler https://kubernetes.github.io/autoscaler
@@ -99,7 +99,7 @@
 
     ``` bash hl_lines="1 2 3"
     $CLUSTER_NAME="<cluster name>"
-    $IMAGE_TAG="<image tag (ex. 1.26.2)>"
+    $IMAGE_TAG="<image tag (ex. 1.27.2)>"
     $REGION="<region code>"
 
     helm repo add autoscaler https://kubernetes.github.io/autoscaler
@@ -123,14 +123,14 @@
 
 | Kubernetes | CA     | Default |
 |------------|--------|---------|
-| 1.27       | 1.27.2 |         |
-| 1.26       | 1.26.3 | default |
+| 1.27       | 1.27.2 | default |
+| 1.26       | 1.26.3 |         |
 | 1.25       | 1.25.2 |         |
 | 1.24       | 1.24.2 |         |
 | 1.23       | 1.23   |         |
 | 1.22       | 1.22.2 |         |
 
-> Go to [here](https://github.com/kubernetes/autoscaler/releases) and please check the new version of your kubernetes version. (2023-05-31)
+> Go to [here](https://github.com/kubernetes/autoscaler/releases) and please check the new version of your kubernetes version. (2023-06-16)
 
 [AWS Documentation](https://docs.aws.amazon.com/ko_kr/eks/latest/userguide/autoscaling.html#ca-deploy)
 
@@ -373,7 +373,7 @@
     helm install karpenter oci://public.ecr.aws/karpenter/karpenter \
         --create-namespace \
         --namespace karpenter \
-        --version v0.27.5 \
+        --version v0.28.0 \
         --set serviceAccount.create=false \
         --set serviceAccount.name=karpenter \
         --set settings.aws.clusterName=$CLUSTER_NAME \
@@ -394,7 +394,7 @@
     helm install karpenter oci://public.ecr.aws/karpenter/karpenter `
         --create-namespace `
         --namespace karpenter `
-        --version v0.27.5 `
+        --version v0.28.0 `
         --set serviceAccount.create=false `
         --set serviceAccount.name=karpenter `
         --set settings.aws.clusterName=$CLUSTER_NAME `
@@ -402,7 +402,7 @@
         --set settings.aws.interruptionQueueName=$QUEUE_NAME
     ```
 
-> Go to [here](https://github.com/aws/karpenter/releases) and please check the new version. (2023-06-02)
+> Go to [here](https://github.com/aws/karpenter/releases) and please check the new version. (2023-06-16)
 
 ### Create a node template
 
@@ -491,7 +491,7 @@ spec:
             encrypted: true
     ```
 
-[Karpenter Documentation](https://karpenter.sh/v0.27.5/concepts/node-templates/)
+[Karpenter Documentation](https://karpenter.sh/v0.28.0/concepts/node-templates/)
 
 ### Create a provisioner
 
@@ -611,7 +611,7 @@ spec:
   weight: 10
 ```
 
-[Karpenter Documentation](https://karpenter.sh/v0.27.5/concepts/provisioners/)
+[Karpenter Documentation](https://karpenter.sh/v0.28.0/concepts/provisioners/)
 
 ## Deploy Overprovisioning Pod
 

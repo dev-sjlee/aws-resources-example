@@ -37,6 +37,7 @@ description: Install ArgoCD and other addons.
     configs:
       cm:
         accounts.image-updater: apiKey
+        timeout.reconciliation: 60s
       rbac:
         policy.csv: |
           p, role:image-updater, applications, get, */*, allow
@@ -47,8 +48,6 @@ description: Install ArgoCD and other addons.
       enabled: false
     controller:
       replicas: 1
-      args:
-        appResyncPeriod: 60
     server:
       autoscaling:
         enabled: false
@@ -59,6 +58,10 @@ description: Install ArgoCD and other addons.
         minReplicas: 1
     applicationSet:
       replicaCount: 1
+    dex:
+      enabled: false
+    notifications:
+      enabled: false
     ```
 
 [Github Documentation](https://github.com/argoproj/argo-helm/tree/main/charts/argo-cd)
@@ -92,6 +95,181 @@ argocd login --insecure 127.0.0.1:8080
 ```
 
 > You can access dashboard using this address([https://127.0.0.1:8080](https://127.0.0.1:8080)).
+
+??? tip
+
+    If you want to use load balancer to access argocd using CLI, you should use **Network Load Balancer.**
+
+    You cannot use argocd cli if you use ALB ingress.
+
+### Sync application using ArgoCD API
+
+``` python hl_lines="11 13 14 19"
+import requests
+
+class BearerAuth(requests.auth.AuthBase):
+    def __init__(self, token):
+        self.token = token
+    def __call__(self, r):
+        r.headers["authorization"] = "Bearer " + self.token
+        return r
+
+response = requests.post(
+    'http://<argocd-url>/api/v1/session',
+    json={
+      'username': '<username>',
+      'password': '<password>'
+    }
+)
+token = response.json()['token']
+
+requests.post('http://<argocd-url>/api/v1/applications/<application name>/sync', auth=BearerAuth(token))
+```
+
+## Add other Kubernetes cluster
+
+=== ":simple-linux: Linux"
+
+    ``` bash hl_lines="1 2"
+    ARGOCD_CONTEXT_NAME="<argocd context name>"
+    TARGET_CONTEXT_NAME="<target context name>"
+
+    kubectl apply \
+        -f https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/argocd-manager.yaml \
+        --context $TARGET_CONTEXT_NAME
+
+    ARN=$(kubectl config view -o jsonpath="{$.contexts[?(@.name==\"$TARGET_CONTEXT_NAME\")].context.cluster}")
+    REGION=$(echo $ARN | cut -d ':' -f 4)
+    CLUSTER_NAME=$(echo $ARN | cut -d '/' -f 2)
+
+    CLUSTER_INFO=$(aws eks describe-cluster \
+        --name $CLUSTER_NAME \
+        --region $REGION)
+
+    CLUSTER_URL=$(echo $CLUSTER_INFO | jq -r '.cluster.endpoint')
+    CLUSTER_CA=$(echo $CLUSTER_INFO | jq -r '.cluster.certificateAuthority.data')
+    TOKEN=$(kubectl get secret argocd-manager \
+        -n kube-system \
+        -o jsonpath="{.data.token}" \
+        --context $TARGET_CONTEXT_NAME \
+    | base64 -d)
+
+    curl -LO https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/cluster-secret.yaml
+    sed -i "s|CLUSTER_NAME|$CLUSTER_NAME|g" cluster-secret.yaml
+    sed -i "s|TOKEN|$TOKEN|" cluster-secret.yaml
+    sed -i "s|CA_DATA|$CLUSTER_CA|" cluster-secret.yaml
+    sed -i "s|SERVER_URL|$CLUSTER_URL|" cluster-secret.yaml
+
+    kubectl apply -f ./cluster-secret.yaml --context $ARGOCD_CONTEXT_NAME
+    ```
+
+=== ":simple-windows: Windows"
+
+    ``` powershell hl_lines="1 2"
+    $ARGOCD_CONTEXT_NAME="<argocd context name>"
+    $TARGET_CONTEXT_NAME="<target context name>"
+
+    kubectl apply `
+        -f https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/argocd-manager.yaml `
+        --context $TARGET_CONTEXT_NAME
+
+    $ARN = kubectl config view -o jsonpath="{$.contexts[?(@.name=='$TARGET_CONTEXT_NAME')].context.cluster}"
+    $REGION = $ARN.Split(':')[3]
+    $CLUSTER_NAME = $ARN.Split('/')[1]
+
+    $CLUSTER_INFO = aws eks describe-cluster `
+        --name $CLUSTER_NAME `
+        --region $REGION | ConvertFrom-Json
+
+    $CLUSTER_URL = $CLUSTER_INFO.cluster.endpoint
+    $CLUSTER_CA = $CLUSTER_INFO.cluster.certificateAuthority.data
+    $TOKEN = kubectl get secret argocd-manager `
+        -n kube-system `
+        -o jsonpath="{.data.token}" `
+        --context $TARGET_CONTEXT_NAME | %{[System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($_))}
+
+    curl.exe -LO https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/cluster-secret.yaml
+    $yaml = Get-Content -Path ./cluster-secret.yaml
+    $yaml = $yaml -replace 'CLUSTER_NAME', $CLUSTER_NAME
+    $yaml = $yaml -replace 'SA_TOKEN', $TOKEN
+    $yaml = $yaml -replace 'CA_DATA', $CLUSTER_CA
+    $yaml = $yaml -replace 'SERVER_URL', $CLUSTER_URL
+    $yaml | Out-File -Encoding utf8 ./cluster-secret.yaml
+
+    kubectl apply -f ./cluster-secret.yaml --context $ARGOCD_CONTEXT_NAME
+    ```
+
+??? note "argocd-manager.yaml"
+
+    ``` yaml
+    apiVersion: v1
+    kind: ServiceAccount
+    metadata:
+      name: argocd-manager
+      namespace: kube-system
+    ---
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: ClusterRole
+    metadata:
+      name: argocd-manager-role
+    rules:
+      - apiGroups:
+          - '*'
+        resources:
+          - '*'
+        verbs:
+          - '*'
+      - nonResourceURLs:
+          - '*'
+        verbs:
+          - '*'
+    ---
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: ClusterRoleBinding
+    metadata:
+      name: argocd-manager-role-binding
+    roleRef:
+      apiGroup: rbac.authorization.k8s.io
+      kind: ClusterRole
+      name: argocd-manager-role
+    subjects:
+      - kind: ServiceAccount
+        name: argocd-manager
+        namespace: kube-system
+    ---
+    apiVersion: v1
+    kind: Secret
+    type: kubernetes.io/service-account-token
+    metadata:
+      name: argocd-manager
+      namespace: kube-system
+      annotations:
+        kubernetes.io/service-account.name: argocd-manager
+    ```
+
+??? note "cluster-secret.yaml"
+
+    ``` yaml
+    apiVersion: v1
+    kind: Secret
+    metadata:
+      name: CLUSTER_NAME
+      namespace: argocd
+      labels:
+        argocd.argoproj.io/secret-type: cluster
+    type: Opaque
+    stringData:
+      config: |
+        {
+          "bearerToken":"TOKEN",
+          "tlsClientConfig":{
+            "insecure":false,
+            "caData":"CA_DATA"
+          }
+        }
+      name: CLUSTER_NAME
+      server: SERVER_URL
+    ```
 
 ## Install ArgoCD Image Updater using `helm`
 
@@ -248,7 +426,7 @@ kubectl port-forward service/argo-rollouts-dashboard -n argocd 31000:3100
 
 ### Install `kubectl` Plugin
 
-=== ":simple-linux: Linux (x86_64)"
+=== "Linux (x86_64)"
 
     ``` bash
     curl -LO https://github.com/argoproj/argo-rollouts/releases/download/v1.5.1/kubectl-argo-rollouts-linux-amd64
@@ -258,7 +436,7 @@ kubectl port-forward service/argo-rollouts-dashboard -n argocd 31000:3100
     kubectl argo rollouts version
     ```
 
-=== ":simple-linux: Linux (x86_64)"
+=== "Linux (ARM64)"
 
     ``` bash
     curl -LO https://github.com/argoproj/argo-rollouts/releases/download/v1.5.1/kubectl-argo-rollouts-linux-arm64
@@ -268,7 +446,7 @@ kubectl port-forward service/argo-rollouts-dashboard -n argocd 31000:3100
     kubectl argo rollouts version
     ```
 
-=== ":simple-windows: Windows"
+=== "Windows (Executable)"
 
     ``` powershell
     curl.exe -LO https://github.com/argoproj/argo-rollouts/releases/download/v1.5.1/kubectl-argo-rollouts-windows-amd64

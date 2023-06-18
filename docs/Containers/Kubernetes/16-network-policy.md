@@ -1,19 +1,11 @@
-# Network Policy with Calico
+---
+title: Network Policy
+description: Kubernetes manifests for deploying Network Policy.
+---
 
-## Install Calico
+# Network Policy
 
-``` shell
-helm repo add projectcalico https://docs.projectcalico.org/charts
-helm repo update                         
-helm install calico projectcalico/tigera-operator --version v3.25.0
-kubectl get all -n calico-system
-```
-
-[AWS Documentation](https://docs.aws.amazon.com/eks/latest/userguide/calico.html#calico-install)
-
-## Create Network Policy
-
-### Network Policy
+## Calico Network Policy
 
 ``` yaml title="networkpolicy.yaml"
 kind: NetworkPolicy
@@ -43,7 +35,7 @@ spec:
   egress: {}  # egress any open
 ```
 
-### Global Network Policy
+## Calico Global Network Policy
 
 ``` yaml title="globalnetworkpolicy.yaml"
 # Allow all ingress traffic except traffic from app=nginx pod.

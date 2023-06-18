@@ -444,7 +444,7 @@
 ## Install `docker`
 
 ``` bash
-sudo amazon-linux-extras install -y docker
+sudo yum install -y docker
 sudo systemctl start docker
 sudo systemctl enable docker
 sudo usermod -a -G docker ec2-user
@@ -455,21 +455,21 @@ sudo usermod -a -G docker ec2-user
 === "Linux (x86_64)"
     ``` bash
     export DOCKER_BUILDKIT=1
-    wget https://github.com/docker/buildx/releases/download/v0.10.5/buildx-v0.10.5.linux-amd64
+    wget https://github.com/docker/buildx/releases/download/v0.11.0/buildx-v0.11.0.linux-amd64
     mkdir -p ~/.docker/cli-plugins
-    mv buildx-v0.10.5.linux-amd64 ~/.docker/cli-plugins/docker-buildx
+    mv buildx-v0.11.0.linux-amd64 ~/.docker/cli-plugins/docker-buildx
     chmod a+x ~/.docker/cli-plugins/docker-buildx
-    docker run --privileged --rm public.ecr.aws/eks-distro-build-tooling/binfmt-misc:qemu-v6.1.0 --install all
+    docker run --privileged --rm ghcr.io/marcus16-kang/binfmt:amd64 --install all
     ```
 
 === "Linux (ARM64)"
     ``` bash
     export DOCKER_BUILDKIT=1
-    wget https://github.com/docker/buildx/releases/download/v0.10.5/buildx-v0.10.5.linux-arm64
+    wget https://github.com/docker/buildx/releases/download/v0.11.0/buildx-v0.11.0.linux-arm64
     mkdir -p ~/.docker/cli-plugins
-    mv buildx-v0.10.5.linux-arm64 ~/.docker/cli-plugins/docker-buildx
+    mv buildx-v0.11.0.linux-arm64 ~/.docker/cli-plugins/docker-buildx
     chmod a+x ~/.docker/cli-plugins/docker-buildx
-    docker run --privileged --rm public.ecr.aws/eks-distro-build-tooling/binfmt-misc:qemu-v6.1.0 --install all
+    docker run --privileged --rm ghcr.io/marcus16-kang/binfmt:arm64 --install all
     ```
 
 
@@ -606,7 +606,7 @@ sudo usermod -a -G docker ec2-user
 === "Linux (x86_64)"
     
     ``` bash
-    curl -O https://github.com/argoproj/argo-cd/releases/download/v2.7.3/argocd-linux-amd64
+    curl -LO https://github.com/argoproj/argo-cd/releases/download/v2.7.3/argocd-linux-amd64
     sudo install -o root -g root -m 0755 argocd-linux-amd64 /usr/local/bin/argocd
     sudo install -o root -g root -m 0755 argocd-linux-amd64 /usr/bin/argocd
     rm argocd-linux-amd64
@@ -616,10 +616,10 @@ sudo usermod -a -G docker ec2-user
 === "Linux (ARM64)"
     
     ``` bash
-    curl -O https://github.com/argoproj/argo-cd/releases/download/v2.7.3/argocd-linux-arm64
+    curl -LO https://github.com/argoproj/argo-cd/releases/download/v2.7.3/argocd-linux-arm64
     sudo install -o root -g root -m 0755 argocd-linux-arm64 /usr/local/bin/argocd
     sudo install -o root -g root -m 0755 argocd-linux-arm64 /usr/bin/argocd
-    rm argocd-linux-amd64
+    rm argocd-linux-arm64
     argocd -h
     ```
 
