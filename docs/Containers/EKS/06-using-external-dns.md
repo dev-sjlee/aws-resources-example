@@ -347,7 +347,7 @@
 
 ## Using External DNS with ALB (in Ingress)
 
-``` yaml title="ingress.yaml" hl_lines="8" linenums="1"
+``` yaml title="ingress.yaml" hl_lines="12" linenums="1"
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -372,7 +372,7 @@ spec:
 
 ### Dualstack ALB
 
-``` yaml title="ingress.yaml" hl_lines="9 13" linenums="1"
+``` yaml title="ingress.yaml" hl_lines="13" linenums="1"
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -425,7 +425,7 @@ spec:
 
 ## Using External DNS with NodePort Service
 
-``` yaml title="service.yaml"
+``` yaml title="service.yaml" hl_lines="7" linenums="1"
 apiVersion: v1
 kind: Service
 metadata:
