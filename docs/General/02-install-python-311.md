@@ -1,4 +1,4 @@
-# Install Python 3.10
+# Install Python 3.11
 
 [OpenSSL](https://www.openssl.org/)
 [Python](https://www.python.org/)
@@ -16,15 +16,15 @@
     ./config
     sudo make
     sudo make install
-    ln -s /usr/local/bin/openssl /usr/bin/openssl
+    sudo ln -s /usr/local/bin/openssl /usr/bin/openssl
     sudo cp libssl.so.1.1 /usr/lib64/libssl.so.1.1
     sudo cp libcrypto.so.1.1 /usr/lib64/libcrypto.so.1.1
     openssl version
     cd
 
-    wget https://www.python.org/ftp/python/3.10.7/Python-3.10.7.tgz
-    tar -xvzf Python-3.10.7.tgz
-    cd Python-3.10.7
+    wget https://www.python.org/ftp/python/3.11.4/Python-3.11.4.tgz
+    tar -xvzf Python-3.11.4.tgz
+    cd Python-3.11.4
 
     ./configure
     sudo make
@@ -41,9 +41,9 @@
     sudo apt-get upgrade -y
     sudo apt-get install -y build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget libbz2-dev
 
-    wget https://www.python.org/ftp/python/3.10.7/Python-3.10.7.tar.xz
-    tar -xf Python-3.10.7.tar.xz
-    cd Python-3.10.7
+    wget https://www.python.org/ftp/python/3.11.4/Python-3.11.4.tar.xz
+    tar -xf Python-3.11.4.tar.xz
+    cd Python-3.11.4
 
     sudo ./configure --enable-optimizations
     sudo make

@@ -6,7 +6,7 @@
     
     ``` bash
     sudo yum update -y
-    sudo yum install -y unzip jq
+    sudo yum install -y unzip jq bash-completion
     ```
 
 === "Debian"
@@ -14,7 +14,7 @@
     ``` bash
     sudo apt-get update -y
     sudo apt-get upgrade -y
-    sudo apt-get install -y unzip jq
+    sudo apt-get install -y unzip jq bash-completion
     ```
 
 === "Windows"
@@ -181,6 +181,12 @@
         curl.exe -LO "https://s3.us-west-2.amazonaws.com/amazon-eks/1.23.17/2023-05-11/bin/windows/amd64/kubectl.exe"
         ```
 
+??? tip "Enable Shell Autocomplete"
+
+    ``` bash
+    kubectl completion bash | sudo tee /etc/bash_completion.d/kubectl > /dev/null
+    sudo chmod a+r /etc/bash_completion.d/kubectl
+    ```
 
 [AWS Documentation](https://docs.aws.amazon.com/eks/latest/userguide/install-kubectl.html)
 
@@ -218,6 +224,13 @@
     curl.exe -LO https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_Windows_amd64.zip
     Expand-Archive ./eksctl_Windows_amd64.zip -DestinationPath ./
     rm eksctl_Windows_amd64.zip
+    ```
+
+??? tip "Enable Shell Autocomplete"
+
+    ``` bash
+    eksctl completion bash | sudo tee /etc/bash_completion.d/eksctl > /dev/null
+    sudo chmod a+r /etc/bash_completion.d/eksctl
     ```
 
 ??? note "Minimum IAM policies for `eksctl`"
@@ -402,25 +415,27 @@
 === "Linux (x86_64)"
     
     ``` bash
-    curl -LO https://get.helm.sh/helm-v3.12.0-linux-amd64.tar.gz
-    tar -xvzf helm-v3.12.0-linux-amd64.tar.gz
+    curl -LO https://get.helm.sh/helm-v3.12.1-linux-amd64.tar.gz
+    tar -xvzf helm-v3.12.1-linux-amd64.tar.gz
     sudo install -o root -g root -m 0755 linux-amd64/helm /usr/local/bin/helm
     sudo install -o root -g root -m 0755 linux-amd64/helm /usr/bin/helm
     helm version
     sudo helm version
     rm -rf linux-amd64
+    rm -rf helm-v3.12.1-linux-amd64.tar.gz
     ```
 
 === "Linux (ARM64)"
     
     ``` bash
-    curl -LO https://get.helm.sh/helm-v3.12.0-linux-arm64.tar.gz
-    tar -xvzf helm-v3.12.0-linux-arm64.tar.gz
+    curl -LO https://get.helm.sh/helm-v3.12.1-linux-arm64.tar.gz
+    tar -xvzf helm-v3.12.1-linux-arm64.tar.gz
     sudo install -o root -g root -m 0755 linux-arm64/helm /usr/local/bin/helm
     sudo install -o root -g root -m 0755 linux-arm64/helm /usr/bin/helm
     helm version
     sudo helm version
     rm -rf linux-arm64
+    rm -rf helm-v3.12.1-linux-arm64.tar.gz
     ```
 
 === "Windows (Chocolatey)"
@@ -432,23 +447,48 @@
 === "Windows (Executable)"
     
     ``` powershell
-    curl.exe -LO https://get.helm.sh/helm-v3.12.0-windows-amd64.zip
-    Expand-Archive ./helm-v3.12.0-windows-amd64.zip -DestinationPath ./
+    curl.exe -LO https://get.helm.sh/helm-v3.12.1-windows-amd64.zip
+    Expand-Archive ./helm-v3.12.1-windows-amd64.zip -DestinationPath ./
     cp windows-amd64/helm.exe ./helm.exe
-    rm helm-v3.12.0-windows-amd64.zip
+    rm helm-v3.12.1-windows-amd64.zip
     rm -r windows-amd64
+    ```
+
+??? tip "Enable Shell Autocomplete"
+
+    ``` bash
+    helm completion bash | sudo tee /etc/bash_completion.d/helm > /dev/null
+    sudo chmod a+r /etc/bash_completion.d/helm
     ```
 
 [AWS Documentation](https://docs.aws.amazon.com/eks/latest/userguide/helm.html)
 
 ## Install `docker`
 
-``` bash
-sudo yum install -y docker
-sudo systemctl start docker
-sudo systemctl enable docker
-sudo usermod -a -G docker ec2-user
-```
+=== "RedHat"
+    
+    ``` bash
+    sudo yum install -y docker
+    sudo systemctl start docker
+    sudo systemctl enable docker
+    sudo usermod -a -G docker ec2-user
+    ```
+
+=== "Debian"
+
+    ``` bash
+    sudo apt-get install -y docker docker.io
+    sudo systemctl start docker
+    sudo systemctl enable docker
+    sudo usermod -a -G docker ubuntu
+    ```
+
+??? tip "Enable Shell Autocomplete"
+
+    ``` bash
+    sudo curl -sL -o /etc/bash_completion.d/docker https://raw.githubusercontent.com/docker/cli/master/contrib/completion/bash/docker
+    sudo chmod a+r /etc/bash_completion.d/docker
+    ```
 
 ## Install `docker buildx`
 
@@ -524,6 +564,13 @@ sudo usermod -a -G docker ec2-user
     ./k9s.exe version
     ```
 
+??? tip "Enable Shell Autocomplete"
+
+    ``` bash
+    k9s completion bash | sudo tee /etc/bash_completion.d/k9s > /dev/null
+    sudo chmod a+r /etc/bash_completion.d/k9s
+    ```
+
 [K9s Documentation](https://github.com/derailed/k9s)
 
 ## Install `kubectx`
@@ -558,6 +605,13 @@ sudo usermod -a -G docker ec2-user
     Expand-Archive ./kubectx_v0.9.4_windows_x86_64.zip -DestinationPath ./
     rm kubectx_v0.9.4_windows_x86_64.zip
     rm LICENSE
+    ```
+
+??? tip "Enable Shell Autocomplete"
+
+    ``` bash
+    sudo curl -sL -o /etc/bash_completion.d/kubectx https://raw.githubusercontent.com/ahmetb/kubectx/master/completion/kubectx.bash
+    sudo chmod a+r /etc/bash_completion.d/kubectx
     ```
 
 [kubectx Documentations](https://github.com/ahmetb/kubectx)
@@ -599,6 +653,13 @@ sudo usermod -a -G docker ec2-user
     rm LICENSE
     ```
 
+??? tip "Enable Shell Autocomplete"
+
+    ``` bash
+    sudo curl -sL -o /etc/bash_completion.d/kubens https://raw.githubusercontent.com/ahmetb/kubectx/master/completion/kubens.bash
+    sudo chmod a+r /etc/bash_completion.d/kubens
+    ```
+
 [kubens Documentations](https://github.com/ahmetb/kubectx)
 
 ## Install `argocd`
@@ -635,22 +696,9 @@ sudo usermod -a -G docker ec2-user
     curl.exe -L https://github.com/argoproj/argo-cd/releases/download/v2.7.3/argocd-windows-amd64.exe -o argocd.exe
     ```
 
-## Install `aws-iam-authenticator` (Optional)
+??? tip "Enable Shell Autocomplete"
 
-=== "Linux (x86_64)"
     ``` bash
-    curl -o aws-iam-authenticator https://s3.us-west-2.amazonaws.com/amazon-eks/1.21.2/2021-07-05/bin/linux/amd64/aws-iam-authenticator
-    chmod +x ./aws-iam-authenticator
-    mkdir -p $HOME/bin && cp ./aws-iam-authenticator $HOME/bin/aws-iam-authenticator && export PATH=$PATH:$HOME/bin
-    echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
-    aws-iam-authenticator help
-    ```
-
-=== "Linux (ARM64)"
-    ``` bash
-    curl -o aws-iam-authenticator https://s3.us-west-2.amazonaws.com/amazon-eks/1.21.2/2021-07-05/bin/linux/arm64/aws-iam-authenticator
-    chmod +x ./aws-iam-authenticator
-    mkdir -p $HOME/bin && cp ./aws-iam-authenticator $HOME/bin/aws-iam-authenticator && export PATH=$PATH:$HOME/bin
-    echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
-    aws-iam-authenticator help
+    argocd completion bash | sudo tee /etc/bash_completion.d/argocd > /dev/null
+    sudo chmod a+r /etc/bash_completion.d/argocd
     ```
