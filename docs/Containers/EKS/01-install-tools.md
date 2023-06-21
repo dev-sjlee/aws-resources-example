@@ -667,7 +667,7 @@
 === "Linux (x86_64)"
     
     ``` bash
-    curl -LO https://github.com/argoproj/argo-cd/releases/download/v2.7.3/argocd-linux-amd64
+    curl -LO https://github.com/argoproj/argo-cd/releases/download/v2.7.6/argocd-linux-amd64
     sudo install -o root -g root -m 0755 argocd-linux-amd64 /usr/local/bin/argocd
     sudo install -o root -g root -m 0755 argocd-linux-amd64 /usr/bin/argocd
     rm argocd-linux-amd64
@@ -677,7 +677,7 @@
 === "Linux (ARM64)"
     
     ``` bash
-    curl -LO https://github.com/argoproj/argo-cd/releases/download/v2.7.3/argocd-linux-arm64
+    curl -LO https://github.com/argoproj/argo-cd/releases/download/v2.7.6/argocd-linux-arm64
     sudo install -o root -g root -m 0755 argocd-linux-arm64 /usr/local/bin/argocd
     sudo install -o root -g root -m 0755 argocd-linux-arm64 /usr/bin/argocd
     rm argocd-linux-arm64
@@ -693,7 +693,7 @@
 === "Windows (Executable)"
     
     ``` powershell
-    curl.exe -L https://github.com/argoproj/argo-cd/releases/download/v2.7.3/argocd-windows-amd64.exe -o argocd.exe
+    curl.exe -L https://github.com/argoproj/argo-cd/releases/download/v2.7.6/argocd-windows-amd64.exe -o argocd.exe
     ```
 
 ??? tip "Enable Shell Autocomplete"

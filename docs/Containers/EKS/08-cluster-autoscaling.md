@@ -130,7 +130,7 @@
 | 1.23       | 1.23   |         |
 | 1.22       | 1.22.2 |         |
 
-> Go to [here](https://github.com/kubernetes/autoscaler/releases) and please check the new version of your kubernetes version. (2023-06-16)
+> Go to [here](https://github.com/kubernetes/autoscaler/releases) and please check the new version of your kubernetes version. (2023-06-21)
 
 [AWS Documentation](https://docs.aws.amazon.com/ko_kr/eks/latest/userguide/autoscaling.html#ca-deploy)
 
@@ -402,7 +402,7 @@
         --set settings.aws.interruptionQueueName=$QUEUE_NAME
     ```
 
-> Go to [here](https://github.com/aws/karpenter/releases) and please check the new version. (2023-06-16)
+> Go to [here](https://github.com/aws/karpenter/releases) and please check the new version. (2023-06-21)
 
 ### Create a node template
 

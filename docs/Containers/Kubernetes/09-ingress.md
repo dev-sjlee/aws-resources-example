@@ -8,12 +8,12 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: <ingress name>
-  namespace: <namespace>
+  name: nginx
+  namespace: nginx
   annotations:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
-    alb.ingress.kubernetes.io/load-balancer-name: <load balancer name>
+    alb.ingress.kubernetes.io/load-balancer-name: nginx
     alb.ingress.kubernetes.io/security-groups: <security group ids>
     alb.ingress.kubernetes.io/healthcheck-path: <healthcheck path>
     alb.ingress.kubernetes.io/tags: <tags>  # Environment=dev,Team=test
@@ -28,9 +28,9 @@ spec:
             pathType: Prefix  # Exact
             backend:
               service:
-                name: <service name>
+                name: nginx
                 port:
-                  number: <port number> # like 80
+                  number: 80
 ```
 
 [Go to guide](/aws-resources-example/Containers/EKS/05-using-elb-on-eks/#create-alb-using-ingress)
