@@ -29,6 +29,7 @@ description: Create Application Load Balancer using CloudFormation.
     HealthCheckPath="/"         # [REQUIRED] The health check path of target group. It should end with `/`.
 
     ### ALB Configuration - Access Log
+    CreateAccessLogBucket=""    # `Yes`(default) or `No` | [REQUIRED] Create a new S3 bucket or using existed S3 bucket.
     AccessLogBucketName=""      # [REQUIRED] The name of alb access log bucket.
     AccessLogPrefix=""          # [optional] The prefix of alb access log. It cannot start or end with `/`.
 
@@ -52,6 +53,7 @@ description: Create Application Load Balancer using CloudFormation.
             TargetSecurityGroupId=$TargetSecurityGroupId \
             TargetPort=$TargetPort \
             HealthCheckPath=$HealthCheckPath \
+            CreateAccessLogBucket=$CreateAccessLogBucket \
             AccessLogBucketName=$AccessLogBucketName \
             AccessLogPrefix=$AccessLogPrefix \
         --disable-rollback \
@@ -76,6 +78,7 @@ description: Create Application Load Balancer using CloudFormation.
             ParameterKey=TargetSecurityGroupId,ParameterValue=$TargetSecurityGroupId \
             ParameterKey=TargetPort,ParameterValue=$TargetPort \
             ParameterKey=HealthCheckPath,ParameterValue=$HealthCheckPath \
+            ParameterKey=CreateAccessLogBucket,ParameterValue=$CreateAccessLogBucket \
             ParameterKey=AccessLogBucketName,ParameterValue=$AccessLogBucketName \
             ParameterKey=AccessLogPrefix,ParameterValue=$AccessLogPrefix \
         --disable-rollback \
@@ -107,6 +110,7 @@ description: Create Application Load Balancer using CloudFormation.
     $HealthCheckPath="/"        # [REQUIRED] The health check path of target group. It should end with `/`.
 
     ### ALB Configuration - Access Log
+    $CreateAccessLogBucket=""   # `Yes`(default) or `No` | [REQUIRED] Create a new S3 bucket or using existed S3 bucket.
     $AccessLogBucketName=""     # [REQUIRED] The name of alb access log bucket.
     $AccessLogPrefix=""         # [optional] The prefix of alb access log. It cannot start or end with `/`.
 
@@ -130,6 +134,7 @@ description: Create Application Load Balancer using CloudFormation.
             TargetSecurityGroupId=$TargetSecurityGroupId `
             TargetPort=$TargetPort `
             HealthCheckPath=$HealthCheckPath `
+            CreateAccessLogBucket=$CreateAccessLogBucket `
             AccessLogBucketName=$AccessLogBucketName `
             AccessLogPrefix=$AccessLogPrefix `
         --disable-rollback `
@@ -154,6 +159,7 @@ description: Create Application Load Balancer using CloudFormation.
             ParameterKey=TargetSecurityGroupId,ParameterValue=$TargetSecurityGroupId `
             ParameterKey=TargetPort,ParameterValue=$TargetPort `
             ParameterKey=HealthCheckPath,ParameterValue=$HealthCheckPath `
+            ParameterKey=CreateAccessLogBucket,ParameterValue=$CreateAccessLogBucket `
             ParameterKey=AccessLogBucketName,ParameterValue=$AccessLogBucketName `
             ParameterKey=AccessLogPrefix,ParameterValue=$AccessLogPrefix `
         --disable-rollback `

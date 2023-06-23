@@ -277,17 +277,17 @@
     curl.exe -LO https://raw.githubusercontent.com/marcus16-kang/aws-resources-example/main/scripts/eks/karpenter-controller-policy.yaml
 
     aws cloudformation deploy `
-    --template-file ./karpenter-controller-policy.yaml `
-    --stack-name $STACK_NAME `
-    --parameter-overrides `
-        PolicyName=$PolicyName `
-        ClusterName=$ClusterName `
-        NodeRoleName=$NodeRoleName `
-        QueueName=$QueueName `
-    --tags project=$PROJECT_NAME `
-    --capabilities CAPABILITY_NAMED_IAM `
-    --disable-rollback `
-    --region $REGION
+        --template-file ./karpenter-controller-policy.yaml `
+        --stack-name $STACK_NAME `
+        --parameter-overrides `
+            PolicyName=$PolicyName `
+            ClusterName=$ClusterName `
+            NodeRoleName=$NodeRoleName `
+            QueueName=$QueueName `
+        --tags project=$PROJECT_NAME `
+        --capabilities CAPABILITY_NAMED_IAM `
+        --disable-rollback `
+        --region $REGION
     ```
 
 [Karpenter Documentation](https://karpenter.sh/preview/getting-started/migrating-from-cas/#create-iam-roles)
@@ -373,7 +373,7 @@
     helm install karpenter oci://public.ecr.aws/karpenter/karpenter \
         --create-namespace \
         --namespace karpenter \
-        --version v0.28.0 \
+        --version v0.28.1 \
         --set serviceAccount.create=false \
         --set serviceAccount.name=karpenter \
         --set settings.aws.clusterName=$CLUSTER_NAME \
@@ -394,7 +394,7 @@
     helm install karpenter oci://public.ecr.aws/karpenter/karpenter `
         --create-namespace `
         --namespace karpenter `
-        --version v0.28.0 `
+        --version v0.28.1 `
         --set serviceAccount.create=false `
         --set serviceAccount.name=karpenter `
         --set settings.aws.clusterName=$CLUSTER_NAME `
@@ -491,7 +491,7 @@ spec:
             encrypted: true
     ```
 
-[Karpenter Documentation](https://karpenter.sh/v0.28.0/concepts/node-templates/)
+[Karpenter Documentation](https://karpenter.sh/v0.28/concepts/node-templates/)
 
 ### Create a provisioner
 
@@ -611,7 +611,7 @@ spec:
   weight: 10
 ```
 
-[Karpenter Documentation](https://karpenter.sh/v0.28.0/concepts/provisioners/)
+[Karpenter Documentation](https://karpenter.sh/v0.28/concepts/provisioners/)
 
 ## Deploy Overprovisioning Pod
 
