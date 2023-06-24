@@ -16,14 +16,14 @@ sudo systemctl start fluent-bit
 sudo systemctl enable fluent-bit
 
 # get fluent bit status
-sudo systemsctl status fluent-bit
+sudo systemctl status fluent-bit
 ```
 
 !!! note
 
     Fluent Bit configuration files are `/etc/fluent-bit/` on EC2 instance.
 
-## Configure Fluent Big
+## Configure Fluent Bit
 
 ### EKS on EC2
 
@@ -134,4 +134,46 @@ sudo systemsctl status fluent-bit
     Types status_code:integer
     # Time_Key    time
     # Time_Format %Y-%m-%dT%H:%M:%S.%L%z
+```
+
+### EC2
+
+``` conf title="fluent-bit.conf" linenums="1"
+[INPUT]
+    Name tail
+    Path /home/ec2-user/app.log
+    Refresh_Interval 1
+    Tag server
+
+[FILTER]
+    Name parser
+    Match server
+    Key_name log
+    Parser server
+
+[OUTPUT]
+    Name  stdout
+    Match server
+    Format json
+    json_date_key timestamp
+    json_date_format java_sql_timestamp
+
+[OUTPUT]
+    Name kinesis_streams
+    Match server
+    region <region>
+    stream <stream name>
+    time_key time
+    time_key_format %Y-%m-%d %H:%M:%S
+```
+
+``` conf title="parser.conf" linenums="1"
+[PARSER]
+    Name server
+    Format regex
+    Regex ^(?<ip>((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)) (?<user>[^ ]+) \[(?<timestamp>[^ ]+)\] \"(?<method>[A-Z]+) (?<path>[^ ]+) (?<mode>[^ ]+) (?<statuscode>\d{3}) (?<latency>[^ ]+) \"(?<useragent>[^ ]+)\" \"$
+    Time_Key timestamp
+    Time_Format %FT%T%z
+    Time_Keep Off
+    Types statuscode:integer
 ```

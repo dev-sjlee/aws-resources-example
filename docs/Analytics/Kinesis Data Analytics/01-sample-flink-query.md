@@ -60,3 +60,19 @@ FROM TABLE (
 GROUP BY
     window_start, window_end;
 ```
+
+## Change timezone in sliding window
+
+``` sql
+%flink.ssql(type=update)
+
+SELECT
+    CONVERT_TZ(DATE_FORMAT(`window_start`, 'yyyy-MM-dd HH:mm:00'), 'UTC', 'Europe/Amsterdam') AS window_start,
+    CONVERT_TZ(DATE_FORMAT(`window_end`, 'yyyy-MM-dd HH:mm:00'), 'UTC', 'Europe/Amsterdam') AS window_end,
+FROM TABLE (
+    HOP (TABLE `<table name>`, DESCRIPTOR (`timestamp`), INTERVAL '1' MINUTES, INTERVAL '3' MINUTES
+    )
+)
+GROUP BY
+    window_start, window_end;
+```

@@ -472,6 +472,7 @@
     sudo systemctl start docker
     sudo systemctl enable docker
     sudo usermod -a -G docker ec2-user
+    echo "export DOCKER_BUILDKIT=1" | sudo tee -a /etc/bashrc
     ```
 
 === "Debian"
@@ -481,6 +482,7 @@
     sudo systemctl start docker
     sudo systemctl enable docker
     sudo usermod -a -G docker ubuntu
+    echo "export DOCKER_BUILDKIT=1" | sudo tee -a /etc/bashrc
     ```
 
 ??? tip "Enable Shell Autocomplete"
