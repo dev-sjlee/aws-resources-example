@@ -138,6 +138,8 @@ sudo systemctl status fluent-bit
 
 ### EC2
 
+**Tail**
+
 ``` conf title="fluent-bit.conf" linenums="1"
 [INPUT]
     Name tail
@@ -176,4 +178,23 @@ sudo systemctl status fluent-bit
     Time_Format %FT%T%z
     Time_Keep Off
     Types statuscode:integer
+```
+
+**SystemD**
+
+``` conf title="fluent-bit.conf" hl_lines="4 10 11 12" linenums="1"
+[INPUT]
+    Name systemd
+    Tag server
+    Systemd_Filter _SYSTEMD_UNIT=<SERVICE_NAME>.service
+    Read_From_Tail On
+
+[OUTPUT]
+    Name cloudwatch_logs
+    Match server
+    region <REGION_CODE>
+    log_group_name <LOG_GROUP>
+    log_stream_name <INSTANCE_ID>
+    auto_create_group true
+    log_key MESSAGE
 ```
