@@ -77,7 +77,7 @@ metadata:
 spec:
   containers:
     - name: docker
-      image: docker:23.0.1-dind-alpine3.17
+      image: public.ecr.aws/docker/library/docker:24.0.5-dind-alpine3.18
       securityContext:
         privileged: true
   # tolerations:

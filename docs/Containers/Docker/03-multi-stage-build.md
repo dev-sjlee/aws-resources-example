@@ -43,9 +43,9 @@ ENTRYPOINT [ "/sbin/tini", "--", "./main" ]
 
     ``` bash
     export DOCKER_BUILDKIT=1
-    wget https://github.com/docker/buildx/releases/download/v0.11.0/buildx-v0.11.0.linux-amd64
+    wget https://github.com/docker/buildx/releases/download/v0.11.2/buildx-v0.11.2.linux-amd64
     mkdir -p ~/.docker/cli-plugins
-    mv buildx-v0.11.0.linux-amd64 ~/.docker/cli-plugins/docker-buildx
+    mv buildx-v0.11.2.linux-amd64 ~/.docker/cli-plugins/docker-buildx
     chmod a+x ~/.docker/cli-plugins/docker-buildx
     docker run --privileged --rm ghcr.io/marcus16-kang/binfmt:latest --install all
     docker buildx create --use --driver docker-container --driver-opt image=ghcr.io/marcus16-kang/buildkit:latest
@@ -56,9 +56,9 @@ ENTRYPOINT [ "/sbin/tini", "--", "./main" ]
 
     ``` bash
     export DOCKER_BUILDKIT=1
-    wget https://github.com/docker/buildx/releases/download/v0.11.0/buildx-v0.11.0.linux-arm64
+    wget https://github.com/docker/buildx/releases/download/v0.11.2/buildx-v0.11.2.linux-arm64
     mkdir -p ~/.docker/cli-plugins
-    mv buildx-v0.11.0.linux-arm64 ~/.docker/cli-plugins/docker-buildx
+    mv buildx-v0.11.2.linux-arm64 ~/.docker/cli-plugins/docker-buildx
     chmod a+x ~/.docker/cli-plugins/docker-buildx
     docker run --privileged --rm ghcr.io/marcus16-kang/binfmt:latest --install all
     docker buildx create --use --driver docker-container --driver-opt image=ghcr.io/marcus16-kang/buildkit:latest

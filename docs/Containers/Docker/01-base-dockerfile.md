@@ -9,7 +9,7 @@ Description: Base Dockerfile templates.
 
 === "General"
     ``` Dockerfile linenums="1" hl_lines="3 4 6 7 9 27"
-    FROM public.ecr.aws/docker/library/alpine:3.18.2
+    FROM public.ecr.aws/docker/library/alpine:3.18.3
 
     ENV USER_NAME <USER NAME>
     ENV USER_UID <UID NUMBER>
@@ -26,7 +26,7 @@ Description: Base Dockerfile templates.
         adduser -D -u $USER_UID -G $GROUP_NAME $USER_NAME && \
         chown -R $USER_NAME:$GROUP_NAME .
     
-    # RUN apk add --no-cache curl=~8.1.2 && \
+    # RUN apk add --no-cache curl=~8.2.1 && \
     #     curl --version
     
     USER $USER_NAME
@@ -42,7 +42,7 @@ Description: Base Dockerfile templates.
 
 === "AMD64"
     ``` Dockerfile linenums="1" hl_lines="3 4 6 7 9 27"
-    FROM amd64/alpine:3.18.2
+    FROM amd64/alpine:3.18.3
 
     ENV USER_NAME <USER NAME>
     ENV USER_UID <UID NUMBER>
@@ -59,7 +59,7 @@ Description: Base Dockerfile templates.
         adduser -D -u $USER_UID -G $GROUP_NAME $USER_NAME && \
         chown -R $USER_NAME:$GROUP_NAME .
     
-    # RUN apk add --no-cache curl=~8.1.2 && \
+    # RUN apk add --no-cache curl=~8.2.1 && \
     #     curl --version
     
     USER $USER_NAME
@@ -75,7 +75,7 @@ Description: Base Dockerfile templates.
 
 === "ARM64"
     ``` Dockerfile linenums="1" hl_lines="3 4 6 7 9 27"
-    FROM arm64v8/alpine:3.18.2
+    FROM arm64v8/alpine:3.18.3
 
     ENV USER_NAME <USER NAME>
     ENV USER_UID <UID NUMBER>
@@ -92,7 +92,7 @@ Description: Base Dockerfile templates.
         adduser -D -u $USER_UID -G $GROUP_NAME $USER_NAME && \
         chown -R $USER_NAME:$GROUP_NAME .
     
-    # RUN apk add --no-cache curl=~8.1.2 && \
+    # RUN apk add --no-cache curl=~8.2.1 && \
     #     curl --version
     
     USER $USER_NAME
@@ -110,7 +110,7 @@ Description: Base Dockerfile templates.
 
 === "General"
     ``` Dockerfile linenums="1" hl_lines="5 6 8 9 11 31"
-    FROM public.ecr.aws/docker/library/amazonlinux:2.0.20230530.0
+    FROM public.ecr.aws/docker/library/amazonlinux:2.0.20230727.0
 
     ENV TINI_VERSION v0.19.0
 
@@ -147,7 +147,7 @@ Description: Base Dockerfile templates.
 
 === "AMD64"
     ``` Dockerfile linenums="1" hl_lines="5 6 8 9 11 31"
-    FROM amd64/amazonlinux:2.0.20230530.0
+    FROM amd64/amazonlinux:2.0.20230727.0
 
     ENV TINI_VERSION v0.19.0
 
@@ -184,7 +184,7 @@ Description: Base Dockerfile templates.
 
 === "ARM64"
     ``` Dockerfile linenums="1" hl_lines="5 6 8 9 11 31"
-    FROM arm64v8/amazonlinux:2.0.20230530.0
+    FROM arm64v8/amazonlinux:2.0.20230727.0
 
     ENV TINI_VERSION v0.19.0
 

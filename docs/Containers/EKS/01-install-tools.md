@@ -415,27 +415,27 @@
 === "Linux (x86_64)"
     
     ``` bash
-    curl -LO https://get.helm.sh/helm-v3.12.1-linux-amd64.tar.gz
-    tar -xvzf helm-v3.12.1-linux-amd64.tar.gz
+    curl -LO https://get.helm.sh/helm-v3.12.2-linux-amd64.tar.gz
+    tar -xvzf helm-v3.12.2-linux-amd64.tar.gz
     sudo install -o root -g root -m 0755 linux-amd64/helm /usr/local/bin/helm
     sudo install -o root -g root -m 0755 linux-amd64/helm /usr/bin/helm
     helm version
     sudo helm version
     rm -rf linux-amd64
-    rm -rf helm-v3.12.1-linux-amd64.tar.gz
+    rm -rf helm-v3.12.2-linux-amd64.tar.gz
     ```
 
 === "Linux (ARM64)"
     
     ``` bash
-    curl -LO https://get.helm.sh/helm-v3.12.1-linux-arm64.tar.gz
-    tar -xvzf helm-v3.12.1-linux-arm64.tar.gz
+    curl -LO https://get.helm.sh/helm-v3.12.2-linux-arm64.tar.gz
+    tar -xvzf helm-v3.12.2-linux-arm64.tar.gz
     sudo install -o root -g root -m 0755 linux-arm64/helm /usr/local/bin/helm
     sudo install -o root -g root -m 0755 linux-arm64/helm /usr/bin/helm
     helm version
     sudo helm version
     rm -rf linux-arm64
-    rm -rf helm-v3.12.1-linux-arm64.tar.gz
+    rm -rf helm-v3.12.2-linux-arm64.tar.gz
     ```
 
 === "Windows (Chocolatey)"
@@ -447,10 +447,10 @@
 === "Windows (Executable)"
     
     ``` powershell
-    curl.exe -LO https://get.helm.sh/helm-v3.12.1-windows-amd64.zip
-    Expand-Archive ./helm-v3.12.1-windows-amd64.zip -DestinationPath ./
+    curl.exe -LO https://get.helm.sh/helm-v3.12.2-windows-amd64.zip
+    Expand-Archive ./helm-v3.12.2-windows-amd64.zip -DestinationPath ./
     cp windows-amd64/helm.exe ./helm.exe
-    rm helm-v3.12.1-windows-amd64.zip
+    rm helm-v3.12.2-windows-amd64.zip
     rm -r windows-amd64
     ```
 
@@ -497,9 +497,9 @@
 === "Linux (x86_64)"
     ``` bash
     export DOCKER_BUILDKIT=1
-    wget https://github.com/docker/buildx/releases/download/v0.11.0/buildx-v0.11.0.linux-amd64
+    wget https://github.com/docker/buildx/releases/download/v0.11.2/buildx-v0.11.2.linux-amd64
     mkdir -p ~/.docker/cli-plugins
-    mv buildx-v0.11.0.linux-amd64 ~/.docker/cli-plugins/docker-buildx
+    mv buildx-v0.11.2.linux-amd64 ~/.docker/cli-plugins/docker-buildx
     chmod a+x ~/.docker/cli-plugins/docker-buildx
     docker run --privileged --rm ghcr.io/marcus16-kang/binfmt:amd64 --install all
     ```
@@ -507,9 +507,9 @@
 === "Linux (ARM64)"
     ``` bash
     export DOCKER_BUILDKIT=1
-    wget https://github.com/docker/buildx/releases/download/v0.11.0/buildx-v0.11.0.linux-arm64
+    wget https://github.com/docker/buildx/releases/download/v0.11.2/buildx-v0.11.2.linux-arm64
     mkdir -p ~/.docker/cli-plugins
-    mv buildx-v0.11.0.linux-arm64 ~/.docker/cli-plugins/docker-buildx
+    mv buildx-v0.11.2.linux-arm64 ~/.docker/cli-plugins/docker-buildx
     chmod a+x ~/.docker/cli-plugins/docker-buildx
     docker run --privileged --rm ghcr.io/marcus16-kang/binfmt:arm64 --install all
     ```
@@ -579,7 +579,7 @@
 
 === "Linux (x86_64)"
     ``` bash
-    wget https://github.com/ahmetb/kubectx/releases/download/v0.9.4/kubectx
+    wget https://github.com/ahmetb/kubectx/releases/download/v0.9.5/kubectx
     sudo install -o root -g root -m 0755 kubectx /usr/local/bin/kubectx
     sudo install -o root -g root -m 0755 kubectx /usr/bin/kubectx
     kubectx -h
@@ -588,7 +588,7 @@
 
 === "Linux (ARM64)"
     ``` bash
-    wget https://github.com/ahmetb/kubectx/releases/download/v0.9.4/kubectx
+    wget https://github.com/ahmetb/kubectx/releases/download/v0.9.5/kubectx
     sudo install -o root -g root -m 0755 kubectx /usr/local/bin/kubectx
     sudo install -o root -g root -m 0755 kubectx /usr/bin/kubectx
     kubectx -h
@@ -603,9 +603,9 @@
 
 === "Windows (Executable)"
     ``` powershell
-    curl.exe -LO https://github.com/ahmetb/kubectx/releases/download/v0.9.4/kubectx_v0.9.4_windows_x86_64.zip
-    Expand-Archive ./kubectx_v0.9.4_windows_x86_64.zip -DestinationPath ./
-    rm kubectx_v0.9.4_windows_x86_64.zip
+    curl.exe -LO https://github.com/ahmetb/kubectx/releases/download/v0.9.5/kubectx_v0.9.5_windows_x86_64.zip
+    Expand-Archive ./kubectx_v0.9.5_windows_x86_64.zip -DestinationPath ./
+    rm kubectx_v0.9.5_windows_x86_64.zip
     rm LICENSE
     ```
 
@@ -623,7 +623,7 @@
 === "Linux (x86_64)"
     
     ``` bash
-    wget https://github.com/ahmetb/kubectx/releases/download/v0.9.4/kubens
+    wget https://github.com/ahmetb/kubectx/releases/download/v0.9.5/kubens
     sudo install -o root -g root -m 0755 kubens /usr/local/bin/kubens
     sudo install -o root -g root -m 0755 kubens /usr/bin/kubens
     kubens -h
@@ -633,7 +633,7 @@
 === "Linux (ARM64)"
     
     ``` bash
-    wget https://github.com/ahmetb/kubectx/releases/download/v0.9.4/kubens
+    wget https://github.com/ahmetb/kubectx/releases/download/v0.9.5/kubens
     sudo install -o root -g root -m 0755 kubens /usr/local/bin/kubens
     sudo install -o root -g root -m 0755 kubens /usr/bin/kubens
     kubens -h
@@ -649,9 +649,9 @@
 === "Windows (Executable)"
     
     ``` powershell
-    curl.exe -LO https://github.com/ahmetb/kubectx/releases/download/v0.9.4/kubens_v0.9.4_windows_x86_64.zip
-    Expand-Archive ./kubens_v0.9.4_windows_x86_64.zip -DestinationPath ./
-    rm kubens_v0.9.4_windows_x86_64.zip
+    curl.exe -LO https://github.com/ahmetb/kubectx/releases/download/v0.9.5/kubens_v0.9.5_windows_x86_64.zip
+    Expand-Archive ./kubens_v0.9.5_windows_x86_64.zip -DestinationPath ./
+    rm kubens_v0.9.5_windows_x86_64.zip
     rm LICENSE
     ```
 
@@ -669,7 +669,7 @@
 === "Linux (x86_64)"
     
     ``` bash
-    curl -LO https://github.com/argoproj/argo-cd/releases/download/v2.7.6/argocd-linux-amd64
+    curl -LO https://github.com/argoproj/argo-cd/releases/download/v2.8.0/argocd-linux-amd64
     sudo install -o root -g root -m 0755 argocd-linux-amd64 /usr/local/bin/argocd
     sudo install -o root -g root -m 0755 argocd-linux-amd64 /usr/bin/argocd
     rm argocd-linux-amd64
@@ -679,7 +679,7 @@
 === "Linux (ARM64)"
     
     ``` bash
-    curl -LO https://github.com/argoproj/argo-cd/releases/download/v2.7.6/argocd-linux-arm64
+    curl -LO https://github.com/argoproj/argo-cd/releases/download/v2.8.0/argocd-linux-arm64
     sudo install -o root -g root -m 0755 argocd-linux-arm64 /usr/local/bin/argocd
     sudo install -o root -g root -m 0755 argocd-linux-arm64 /usr/bin/argocd
     rm argocd-linux-arm64
@@ -695,7 +695,7 @@
 === "Windows (Executable)"
     
     ``` powershell
-    curl.exe -L https://github.com/argoproj/argo-cd/releases/download/v2.7.6/argocd-windows-amd64.exe -o argocd.exe
+    curl.exe -L https://github.com/argoproj/argo-cd/releases/download/v2.8.0/argocd-windows-amd64.exe -o argocd.exe
     ```
 
 ??? tip "Enable Shell Autocomplete"
